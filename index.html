@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ersenbox - Meeting Notes 26</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #4a90e2;
+            --secondary: #7b68ee;
+            --accent: #10b981;
+            --bg: #0f172a;
+            --card: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.15);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body.light {
+            --bg: #f1f5f9;
+            --card: rgba(255, 255, 255, 0.9);
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        /* ===== PERSISTENT HEADER ===== */
+        .persistent-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 2px solid var(--accent);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        body.light .persistent-header {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .scanner-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lang-selector {
+            display: flex;
+            gap: 0.3rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem;
+            border-radius: 25px;
+        }
+
+        .lang-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: transparent;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ===== NAV TABS ===== */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            overflow-x: auto;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        body.light .nav-tabs {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .nav-tab {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            color: var(--text);
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .btn-success { background: linear-gradient(135deg, var(--success), #059669); color: white; }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #dc2626); color: white; }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #d97706); color: white; }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), #059669); color: white; }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn:active { transform: translateY(0); }
+
+        /* ===== FORMS ===== */
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent); }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.2);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        body.light input, body.light textarea, body.light select {
+            background: white;
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        /* ===== FOLDER LIBRARY ===== */
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .folder-card {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(123, 104, 238, 0.2));
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .folder-card.active {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+        }
+
+        .folder-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .folder-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .folder-count { font-size: 0.85rem; color: var(--text-muted); }
+
+        .folder-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .folder-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .folder-btn:hover { background: var(--accent); color: white; }
+        .folder-btn.delete:hover { background: var(--danger); }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 1.2rem;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-value { font-size: 2rem; font-weight: 800; }
+        .stat-label { font-size: 0.85rem; opacity: 0.9; }
+
+        /* ===== TIMER ===== */
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ===== TRANSCRIPT ===== */
+        .transcript-area {
+            background: rgba(0,0,0,0.3);
+            padding: 1.2rem;
+            border-radius: 12px;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.7;
+            border: 1px solid var(--border);
+        }
+
+        body.light .transcript-area {
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* ===== ACTION ITEMS ===== */
+        .action-item {
+            background: var(--card);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-item.priority-high { border-left-color: var(--danger); }
+        .action-item.priority-medium { border-left-color: var(--warning); }
+        .action-item.priority-low { border-left-color: var(--success); }
+
+        /* ===== COLOR PICKER ===== */
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-input-group input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-input-group input[type="text"] {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== PERSISTENT FOOTER ===== */
+        .persistent-footer {
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-top: 2px solid var(--accent);
+            padding: 0.8rem 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            z-index: 1000;
+        }
+
+        body.light .persistent-footer {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+        }
+
+        .persistent-footer strong {
+            color: var(--accent);
+        }
+
+        /* ===== LANG SELECTOR BUTTONS ===== */
+        .lang-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lang-option {
+            padding: 0.5rem 1rem;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .lang-option:hover, .lang-option.active {
+            border-color: var(--accent);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-title { font-size: 1rem; }
+            .timer-display { font-size: 2.5rem; }
+            .folder-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .nav-tab { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PERSISTENT HEADER ===== -->
+    <header class="persistent-header">
+        <div class="header-brand">
+            <div class="scanner-logo">📡</div>
+            <div class="header-title">Ersenbox - Meeting Notes 26</div>
+        </div>
+        <div class="header-right">
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="TR" onclick="setAppLang('TR')">🇹🇷 TR</button>
+                <button class="lang-btn" data-lang="DE" onclick="setAppLang('DE')">🇩🇪 DE</button>
+                <button class="lang-btn" data-lang="EN" onclick="setAppLang('EN')">🇬🇧 EN</button>
+                <button class="lang-btn" data-lang="FR" onclick="setAppLang('FR')">🇫🇷 FR</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== NAV TABS ===== -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('folders')">📁 <span data-i18n="folders">Klasörler</span></button>
+        <button class="nav-tab" onclick="switchTab('recorder')">🎤 <span data-i18n="recorder">Ses Kaydedici</span></button>
+        <button class="nav-tab" onclick="switchTab('stt')">📝 <span data-i18n="stt">Konuşmadan Metne</span></button>
+        <button class="nav-tab" onclick="switchTab('tts')">🔊 <span data-i18n="tts">Metinden Ses</span></button>
+        <button class="nav-tab" onclick="switchTab('ambient')"> <span data-i18n="ambient">Ortam Sesleri</span></button>
+        <button class="nav-tab" onclick="switchTab('translator')">🌍 <span data-i18n="translator">Çevirmen</span></button>
+        <button class="nav-tab" onclick="switchTab('summary')">🤖 <span data-i18n="summary">AI Özet</span></button>
+        <button class="nav-tab" onclick="switchTab('actions')">✅ <span data-i18n="actions">Aksiyonlar</span></button>
+        <button class="nav-tab" onclick="switchTab('panel')">📊 <span data-i18n="panel">Panel</span></button>
+        <button class="nav-tab" onclick="switchTab('settings')">⚙️ <span data-i18n="settings">Ayarlar</span></button>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- FOLDERS TAB -->
+        <div id="folders" class="tab-content active">
+            <div class="card">
+                <h2>📁 <span data-i18n="folderLibrary">Klasör Kütüphanesi</span></h2>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="folderDesc">
+                    Tüm kayıtlarınız, transkriptleriniz, çevirileriniz ve özetleriniz otomatik olarak seçili klasöre kaydedilir.
+                </p>
+                <button class="btn btn-accent" onclick="showNewFolderModal()">➕ <span data-i18n="newFolder">Yeni Klasör</span></button>
+                <div class="folder-grid" id="folderGrid"></div>
+            </div>
+
+            <div class="card">
+                <h2>📂 <span data-i18n="currentFolder">Seçili Klasör İçeriği</span>: <span id="currentFolderName" style="color: var(--accent);">Genel</span></h2>
+                <div id="folderContent">
+                    <p style="color: var(--text-muted);" data-i18n="noContent">Bu klasörde henüz içerik yok.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECORDER TAB -->
+        <div id="recorder" class="tab-content">
+            <div class="card">
+                <h2>🎤 <span data-i18n="recorder">Ses Kaydedici</span></h2>
+                <div class="form-group">
+                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+                    <select id="recorderFolder"></select>
+                </div>
+                <div class="timer-display" id="timer">00:00:00</div>
+                <div style="text-align: center;">
+                    <button class="btn btn-primary" id="startRecordBtn" onclick="startRecording()"> <span data-i18n="startRecord">Kayda Başla</span></button>
+                    <button class="btn btn-danger hidden" id="stopRecordBtn" onclick="stopRecording()">⏹️ <span data-i18n="stop">Durdur</span></button>
+                </div>
+                <div id="recordingsList" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+
+        <!-- STT TAB -->
+        <div id="stt" class="tab-content">
+            <div class="card">
+                <h2>📝 <span data-i18n="stt">Konuşmadan Metne</span></h2>
+                <div class="form-group">
+                    <label data-i18n="language">Konuşma Dili:</label>
+                    <div class="lang-buttons" id="sttLangs">
+                        <div class="lang-option active" data-lang="tr-TR">🇹🇷 Türkçe</div>
+                        <div class="lang-option" data-lang="ar-SA">🇸 Arapça</div>
+                        <div class="lang-option" data-lang="de-DE">🇩🇪 Almanca</div>
+                        <div class="lang-option" data-lang="en-US">🇺🇸 İngilizce</div>
+                        <div class="lang-option" data-lang="fr-FR">🇫 Fransızca</div>
+                        <div class="lang-option" data-lang="es-ES">🇪🇸 İspanyolca</div>
+                        <div class="lang-option" data-lang="it-IT">🇮🇹 İtalyanca</div>
+                        <div class="lang-option" data-lang="ru-RU">🇺 Rusça</div>
+                        <div class="lang-option" data-lang="zh-CN">🇨🇳 Çince</div>
+                        <div class="lang-option" data-lang="ja-JP">🇯🇵 Japonca</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+                    <select id="sttFolder"></select>
+                </div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    <button class="btn btn-primary" id="startSTTBtn" onclick="startSTT()">🎤 <span data-i18n="startListen">Dinlemeye Başla</span></button>
+                    <button class="btn btn-danger hidden" id="stopSTTBtn" onclick="stopSTT()">⏹️ <span data-i18n="stop">Durdur</span></button>
+                    <button class="btn btn-warning" onclick="clearTranscript()">🗑️ <span data-i18n="clear">Temizle</span></button>
+                </div>
+                <div class="transcript-area" id="transcript" data-i18n-placeholder="transcriptPlaceholder">Transkript burada görünecek...</div>
+            </div>
+        </div>
+
+        <!-- TTS TAB -->
+        <div id="tts" class="tab-content">
+            <div class="card">
+                <h2>🔊 <span data-i18n="tts">Metinden Ses</span></h2>
+                <div class="form-group">
+                    <label>📿 Arapça Metin (Salavat-ı Şerife)</label>
+                    <textarea id="salavatText" readonly>اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ</textarea>
+                    <button class="btn btn-primary" onclick="readSalavat()">🔊 Arapça Oku</button>
+                    <button class="btn btn-success" onclick="readSalavatTranslation()">🌍 Türkçe Çeviri</button>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="text">Metin:</label>
+                    <textarea id="ttsText" placeholder="Metin girin..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="language">Dil:</label>
+                    <select id="ttsLang">
+                        <option value="tr-TR">🇷 Türkçe</option>
+                        <option value="ar-SA">🇸🇦 Arapça</option>
+                        <option value="de-DE">🇩🇪 Almanca</option>
+                        <option value="en-US">🇺🇸 İngilizce</option>
+                        <option value="fr-FR">🇫🇷 Fransızca</option>
+                        <option value="es-ES">🇪 İspanyolca</option>
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label data-i18n="rate">Hız:</label>
+                        <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1">
+                        <span id="rateValue">1.0</span>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="pitch">Ton:</label>
+                        <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1">
+                        <span id="pitchValue">1.0</span>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="volume">Ses Seviyesi:</label>
+                        <input type="range" id="speechVolume" min="0" max="1" step="0.1" value="1">
+                        <span id="volumeValue">1.0</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="effect">Ses Efekti:</label>
+                    <select id="voiceEffect">
+                        <option value="normal">Normal</option>
+                        <option value="echo">Yankı</option>
+                        <option value="robot">Robot</option>
+                        <option value="deep">Derin</option>
+                        <option value="thin">İnce</option>
+                    </select>
+                </div>
+                <button class="btn btn-accent" onclick="speakText()">🔊 <span data-i18n="speak">Seslendir</span></button>
+                <button class="btn btn-danger" onclick="stopSpeaking()">⏹️ <span data-i18n="stop">Durdur</span></button>
+            </div>
+        </div>
+
+        <!-- AMBIENT TAB -->
+        <div id="ambient" class="tab-content">
+            <div class="card">
+                <h2>🎵 <span data-i18n="ambient">Ortam Sesleri</span></h2>
+                <div class="lang-buttons">
+                    <button class="btn btn-primary" onclick="playAmbient('rain')">🌧️ Yağmur</button>
+                    <button class="btn btn-primary" onclick="playAmbient('storm')">️ Fırtına</button>
+                    <button class="btn btn-primary" onclick="playAmbient('city')">🏙️ Şehir</button>
+                    <button class="btn btn-primary" onclick="playAmbient('sea')">🌊 Deniz</button>
+                    <button class="btn btn-primary" onclick="playAmbient('fire')">🔥 Ateş</button>
+                    <button class="btn btn-primary" onclick="playAmbient('birds')"> Kuşlar</button>
+                    <button class="btn btn-primary" onclick="playAmbient('forest')">🌲 Orman</button>
+                    <button class="btn btn-danger" onclick="stopAllAmbient()">⏹️ <span data-i18n="stopAll">Tümünü Durdur</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSLATOR TAB -->
+        <div id="translator" class="tab-content">
+            <div class="card">
+                <h2>🌍 <span data-i18n="translator">Çevirmen</span> (100+ Dil)</h2>
+                <div class="form-group">
+                    <label data-i18n="sourceLang">Kaynak Dil:</label>
+                    <select id="sourceLang">
+                        <option value="Auto">🔍 Otomatik</option>
+                        <option value="tr">🇷 Türkçe</option>
+                        <option value="ar">🇸🇦 Arapça</option>
+                        <option value="de">🇩🇪 Almanca</option>
+                        <option value="en">🇺 İngilizce</option>
+                        <option value="fr">🇫🇷 Fransızca</option>
+                        <option value="es">🇪🇸 İspanyolca</option>
+                        <option value="it">🇹 İtalyanca</option>
+                        <option value="ru">🇷 Rusça</option>
+                        <option value="zh">🇨🇳 Çince</option>
+                        <option value="ja">🇯🇵 Japonca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="text">Metin:</label>
+                    <textarea id="translateText" placeholder="Çevrilecek metin..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="targetLang">Hedef Dil:</label>
+                    <select id="targetLang">
+                        <option value="en">🇺 İngilizce</option>
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="ar">🇦 Arapça</option>
+                        <option value="de">🇩 Almanca</option>
+                        <option value="fr">🇫🇷 Fransızca</option>
+                        <option value="es">🇸 İspanyolca</option>
+                        <option value="it">🇮 İtalyanca</option>
+                        <option value="ru">🇷🇺 Rusça</option>
+                        <option value="zh">🇨🇳 Çince</option>
+                        <option value="ja">🇯 Japonca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+                    <select id="translatorFolder"></select>
+                </div>
+                <button class="btn btn-accent" onclick="translateText()">🔄 <span data-i18n="translate">Çevir</span></button>
+                <button class="btn btn-warning" onclick="swapLangs()">⇄ <span data-i18n="swap">Değiştir</span></button>
+                <div class="transcript-area" id="translationResult" style="margin-top: 1rem;" data-i18n-placeholder="translationPlaceholder">Çeviri burada görünecek...</div>
+            </div>
+        </div>
+
+        <!-- SUMMARY TAB -->
+        <div id="summary" class="tab-content">
+            <div class="card">
+                <h2>🤖 <span data-i18n="summary">AI Özet</span></h2>
+                <div class="form-group">
+                    <label data-i18n="meetingText">Toplantı Metni:</label>
+                    <textarea id="meetingText" placeholder="Metni yapıştırın..." style="min-height: 200px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="length">Uzunluk:</label>
+                    <div class="lang-buttons">
+                        <div class="lang-option active" onclick="setSummaryLen('short', this)">Kısa (3)</div>
+                        <div class="lang-option" onclick="setSummaryLen('medium', this)">Orta (5)</div>
+                        <div class="lang-option" onclick="setSummaryLen('detailed', this)">Detaylı (10)</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="focus">Odak:</label>
+                    <select id="summaryFocus">
+                        <option value="general">Genel</option>
+                        <option value="decisions">Kararlar</option>
+                        <option value="problems">Sorunlar</option>
+                        <option value="ideas">Fikirler</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+                    <select id="summaryFolder"></select>
+                </div>
+                <button class="btn btn-accent" onclick="generateSummary()">✨ <span data-i18n="generate">Oluştur</span></button>
+                <div class="transcript-area" id="keywords" style="margin-top: 1rem; min-height: 80px;" data-i18n-placeholder="keywordsPlaceholder">Anahtar kelimeler...</div>
+                <div class="transcript-area" id="summaryResult" style="margin-top: 1rem; min-height: 150px;" data-i18n-placeholder="summaryPlaceholder">Özet...</div>
+            </div>
+        </div>
+
+        <!-- ACTIONS TAB -->
+        <div id="actions" class="tab-content">
+            <div class="card">
+                <h2>✅ <span data-i18n="actions">Aksiyon Noktaları</span></h2>
+                <div class="form-group">
+                    <label data-i18n="meetingText">Toplantı Metni:</label>
+                    <textarea id="actionText" placeholder="Metni yapıştırın..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+                    <select id="actionsFolder"></select>
+                </div>
+                <button class="btn btn-accent" onclick="extractActions()">🎯 <span data-i18n="extract">Çıkar</span></button>
+                <button class="btn btn-primary" onclick="showActionModal()">➕ <span data-i18n="manualAdd">Manuel Ekle</span></button>
+                <div id="actionsList" style="margin-top: 1.5rem;"></div>
+            </div>
+        </div>
+
+        <!-- PANEL TAB -->
+        <div id="panel" class="tab-content">
+            <div class="card">
+                <h2> <span data-i18n="panel">Kontrol Paneli</span></h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value" id="statFolders">0</div><div class="stat-label" data-i18n="folders">Klasör</div></div>
+                    <div class="stat-card"><div class="stat-value" id="statRecordings">0</div><div class="stat-label" data-i18n="recordings">Kayıt</div></div>
+                    <div class="stat-card"><div class="stat-value" id="statTranscripts">0</div><div class="stat-label" data-i18n="transcripts">Transkript</div></div>
+                    <div class="stat-card"><div class="stat-value" id="statTranslations">0</div><div class="stat-label" data-i18n="translations">Çeviri</div></div>
+                    <div class="stat-card"><div class="stat-value" id="statActions">0</div><div class="stat-label" data-i18n="actions">Aksiyon</div></div>
+                </div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-success" onclick="exportAll()">📥 JSON İndir</button>
+                    <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">📤 JSON Yükle</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+                    <button class="btn btn-danger" onclick="clearAll()">🗑️ Temizle</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings" class="tab-content">
+            <div class="card">
+                <h2>⚙️ <span data-i18n="settings">Ayarlar</span></h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <!-- Theme -->
+                    <div class="form-group">
+                        <label data-i18n="theme">Tema:</label>
+                        <div class="lang-buttons">
+                            <div class="lang-option active" onclick="setTheme('dark', this)">🌙 Karanlık</div>
+                            <div class="lang-option" onclick="setTheme('light', this)">☀️ Aydınlık</div>
+                        </div>
+                    </div>
+
+                    <!-- Color Palette -->
+                    <div class="form-group">
+                        <label data-i18n="colorPalette">Renk Paleti:</label>
+                        <div class="lang-buttons">
+                            <div class="lang-option active" onclick="setColorScheme('blue', this)">💙 Mavi</div>
+                            <div class="lang-option" onclick="setColorScheme('navy', this)"> Lacivert</div>
+                            <div class="lang-option" onclick="setColorScheme('gray', this)">🩶 Gri</div>
+                            <div class="lang-option" onclick="setColorScheme('green', this)">💚 Yeşil</div>
+                            <div class="lang-option" onclick="setColorScheme('purple', this)">💜 Mor</div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Hex Colors -->
+                    <div class="form-group">
+                        <label data-i18n="customColors">Özel Hex Renkler:</label>
+                        <div class="color-input-group">
+                            <input type="color" id="customPrimary" value="#4a90e2" onchange="applyCustomColor('primary', this.value)">
+                            <input type="text" id="customPrimaryHex" value="#4a90e2" placeholder="#4a90e2" onchange="applyCustomColor('primary', this.value)">
+                        </div>
+                        <div class="color-input-group">
+                            <input type="color" id="customAccent" value="#10b981" onchange="applyCustomColor('accent', this.value)">
+                            <input type="text" id="customAccentHex" value="#10b981" placeholder="#10b981" onchange="applyCustomColor('accent', this.value)">
+                        </div>
+                        <div class="color-input-group">
+                            <input type="color" id="customSecondary" value="#7b68ee" onchange="applyCustomColor('secondary', this.value)">
+                            <input type="text" id="customSecondaryHex" value="#7b68ee" placeholder="#7b68ee" onchange="applyCustomColor('secondary', this.value)">
+                        </div>
+                        <button class="btn btn-warning" onclick="resetColors()" style="margin-top: 0.5rem;">🔄 Varsayılana Dön</button>
+                    </div>
+
+                    <!-- Default Lang -->
+                    <div class="form-group">
+                        <label data-i18n="defaultLang">Varsayılan Dil:</label>
+                        <select id="defaultLang" onchange="saveSettings()">
+                            <option value="tr-TR">🇹🇷 Türkçe</option>
+                            <option value="de-DE">🇪 Almanca</option>
+                            <option value="en-US">🇺🇸 İngilizce</option>
+                            <option value="fr-FR">🇫🇷 Fransızca</option>
+                        </select>
+                    </div>
+
+                    <!-- Auto Save -->
+                    <div class="form-group">
+                        <label data-i18n="autoSave">Otomatik Kaydet:</label>
+                        <div class="lang-buttons">
+                            <div class="lang-option active" onclick="setAutoSave(true, this)">Açık</div>
+                            <div class="lang-option" onclick="setAutoSave(false, this)">Kapalı</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-success" onclick="saveSettings()">💾 <span data-i18n="save">Kaydet</span></button>
+                    <button class="btn btn-primary" onclick="exportSettings()"> JSON İndir</button>
+                    <button class="btn btn-warning" onclick="document.getElementById('importSettings').click()">📤 JSON Yükle</button>
+                    <input type="file" id="importSettings" accept=".json" style="display:none" onchange="importSettings(event)">
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ===== PERSISTENT FOOTER ===== -->
+    <footer class="persistent-footer">
+        © 2026 <strong>ErsenBox</strong> — Ersen Bakıcı | <span data-i18n="footerTag">Güvenli, reklamsız ve pedagojik</span> 💛
+    </footer>
+
+    <!-- ===== MODALS ===== -->
+    <div class="modal-overlay" id="folderModal">
+        <div class="modal">
+            <h3 id="folderModalTitle">📁 Yeni Klasör</h3>
+            <div class="form-group">
+                <label data-i18n="folderName">Klasör Adı:</label>
+                <input type="text" id="folderNameInput" placeholder="Örn: Kuşlar, Dağlar...">
+            </div>
+            <div class="form-group">
+                <label data-i18n="folderIcon">Klasör İkonu:</label>
+                <div class="lang-buttons">
+                    <div class="lang-option" onclick="selectFolderIcon('📁', this)">📁</div>
+                    <div class="lang-option" onclick="selectFolderIcon('🐦', this)">🐦</div>
+                    <div class="lang-option" onclick="selectFolderIcon('⛰️', this)">⛰️</div>
+                    <div class="lang-option" onclick="selectFolderIcon('', this)">🌊</div>
+                    <div class="lang-option" onclick="selectFolderIcon('🌲', this)">🌲</div>
+                    <div class="lang-option" onclick="selectFolderIcon('🏙️', this)">🏙️</div>
+                    <div class="lang-option" onclick="selectFolderIcon('', this)">🎵</div>
+                    <div class="lang-option" onclick="selectFolderIcon('📚', this)"></div>
+                    <div class="lang-option" onclick="selectFolderIcon('💼', this)">💼</div>
+                    <div class="lang-option" onclick="selectFolderIcon('🎨', this)">🎨</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-success" onclick="saveFolder()">💾 <span data-i18n="save">Kaydet</span></button>
+                <button class="btn btn-danger" onclick="closeModal('folderModal')"> İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal">
+            <h3>➕ Yeni Aksiyon</h3>
+            <div class="form-group">
+                <label>Aksiyon:</label>
+                <input type="text" id="newActionText" placeholder="Yapılacak iş...">
+            </div>
+            <div class="form-group">
+                <label>Sorumlu:</label>
+                <input type="text" id="newActionAssignee" placeholder="Sorumlu kişi...">
+            </div>
+            <div class="form-group">
+                <label>Son Tarih:</label>
+                <input type="date" id="newActionDeadline">
+            </div>
+            <div class="form-group">
+                <label>Öncelik:</label>
+                <select id="newActionPriority">
+                    <option value="high">🔴 Yüksek</option>
+                    <option value="medium"> Orta</option>
+                    <option value="low">🟢 Düşük</option>
+                </select>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-success" onclick="saveManualAction()">💾 Kaydet</button>
+                <button class="btn btn-danger" onclick="closeModal('actionModal')">❌ İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== STATE ====================
+        let state = {
+            folders: [{ id: 'default', name: 'Genel', icon: '📁' }],
+            currentFolderId: 'default',
+            recordings: [],
+            transcripts: [],
+            translations: [],
+            summaries: [],
+            actions: [],
+            settings: {
+                theme: 'dark',
+                colorScheme: 'blue',
+                defaultLang: 'tr-TR',
+                autoSave: true,
+                appLang: 'TR',
+                customColors: {}
+            }
+        };
+
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingStartTime = null;
+        let timerInterval = null;
+        let recognition = null;
+        let synth = window.speechSynthesis;
+        let currentTranslation = '';
+        let ambientSounds = {};
+        let summaryLength = 'short';
+        let editingFolderId = null;
+        let selectedFolderIcon = '📁';
+
+        // ==================== I18N ====================
+        const i18n = {
+            TR: {
+                folders: 'Klasörler', recorder: 'Ses Kaydedici', stt: 'Konuşmadan Metne',
+                tts: 'Metinden Ses', ambient: 'Ortam Sesleri', translator: 'Çevirmen',
+                summary: 'AI Özet', actions: 'Aksiyonlar', panel: 'Panel', settings: 'Ayarlar',
+                folderLibrary: 'Klasör Kütüphanesi', folderDesc: 'Tüm kayıtlarınız otomatik olarak seçili klasöre kaydedilir.',
+                newFolder: 'Yeni Klasör', currentFolder: 'Seçili Klasör', noContent: 'Bu klasörde henüz içerik yok.',
+                saveToFolder: 'Kaydetmek istediğiniz klasör:', startRecord: 'Kayda Başla', stop: 'Durdur',
+                language: 'Dil:', startListen: 'Dinlemeye Başla', clear: 'Temizle',
+                text: 'Metin:', rate: 'Hız:', pitch: 'Ton:', volume: 'Ses Seviyesi:',
+                effect: 'Ses Efekti:', speak: 'Seslendir', stopAll: 'Tümünü Durdur',
+                sourceLang: 'Kaynak Dil:', targetLang: 'Hedef Dil:', translate: 'Çevir', swap: 'Değiştir',
+                meetingText: 'Toplantı Metni:', length: 'Uzunluk:', focus: 'Odak:',
+                generate: 'Oluştur', extract: 'Çıkar', manualAdd: 'Manuel Ekle',
+                theme: 'Tema:', colorPalette: 'Renk Paleti:', customColors: 'Özel Hex Renkler:',
+                defaultLang: 'Varsayılan Dil:', autoSave: 'Otomatik Kaydet:', save: 'Kaydet',
+                folderName: 'Klasör Adı:', folderIcon: 'Klasör İkonu:',
+                recordings: 'Kayıt', transcripts: 'Transkript', translations: 'Çeviri',
+                footerTag: 'Güvenli, reklamsız ve pedagojik'
+            },
+            DE: {
+                folders: 'Ordner', recorder: 'Audio Rekorder', stt: 'Sprache zu Text',
+                tts: 'Text zu Sprache', ambient: 'Umgebungsgeräusche', translator: 'Übersetzer',
+                summary: 'KI Zusammenfassung', actions: 'Aktionen', panel: 'Panel', settings: 'Einstellungen',
+                folderLibrary: 'Ordner Bibliothek', folderDesc: 'Alle Aufnahmen werden automatisch im ausgewählten Ordner gespeichert.',
+                newFolder: 'Neuer Ordner', currentFolder: 'Aktueller Ordner', noContent: 'Noch keine Inhalte in diesem Ordner.',
+                saveToFolder: 'Ordner auswählen:', startRecord: 'Aufnahme starten', stop: 'Stopp',
+                language: 'Sprache:', startListen: 'Zuhören starten', clear: 'Löschen',
+                text: 'Text:', rate: 'Geschwindigkeit:', pitch: 'Tonhöhe:', volume: 'Lautstärke:',
+                effect: 'Soundeffekt:', speak: 'Abspielen', stopAll: 'Alle stoppen',
+                sourceLang: 'Quellsprache:', targetLang: 'Zielsprache:', translate: 'Übersetzen', swap: 'Tauschen',
+                meetingText: 'Besprechungstext:', length: 'Länge:', focus: 'Fokus:',
+                generate: 'Erstellen', extract: 'Extrahieren', manualAdd: 'Manuell hinzufügen',
+                theme: 'Thema:', colorPalette: 'Farbpalette:', customColors: 'Benutzerdefinierte Hex-Farben:',
+                defaultLang: 'Standardsprache:', autoSave: 'Automatisch speichern:', save: 'Speichern',
+                folderName: 'Ordnername:', folderIcon: 'Ordner-Icon:',
+                recordings: 'Aufnahmen', transcripts: 'Transkripte', translations: 'Übersetzungen',
+                footerTag: 'Sicher, werbefrei und pädagogisch'
+            },
+            EN: {
+                folders: 'Folders', recorder: 'Audio Recorder', stt: 'Speech to Text',
+                tts: 'Text to Speech', ambient: 'Ambient Sounds', translator: 'Translator',
+                summary: 'AI Summary', actions: 'Actions', panel: 'Panel', settings: 'Settings',
+                folderLibrary: 'Folder Library', folderDesc: 'All recordings are automatically saved to the selected folder.',
+                newFolder: 'New Folder', currentFolder: 'Current Folder', noContent: 'No content in this folder yet.',
+                saveToFolder: 'Save to folder:', startRecord: 'Start Recording', stop: 'Stop',
+                language: 'Language:', startListen: 'Start Listening', clear: 'Clear',
+                text: 'Text:', rate: 'Rate:', pitch: 'Pitch:', volume: 'Volume:',
+                effect: 'Voice Effect:', speak: 'Speak', stopAll: 'Stop All',
+                sourceLang: 'Source Language:', targetLang: 'Target Language:', translate: 'Translate', swap: 'Swap',
+                meetingText: 'Meeting Text:', length: 'Length:', focus: 'Focus:',
+                generate: 'Generate', extract: 'Extract', manualAdd: 'Manual Add',
+                theme: 'Theme:', colorPalette: 'Color Palette:', customColors: 'Custom Hex Colors:',
+                defaultLang: 'Default Language:', autoSave: 'Auto Save:', save: 'Save',
+                folderName: 'Folder Name:', folderIcon: 'Folder Icon:',
+                recordings: 'Recordings', transcripts: 'Transcripts', translations: 'Translations',
+                footerTag: 'Safe, ad-free and educational'
+            },
+            FR: {
+                folders: 'Dossiers', recorder: 'Enregistreur Audio', stt: 'Parole en Texte',
+                tts: 'Texte en Parole', ambient: 'Sons Ambiants', translator: 'Traducteur',
+                summary: 'Résumé IA', actions: 'Actions', panel: 'Panneau', settings: 'Paramètres',
+                folderLibrary: 'Bibliothèque de Dossiers', folderDesc: 'Tous les enregistrements sont sauvegardés automatiquement dans le dossier sélectionné.',
+                newFolder: 'Nouveau Dossier', currentFolder: 'Dossier Actuel', noContent: 'Aucun contenu dans ce dossier.',
+                saveToFolder: 'Enregistrer dans:', startRecord: 'Démarrer', stop: 'Arrêter',
+                language: 'Langue:', startListen: 'Commencer', clear: 'Effacer',
+                text: 'Texte:', rate: 'Vitesse:', pitch: 'Tonalité:', volume: 'Volume:',
+                effect: 'Effet Vocal:', speak: 'Parler', stopAll: 'Tout arrêter',
+                sourceLang: 'Langue source:', targetLang: 'Langue cible:', translate: 'Traduire', swap: 'Inverser',
+                meetingText: 'Texte de réunion:', length: 'Longueur:', focus: 'Focus:',
+                generate: 'Générer', extract: 'Extraire', manualAdd: 'Ajout manuel',
+                theme: 'Thème:', colorPalette: 'Palette de couleurs:', customColors: 'Couleurs Hex personnalisées:',
+                defaultLang: 'Langue par défaut:', autoSave: 'Sauvegarde auto:', save: 'Enregistrer',
+                folderName: 'Nom du dossier:', folderIcon: 'Icône du dossier:',
+                recordings: 'Enregistrements', transcripts: 'Transcriptions', translations: 'Traductions',
+                footerTag: 'Sûr, sans publicité et éducatif'
+            }
+        };
+
+        // ==================== INIT ====================
+        window.onload = function() {
+            loadData();
+            initSTT();
+            renderFolders();
+            updateFolderSelects();
+            updateStats();
+            renderRecordings();
+            renderActions();
+            applyTheme(state.settings.theme);
+            applyI18n();
+        };
+
+        // ==================== I18N ====================
+        function setAppLang(lang) {
+            state.settings.appLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+            applyI18n();
+            saveData();
+        }
+
+        function applyI18n() {
+            const lang = state.settings.appLang;
+            const texts = i18n[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(texts[key]) el.textContent = texts[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(texts[key]) el.placeholder = texts[key];
+            });
+        }
+
+        // ==================== TABS ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(tabName === 'panel') updateStats();
+            if(tabName === 'folders') renderFolderContent();
+        }
+
+        // ==================== FOLDERS ====================
+        function renderFolders() {
+            const grid = document.getElementById('folderGrid');
+            grid.innerHTML = state.folders.map(f => {
+                const count = getFolderItemCount(f.id);
+                return `
+                    <div class="folder-card ${f.id === state.currentFolderId ? 'active' : ''}" onclick="selectFolder('${f.id}')">
+                        <div class="folder-actions">
+                            <button class="folder-btn" onclick="event.stopPropagation(); editFolder('${f.id}')">✏️</button>
+                            ${f.id !== 'default' ? `<button class="folder-btn delete" onclick="event.stopPropagation(); deleteFolder('${f.id}')">🗑️</button>` : ''}
+                        </div>
+                        <div class="folder-icon">${f.icon}</div>
+                        <div class="folder-name">${f.name}</div>
+                        <div class="folder-count">${count} öğe</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getFolderItemCount(folderId) {
+            return state.recordings.filter(r => r.folderId === folderId).length +
+                   state.transcripts.filter(t => t.folderId === folderId).length +
+                   state.translations.filter(t => t.folderId === folderId).length +
+                   state.summaries.filter(s => s.folderId === folderId).length +
+                   state.actions.filter(a => a.folderId === folderId).length;
+        }
+
+        function selectFolder(id) {
+            state.currentFolderId = id;
+            renderFolders();
+            renderFolderContent();
+            saveData();
+        }
+
+        function showNewFolderModal() {
+            editingFolderId = null;
+            document.getElementById('folderModalTitle').textContent = '📁 Yeni Klasör';
+            document.getElementById('folderNameInput').value = '';
+            selectedFolderIcon = '📁';
+            document.getElementById('folderModal').classList.add('active');
+        }
+
+        function editFolder(id) {
+            const folder = state.folders.find(f => f.id === id);
+            if(!folder) return;
+            editingFolderId = id;
+            document.getElementById('folderModalTitle').textContent = '✏️ Klasörü Düzenle';
+            document.getElementById('folderNameInput').value = folder.name;
+            selectedFolderIcon = folder.icon;
+            document.getElementById('folderModal').classList.add('active');
+        }
+
+        function selectFolderIcon(icon, el) {
+            selectedFolderIcon = icon;
+            el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function saveFolder() {
+            const name = document.getElementById('folderNameInput').value.trim();
+            if(!name) { alert('Klasör adı girin!'); return; }
+            
+            if(editingFolderId) {
+                const folder = state.folders.find(f => f.id === editingFolderId);
+                if(folder) { folder.name = name; folder.icon = selectedFolderIcon; }
+            } else {
+                state.folders.push({
+                    id: 'folder_' + Date.now(),
+                    name: name,
+                    icon: selectedFolderIcon
+                });
+            }
+            
+            saveData();
+            renderFolders();
+            updateFolderSelects();
+            closeModal('folderModal');
+        }
+
+        function deleteFolder(id) {
+            if(!confirm('Bu klasörü silmek istediğinizden emin misiniz?')) return;
+            state.folders = state.folders.filter(f => f.id !== id);
+            if(state.currentFolderId === id) state.currentFolderId = 'default';
+            saveData();
+            renderFolders();
+            updateFolderSelects();
+            renderFolderContent();
+        }
+
+        function updateFolderSelects() {
+            const selects = ['recorderFolder', 'sttFolder', 'translatorFolder', 'summaryFolder', 'actionsFolder'];
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.innerHTML = state.folders.map(f => 
+                        `<option value="${f.id}" ${f.id === state.currentFolderId ? 'selected' : ''}>${f.icon} ${f.name}</option>`
+                    ).join('');
+                }
+            });
+        }
+
+        function renderFolderContent() {
+            const folder = state.folders.find(f => f.id === state.currentFolderId);
+            document.getElementById('currentFolderName').textContent = folder ? folder.name : 'Genel';
+            
+            const content = document.getElementById('folderContent');
+            const recordings = state.recordings.filter(r => r.folderId === state.currentFolderId);
+            const transcripts = state.transcripts.filter(t => t.folderId === state.currentFolderId);
+            const translations = state.translations.filter(t => t.folderId === state.currentFolderId);
+            const summaries = state.summaries.filter(s => s.folderId === state.currentFolderId);
+            const actions = state.actions.filter(a => a.folderId === state.currentFolderId);
+            
+            if(recordings.length + transcripts.length + translations.length + summaries.length + actions.length === 0) {
+                content.innerHTML = '<p style="color: var(--text-muted);">Bu klasörde henüz içerik yok.</p>';
+                return;
+            }
+            
+            let html = '';
+            if(recordings.length) {
+                html += '<h3 style="color: var(--accent); margin: 1rem 0;">🎤 Kayıtlar</h3>';
+                html += recordings.map(r => `<div class="action-item"><div><strong>${r.name || 'Kayıt'}</strong><br><small>${r.duration || ''}</small></div><audio controls src="${r.url}" style="max-width: 200px;"></audio></div>`).join('');
+            }
+            if(transcripts.length) {
+                html += '<h3 style="color: var(--accent); margin: 1rem 0;">📝 Transkriptler</h3>';
+                html += transcripts.map(t => `<div class="action-item"><div><strong>${t.text.substring(0, 100)}...</strong><br><small>${new Date(t.date).toLocaleString()}</small></div></div>`).join('');
+            }
+            if(translations.length) {
+                html += '<h3 style="color: var(--accent); margin: 1rem 0;">🌍 Çeviriler</h3>';
+                html += translations.map(t => `<div class="action-item"><div><strong>${t.original.substring(0, 50)}...</strong><br><small>${t.sourceLang} → ${t.targetLang}</small></div></div>`).join('');
+            }
+            if(summaries.length) {
+                html += '<h3 style="color: var(--accent); margin: 1rem 0;"> Özetler</h3>';
+                html += summaries.map(s => `<div class="action-item"><div><strong>${s.summary.substring(0, 100)}...</strong><br><small>${new Date(s.date).toLocaleString()}</small></div></div>`).join('');
+            }
+            if(actions.length) {
+                html += '<h3 style="color: var(--accent); margin: 1rem 0;">✅ Aksiyonlar</h3>';
+                html += actions.map(a => `<div class="action-item priority-${a.priority}"><div><strong>${a.text}</strong><br><small>👤 ${a.assignee}</small></div></div>`).join('');
+            }
+            
+            content.innerHTML = html;
+        }
+
+        // ==================== RECORDER ====================
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const url = URL.createObjectURL(blob);
+                        const folderId = document.getElementById('recorderFolder').value;
+                        state.recordings.push({
+                            id: Date.now(),
+                            folderId: folderId,
+                            date: new Date().toISOString(),
+                            duration: document.getElementById('timer').textContent,
+                            url: url,
+                            name: `Kayıt ${new Date().toLocaleString()}`
+                        });
+                        if(state.settings.autoSave) saveData();
+                        renderRecordings();
+                        updateStats();
+                    };
+                    mediaRecorder.start();
+                    recordingStartTime = Date.now();
+                    startTimer();
+                    document.getElementById('startRecordBtn').classList.add('hidden');
+                    document.getElementById('stopRecordBtn').classList.remove('hidden');
+                })
+                .catch(err => alert('Mikrofon erişimi: ' + err.message));
+        }
+
+        function stopRecording() {
+            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                stopTimer();
+                document.getElementById('startRecordBtn').classList.remove('hidden');
+                document.getElementById('stopRecordBtn').classList.add('hidden');
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const h = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+                const m = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+                const s = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+            }, 1000);
+        }
+
+        function stopTimer() { clearInterval(timerInterval); }
+
+        function renderRecordings() {
+            const container = document.getElementById('recordingsList');
+            const folderRecordings = state.recordings.filter(r => r.folderId === state.currentFolderId);
+            if(folderRecordings.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Henüz kayıt yok</p>';
+                return;
+            }
+            container.innerHTML = folderRecordings.map(r => `
+                <div class="action-item">
+                    <div><strong>${r.name}</strong><br><small>${r.duration} | ${new Date(r.date).toLocaleString()}</small></div>
+                    <div><audio controls src="${r.url}" style="max-width: 200px;"></audio>
+                    <button class="btn btn-danger" onclick="deleteRecording(${r.id})">🗑️</button></div>
+                </div>
+            `).join('');
+        }
+
+        function deleteRecording(id) {
+            state.recordings = state.recordings.filter(r => r.id !== id);
+            saveData();
+            renderRecordings();
+            updateStats();
+        }
+
+        // ==================== STT ====================
+        function initSTT() {
+            if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SR();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.onresult = event => {
+                    let final = '', interim = '';
+                    for(let i = event.resultIndex; i < event.results.length; i++) {
+                        if(event.results[i].isFinal) final += event.results[i][0].transcript;
+                        else interim += event.results[i][0].transcript;
+                    }
+                    const current = document.getElementById('transcript').textContent;
+                    if(current.includes('Transkript')) document.getElementById('transcript').textContent = final + interim;
+                    else document.getElementById('transcript').textContent = current + ' ' + final + interim;
+                };
+            }
+        }
+
+        function startSTT() {
+            if(!recognition) { alert('Tarayıcı desteklemiyor'); return; }
+            const lang = document.querySelector('#sttLangs .lang-option.active').dataset.lang;
+            recognition.lang = lang;
+            recognition.start();
+            document.getElementById('startSTTBtn').classList.add('hidden');
+            document.getElementById('stopSTTBtn').classList.remove('hidden');
+        }
+
+        function stopSTT() {
+            if(recognition) {
+                recognition.stop();
+                document.getElementById('startSTTBtn').classList.remove('hidden');
+                document.getElementById('stopSTTBtn').classList.add('hidden');
+                const text = document.getElementById('transcript').textContent;
+                if(!text.includes('Transkript')) {
+                    state.transcripts.push({
+                        id: Date.now(),
+                        folderId: document.getElementById('sttFolder').value,
+                        date: new Date().toISOString(),
+                        text: text,
+                        lang: document.querySelector('#sttLangs .lang-option.active').dataset.lang
+                    });
+                    if(state.settings.autoSave) saveData();
+                    updateStats();
+                }
+            }
+        }
+
+        function clearTranscript() { document.getElementById('transcript').textContent = 'Transkript burada görünecek...'; }
+
+        // ==================== TTS ====================
+        function speakText() {
+            const text = document.getElementById('ttsText').value;
+            if(!text) { alert('Metin girin'); return; }
+            synth.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = document.getElementById('ttsLang').value;
+            u.rate = parseFloat(document.getElementById('speechRate').value);
+            u.pitch = parseFloat(document.getElementById('speechPitch').value);
+            u.volume = parseFloat(document.getElementById('speechVolume').value);
+            const effect = document.getElementById('voiceEffect').value;
+            if(effect === 'robot') { u.pitch = 0.5; u.rate = 0.8; }
+            else if(effect === 'deep') u.pitch = 0.5;
+            else if(effect === 'thin') u.pitch = 2;
+            synth.speak(u);
+        }
+
+        function stopSpeaking() { synth.cancel(); }
+
+        function readSalavat() {
+            const u = new SpeechSynthesisUtterance(document.getElementById('salavatText').value);
+            u.lang = 'ar-SA'; u.rate = 0.8;
+            synth.speak(u);
+        }
+
+        function readSalavatTranslation() {
+            const u = new SpeechSynthesisUtterance("Allah'ım! İbrahim'e ve ailesine rahmet ettiğin gibi, Muhammed'e ve ailesine de rahmet et.");
+            u.lang = 'tr-TR';
+            synth.speak(u);
+        }
+
+        // ==================== AMBIENT ====================
+        function playAmbient(type) {
+            stopAllAmbient();
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const configs = {
+                rain: { type: 'sawtooth', freq: 100, vol: 0.1 },
+                storm: { type: 'sawtooth', freq: 80, vol: 0.2 },
+                city: { type: 'square', freq: 200, vol: 0.1 },
+                sea: { type: 'sine', freq: 150, vol: 0.15 },
+                fire: { type: 'sawtooth', freq: 120, vol: 0.1 },
+                birds: { type: 'sine', freq: 2000, vol: 0.1 },
+                forest: { type: 'sine', freq: 400, vol: 0.1 }
+            };
+            const c = configs[type] || configs.rain;
+            osc.type = c.type; osc.frequency.value = c.freq; gain.gain.value = c.vol;
+            osc.start();
+            ambientSounds[type] = { osc, gain, ctx };
+        }
+
+        function stopAllAmbient() {
+            Object.values(ambientSounds).forEach(s => { try { s.osc.stop(); s.ctx.close(); } catch(e){} });
+            ambientSounds = {};
+        }
+
+        // ==================== TRANSLATOR ====================
+        async function translateText() {
+            const text = document.getElementById('translateText').value;
+            const src = document.getElementById('sourceLang').value;
+            const tgt = document.getElementById('targetLang').value;
+            if(!text) { alert('Metin girin'); return; }
+            try {
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                currentTranslation = data.responseData.translatedText;
+                document.getElementById('translationResult').textContent = currentTranslation;
+                state.translations.push({
+                    id: Date.now(),
+                    folderId: document.getElementById('translatorFolder').value,
+                    date: new Date().toISOString(),
+                    original: text, translated: currentTranslation,
+                    sourceLang: src, targetLang: tgt
+                });
+                if(state.settings.autoSave) saveData();
+                updateStats();
+            } catch(e) { alert('Hata: ' + e.message); }
+        }
+
+        function swapLangs() {
+            const s = document.getElementById('sourceLang');
+            const t = document.getElementById('targetLang');
+            const tmp = s.value; s.value = t.value; t.value = tmp;
+        }
+
+        // ==================== SUMMARY ====================
+        function setSummaryLen(len, el) {
+            summaryLength = len;
+            el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function generateSummary() {
+            const text = document.getElementById('meetingText').value;
+            if(!text) { alert('Metin girin'); return; }
+            const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
+            const num = summaryLength === 'short' ? 3 : summaryLength === 'medium' ? 5 : 10;
+            const words = text.toLowerCase().split(/\s+/);
+            const freq = {};
+            words.forEach(w => { if(w.length > 3) freq[w] = (freq[w] || 0) + 1; });
+            const scored = sentences.map(s => ({ s, score: s.toLowerCase().split(/\s+/).reduce((sum, w) => sum + (freq[w] || 0), 0) }));
+            const summary = scored.sort((a,b) => b.score - a.score).slice(0, num).map(x => x.s).join(' ');
+            const keywords = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 10).map(([w]) => w).join(', ');
+            document.getElementById('summaryResult').textContent = summary;
+            document.getElementById('keywords').textContent = keywords;
+            state.summaries.push({
+                id: Date.now(),
+                folderId: document.getElementById('summaryFolder').value,
+                date: new Date().toISOString(),
+                summary: summary, keywords: keywords
+            });
+            if(state.settings.autoSave) saveData();
+            updateStats();
+        }
+
+        // ==================== ACTIONS ====================
+        function extractActions() {
+            const text = document.getElementById('actionText').value;
+            if(!text) { alert('Metin girin'); return; }
+            const patterns = [/(.*?yapılacak.*?)/gi, /(.*?tamamlanacak.*?)/gi, /(.*?gönderilecek.*?)/gi];
+            const actions = [];
+            patterns.forEach(p => {
+                const matches = text.match(p);
+                if(matches) matches.forEach(m => actions.push({
+                    id: Date.now() + Math.random(),
+                    folderId: document.getElementById('actionsFolder').value,
+                    text: m.trim(), assignee: 'Belirlenmedi', deadline: '', priority: 'medium', auto: true
+                }));
+            });
+            if(actions.length === 0) { alert('Aksiyon bulunamadı'); return; }
+            state.actions.push(...actions);
+            saveData(); renderActions(); updateStats();
+        }
+
+        function showActionModal() { document.getElementById('actionModal').classList.add('active'); }
+
+        function saveManualAction() {
+            const text = document.getElementById('newActionText').value;
+            if(!text) { alert('Aksiyon girin'); return; }
+            state.actions.push({
+                id: Date.now(),
+                folderId: document.getElementById('actionsFolder').value,
+                text: text,
+                assignee: document.getElementById('newActionAssignee').value || 'Belirlenmedi',
+                deadline: document.getElementById('newActionDeadline').value || '',
+                priority: document.getElementById('newActionPriority').value,
+                auto: false
+            });
+            saveData(); renderActions(); updateStats();
+            closeModal('actionModal');
+            document.getElementById('newActionText').value = '';
+            document.getElementById('newActionAssignee').value = '';
+        }
+
+        function deleteAction(id) {
+            state.actions = state.actions.filter(a => a.id !== id);
+            saveData(); renderActions(); updateStats();
+        }
+
+        function renderActions() {
+            const container = document.getElementById('actionsList');
+            const folderActions = state.actions.filter(a => a.folderId === state.currentFolderId);
+            if(folderActions.length === 0) { container.innerHTML = '<p style="color: var(--text-muted);">Henüz aksiyon yok</p>'; return; }
+            container.innerHTML = folderActions.map(a => `
+                <div class="action-item priority-${a.priority}">
+                    <div><strong>${a.text}</strong><br><small> ${a.assignee} | 📅 ${a.deadline}</small></div>
+                    <button class="btn btn-danger" onclick="deleteAction(${a.id})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // ==================== PANEL ====================
+        function updateStats() {
+            document.getElementById('statFolders').textContent = state.folders.length;
+            document.getElementById('statRecordings').textContent = state.recordings.length;
+            document.getElementById('statTranscripts').textContent = state.transcripts.length;
+            document.getElementById('statTranslations').textContent = state.translations.length;
+            document.getElementById('statActions').textContent = state.actions.length;
+        }
+
+        // ==================== SETTINGS ====================
+        function setTheme(theme, el) {
+            state.settings.theme = theme;
+            applyTheme(theme);
+            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
+            saveData();
+        }
+
+        function applyTheme(theme) {
+            if(theme === 'light') document.body.classList.add('light');
+            else document.body.classList.remove('light');
+        }
+
+        function setColorScheme(scheme, el) {
+            state.settings.colorScheme = scheme;
+            const colors = {
+                blue: { primary: '#4a90e2', secondary: '#7b68ee', accent: '#10b981' },
+                navy: { primary: '#1e3a8a', secondary: '#3b82f6', accent: '#06b6d4' },
+                gray: { primary: '#6b7280', secondary: '#9ca3af', accent: '#4b5563' },
+                green: { primary: '#10b981', secondary: '#34d399', accent: '#059669' },
+                purple: { primary: '#8b5cf6', secondary: '#a78bfa', accent: '#7c3aed' }
+            };
+            const c = colors[scheme];
+            document.documentElement.style.setProperty('--primary', c.primary);
+            document.documentElement.style.setProperty('--secondary', c.secondary);
+            document.documentElement.style.setProperty('--accent', c.accent);
+            document.getElementById('customPrimary').value = c.primary;
+            document.getElementById('customPrimaryHex').value = c.primary;
+            document.getElementById('customAccent').value = c.accent;
+            document.getElementById('customAccentHex').value = c.accent;
+            document.getElementById('customSecondary').value = c.secondary;
+            document.getElementById('customSecondaryHex').value = c.secondary;
+            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
+            saveData();
+        }
+
+        function applyCustomColor(type, value) {
+            if(!/^#[0-9A-F]{6}$/i.test(value)) return;
+            document.documentElement.style.setProperty('--' + type, value);
+            if(type === 'primary') { document.getElementById('customPrimary').value = value; document.getElementById('customPrimaryHex').value = value; }
+            if(type === 'accent') { document.getElementById('customAccent').value = value; document.getElementById('customAccentHex').value = value; }
+            if(type === 'secondary') { document.getElementById('customSecondary').value = value; document.getElementById('customSecondaryHex').value = value; }
+            state.settings.customColors[type] = value;
+            saveData();
+        }
+
+        function resetColors() { setColorScheme('blue', document.querySelector('[onclick*="blue"]')); }
+
+        function setAutoSave(val, el) {
+            state.settings.autoSave = val;
+            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
+            saveData();
+        }
+
+        function saveSettings() {
+            state.settings.defaultLang = document.getElementById('defaultLang').value;
+            saveData();
+            alert('Ayarlar kaydedildi!');
+        }
+
+        function exportSettings() {
+            const blob = new Blob([JSON.stringify(state.settings, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ersenbox_settings.json';
+            a.click();
+        }
+
+        function importSettings(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    state.settings = { ...state.settings, ...JSON.parse(e.target.result) };
+                    saveData();
+                    applyTheme(state.settings.theme);
+                    alert('Ayarlar yüklendi!');
+                } catch(err) { alert('Hata: ' + err.message); }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==================== DATA ====================
+        function saveData() {
+            localStorage.setItem('ersenbox_data', JSON.stringify(state));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('ersenbox_data');
+            if(saved) {
+                try { state = { ...state, ...JSON.parse(saved) }; } catch(e) {}
+            }
+        }
+
+        function exportAll() {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ersenbox_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    state = { ...state, ...imported };
+                    saveData();
+                    renderFolders();
+                    updateFolderSelects();
+                    updateStats();
+                    renderRecordings();
+                    renderActions();
+                    alert('Veriler yüklendi!');
+                } catch(err) { alert('Hata: ' + err.message); }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAll() {
+            if(!confirm('Tüm verileri silmek istediğinizden emin misiniz?')) return;
+            state.recordings = [];
+            state.transcripts = [];
+            state.translations = [];
+            state.summaries = [];
+            state.actions = [];
+            saveData();
+            renderFolders();
+            renderFolderContent();
+            updateStats();
+            renderRecordings();
+            renderActions();
+        }
+
+        // ==================== MODAL ====================
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ==================== STT LANG SELECTOR ====================
+        document.addEventListener('click', function(e) {
+            if(e.target.classList.contains('lang-option') && e.target.parentElement.id === 'sttLangs') {
+                e.target.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+        });
+
+        // Sliders
+        document.getElementById('speechRate').addEventListener('input', function() { document.getElementById('rateValue').textContent = this.value; });
+        document.getElementById('speechPitch').addEventListener('input', function() { document.getElementById('pitchValue').textContent = this.value; });
+        document.getElementById('speechVolume').addEventListener('input', function() { document.getElementById('volumeValue').textContent = this.value; });
+    </script>
+</body>
+</html>
