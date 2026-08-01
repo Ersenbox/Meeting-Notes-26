@@ -1,1682 +1,1572 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ersenbox - Meeting Notes 26</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ersenbox · Meeting Notes 26</title>
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Ersenbox%20Meeting%20Notes%2026%22%2C%22short_name%22%3A%22MeetingNotes26%22%2C%22description%22%3A%22Toplant%C4%B1%20notlar%C4%B1%2C%20ses%20kayd%C4%B1%2C%20%C3%A7eviri%20ve%20daha%20fazlas%C4%B1%22%2C%22start_url%22%3A%22.%22%2C%22scope%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FBF7F0%22%2C%22theme_color%22%3A%22%23C9A97A%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22categories%22%3A%5B%22productivity%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%253E%253Crect%20fill%3D%27%2523FBF7F0%27%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%2780%27%2F%253E%253Ctext%20x%3D%2750%2525%27%20y%3D%2755%2525%27%20dominant-baseline%3D%27middle%27%20text-anchor%3D%27middle%27%20font-size%3D%27280%27%253E%25F0%259F%2593%258B%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MeetingNotes26">
+<meta name="theme-color" content="#C9A97A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --pearl: #FBF7F0; --pearl-deep: #F2E9D8; --warm-sand: #E8DCC8;
+    --concrete-light: #EAE5DD; --concrete-grey: #C9C2B5;
+    --champagne: #C9A97A; --champagne-deep: #B8945A;
+    --rose-gold: #C9A082; --amber-gold: #D4AC63;
+    --soft-chrome: #B0B5BC; --chrome-light: #E8E8EC;
+    --deep-cocoa: #2A241E; --soft-graphite: #5A5247;
+    --muted-sapphire: #4A5874; --navy-deep: #1F2538;
+    --bg: var(--pearl); --card-bg: rgba(251, 247, 240, 0.72);
+    --text: var(--deep-cocoa); --text-muted: #7A6F5E;
+    --border: rgba(184, 148, 90, 0.22);
+    --success: #7BA67B; --danger: #B86A5E; --warning: var(--amber-gold);
+  }
+  body.dark {
+    --bg: #1A1812; --card-bg: rgba(40, 35, 25, 0.72);
+    --text: #F2E9D8; --text-muted: #B8AB92;
+    --border: rgba(212, 172, 99, 0.22);
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+    position: relative; overflow-x: hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 5%, rgba(245,220,180,0.45) 0%, rgba(245,220,180,0) 70%),
+      radial-gradient(ellipse 60% 70% at 90% 15%, rgba(220,200,150,0.3) 0%, rgba(220,200,150,0) 60%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(232,220,200,0.6) 0%, rgba(232,220,200,0) 80%),
+      linear-gradient(180deg, #FBF7F0 0%, #E8DCC8 100%);
+  }
+  body.dark {
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 5%, rgba(80,60,30,0.3) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 70% at 90% 15%, rgba(60,50,30,0.2) 0%, transparent 60%),
+      linear-gradient(180deg, #1A1812 0%, #0E0C08 100%);
+  }
+  body::before {
+    content: ""; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 1400px; height: 30vh; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center top, rgba(184,148,90,0.15) 0%, transparent 60%);
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(135deg, transparent 30%, rgba(255,240,210,0.12) 50%, transparent 70%),
+      linear-gradient(115deg, transparent 40%, rgba(212,184,150,0.08) 55%, transparent 70%);
+    mix-blend-mode: screen;
+  }
+  .marble-horizon {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 35vh;
+    background: radial-gradient(ellipse 100% 80% at 50% 100%, #E8DCC8 0%, #D4C4A8 40%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body.dark .marble-horizon { background: radial-gradient(ellipse 100% 80% at 50% 100%, rgba(30,25,15,0.6) 0%, transparent 70%); }
 
-        :root {
-            --primary: #4a90e2;
-            --secondary: #7b68ee;
-            --accent: #10b981;
-            --bg: #0f172a;
-            --card: rgba(255, 255, 255, 0.08);
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.15);
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
+  .persistent-header {
+    position: sticky; top: 0; z-index: 100;
+    background: linear-gradient(180deg, rgba(251,247,240,0.92) 0%, rgba(251,247,240,0.8) 100%);
+    backdrop-filter: blur(30px) saturate(1.4);
+    -webkit-backdrop-filter: blur(30px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 8px 32px rgba(184,148,90,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  body.dark .persistent-header { background: linear-gradient(180deg, rgba(26,24,18,0.92), rgba(26,24,18,0.8)); }
+  .header-brand { display: flex; align-items: center; gap: 1rem; }
+  .scanner-logo {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: radial-gradient(circle at 30% 30%, var(--champagne), var(--champagne-deep) 70%, #8A6B3A);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 6px rgba(184,148,90,0.4),
+      0 6px 12px rgba(184,148,90,0.35), 0 2px 4px rgba(50,30,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: #fff; font-weight: 700; position: relative;
+  }
+  .scanner-logo::after {
+    content: ""; position: absolute; inset: 4px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), transparent 60%);
+  }
+  .header-title {
+    font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--deep-cocoa), var(--champagne-deep));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  body.dark .header-title { background: linear-gradient(135deg, var(--pearl), var(--champagne)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-subtitle { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: -2px; font-family: 'JetBrains Mono', monospace; }
 
-        body.light {
-            --bg: #f1f5f9;
-            --card: rgba(255, 255, 255, 0.9);
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: rgba(0, 0, 0, 0.1);
-        }
+  .lang-selector { display: flex; gap: 0.3rem; padding: 0.3rem; background: rgba(184,148,90,0.1); border-radius: 25px; }
+  .lang-btn {
+    padding: 0.45rem 0.9rem; border: none; border-radius: 20px; cursor: pointer;
+    font-weight: 600; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;
+    background: transparent; color: var(--text); transition: all 0.25s;
+  }
+  .lang-btn.active {
+    background: linear-gradient(180deg, var(--champagne), var(--champagne-deep)); color: #fff;
+    box-shadow: 0 3px 0 0 var(--champagne-deep), 0 4px 8px rgba(184,148,90,0.4);
+    transform: translateY(-1px);
+  }
+  .theme-toggle, .settings-link {
+    width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.4); cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(184,148,90,0.15); transition: all 0.2s;
+  }
+  body.dark .theme-toggle, body.dark .settings-link { background: rgba(40,35,25,0.6); }
+  .theme-toggle:hover, .settings-link:hover { transform: translateY(-1px); }
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s;
-        }
+  .nav-tabs {
+    display: flex; gap: 0.5rem; padding: 1rem 2rem;
+    background: rgba(232,220,200,0.4); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); overflow-x: auto;
+    position: relative; z-index: 5;
+  }
+  body.dark .nav-tabs { background: rgba(26,24,18,0.4); }
+  .nav-tab {
+    padding: 0.7rem 1.3rem;
+    background: linear-gradient(180deg, var(--pearl), var(--warm-sand));
+    border: 1px solid var(--border); border-radius: 18px;
+    color: var(--text); cursor: pointer; white-space: nowrap;
+    font-weight: 600; font-size: 0.85rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+    box-shadow: 0 4px 0 0 var(--champagne-deep), 0 6px 10px rgba(184,148,90,0.28), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  body.dark .nav-tab { background: linear-gradient(180deg, #2C261C, #1A1812); box-shadow: 0 4px 0 0 #5A4A2A, 0 6px 10px rgba(0,0,0,0.4); }
+  .nav-tab:hover { transform: translateY(-2px); }
+  .nav-tab.active {
+    background: linear-gradient(180deg, var(--champagne), var(--champagne-deep)); color: #fff;
+    box-shadow: 0 5px 0 0 #8A6B3A, 0 8px 16px rgba(184,148,90,0.45);
+    transform: translateY(-2px);
+  }
 
-        /* ===== PERSISTENT HEADER ===== */
-        .persistent-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border-bottom: 2px solid var(--accent);
-            padding: 0.8rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
+  .main-content {
+    flex: 1; padding: 2rem 2rem 4rem; max-width: 1300px; margin: 0 auto;
+    width: 100%; position: relative; z-index: 2;
+  }
+  .pearl-panel {
+    position: relative;
+    background: linear-gradient(135deg, var(--card-bg), rgba(251,247,240,0.85));
+    backdrop-filter: blur(30px) saturate(1.2);
+    border: 1px solid rgba(184,148,90,0.25); border-radius: 32px;
+    padding: 2rem 2rem 3rem;
+    box-shadow: 0 30px 60px -20px rgba(50,30,0,0.35), 0 18px 36px -18px rgba(80,60,20,0.25),
+      inset 0 2px 0 rgba(255,255,255,0.65), inset 0 -1px 0 rgba(184,148,90,0.2);
+  }
+  body.dark .pearl-panel { background: linear-gradient(135deg, rgba(40,35,25,0.8), rgba(26,24,18,0.85)); border-color: rgba(212,172,99,0.25); }
+  .pearl-panel::before {
+    content: ""; position: absolute; left: 24px; right: 24px; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
 
-        body.light .persistent-header {
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-            border-bottom: 2px solid var(--accent);
-        }
+  .tab-content { display: none; animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1); }
+  .tab-content.active { display: block; }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 1.8rem;
+    color: var(--champagne-deep); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  body.dark .section-title { color: var(--champagne); }
 
-        .scanner-logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            animation: pulse 2s infinite;
-        }
+  .card-mini {
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(232,220,200,0.4));
+    border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.2rem;
+    box-shadow: 0 6px 14px rgba(184,148,90,0.12);
+  }
+  body.dark .card-mini { background: linear-gradient(135deg, rgba(50,45,35,0.5), rgba(30,27,20,0.4)); }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+  .btn {
+    padding: 0.75rem 1.4rem; border: none; border-radius: 12px; cursor: pointer;
+    font-weight: 600; font-size: 0.9rem; font-family: inherit;
+    transition: all 0.15s; margin: 0.3rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--deep-cocoa); position: relative;
+    background: linear-gradient(180deg, var(--pearl), var(--warm-sand));
+    box-shadow: 0 3px 0 0 var(--champagne-deep), 0 5px 10px rgba(184,148,90,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  body.dark .btn { background: linear-gradient(180deg, #2C261C, #1A1812); color: var(--pearl); box-shadow: 0 3px 0 0 #5A4A2A, 0 5px 10px rgba(0,0,0,0.4); }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--champagne-deep); }
+  .btn-primary { background: linear-gradient(180deg, #6E7E9A, var(--muted-sapphire)); color: #fff; box-shadow: 0 3px 0 0 var(--navy-deep), 0 5px 10px rgba(74,88,116,0.4); }
+  .btn-success { background: linear-gradient(180deg, #9ABF95, var(--success)); color: #fff; box-shadow: 0 3px 0 0 #5A7E54, 0 5px 10px rgba(123,166,123,0.4); }
+  .btn-danger { background: linear-gradient(180deg, #D48878, var(--danger)); color: #fff; box-shadow: 0 3px 0 0 #8B4E3E, 0 5px 10px rgba(184,106,94,0.4); }
+  .btn-warning { background: linear-gradient(180deg, #E8C484, var(--amber-gold)); color: #fff; box-shadow: 0 3px 0 0 #B08A3A, 0 5px 10px rgba(212,172,99,0.4); }
+  .btn-accent { background: linear-gradient(180deg, var(--rose-gold), var(--champagne-deep)); color: #fff; box-shadow: 0 3px 0 0 #8A6B3A, 0 5px 10px rgba(184,148,90,0.4); }
+  .btn-icon { width: 36px; height: 36px; padding: 0; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; margin: 0.2rem; }
 
-        .header-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .form-group { margin-bottom: 1.2rem; position: relative; }
+  label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--champagne-deep); font-size: 0.85rem; }
+  body.dark label { color: var(--champagne); }
+  input, textarea, select {
+    width: 100%; padding: 0.85rem 1rem; border-radius: 12px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));
+    color: var(--text); font-size: 0.95rem; font-family: inherit;
+    box-shadow: inset 0 2px 4px rgba(184,148,90,0.1);
+    transition: all 0.2s; position: relative; z-index: 3;
+  }
+  body.dark input, body.dark textarea, body.dark select { background: linear-gradient(180deg, rgba(30,27,20,0.6), rgba(20,18,12,0.3)); }
+  select { -webkit-appearance: menulist; appearance: menulist; cursor: pointer; }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--champagne);
+    box-shadow: inset 0 2px 4px rgba(184,148,90,0.1), 0 0 0 3px rgba(184,148,90,0.15);
+    z-index: 10;
+  }
+  textarea { min-height: 130px; resize: vertical; font-family: 'JetBrains Mono', monospace; }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+  .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .folder-card {
+    background: linear-gradient(135deg, rgba(201,169,122,0.15), rgba(184,148,90,0.08));
+    border: 2px solid var(--border); border-radius: 18px; padding: 1.2rem;
+    cursor: pointer; transition: all 0.2s; position: relative; text-align: center;
+  }
+  .folder-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(184,148,90,0.25); }
+  .folder-card.active { border-color: var(--champagne); background: linear-gradient(135deg, rgba(201,169,122,0.25), rgba(184,148,90,0.15)); }
+  .folder-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .folder-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
+  .folder-count { font-size: 0.85rem; color: var(--text-muted); }
+  .folder-actions { position: absolute; top: 0.5rem; right: 0.5rem; display: flex; gap: 0.3rem; }
 
-        .lang-selector {
-            display: flex;
-            gap: 0.3rem;
-            background: rgba(255,255,255,0.1);
-            padding: 0.3rem;
-            border-radius: 25px;
-        }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card {
+    background: linear-gradient(135deg, var(--champagne), var(--champagne-deep));
+    padding: 1.2rem; border-radius: 18px; text-align: center; color: #fff;
+    box-shadow: 0 4px 0 0 #8A6B3A, 0 6px 12px rgba(184,148,90,0.3);
+  }
+  .stat-value { font-size: 2rem; font-weight: 800; }
+  .stat-label { font-size: 0.85rem; opacity: 0.9; }
 
-        .lang-btn {
-            padding: 0.4rem 0.8rem;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            background: transparent;
-            color: var(--text);
-            transition: all 0.3s;
-        }
+  .timer-display {
+    font-size: 3.5rem; font-weight: 800; text-align: center; margin: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace; color: var(--champagne-deep);
+    text-shadow: 0 0 20px rgba(184,148,90,0.3);
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(232,220,200,0.3));
+    border-radius: 20px; padding: 1rem 2rem;
+    box-shadow: inset 0 2px 4px rgba(184,148,90,0.15);
+  }
+  body.dark .timer-display { background: linear-gradient(180deg, rgba(40,35,25,0.4), rgba(26,24,18,0.3)); color: var(--champagne); }
 
-        .lang-btn.active {
-            background: var(--accent);
-            color: white;
-        }
+  .transcript-area {
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(232,220,200,0.2));
+    padding: 1.2rem; border-radius: 16px; min-height: 150px; max-height: 400px;
+    overflow-y: auto; line-height: 1.7; border: 1px solid var(--border);
+    white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+  }
+  body.dark .transcript-area { background: linear-gradient(180deg, rgba(30,27,20,0.4), rgba(20,18,12,0.3)); }
 
-        /* ===== NAV TABS ===== */
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1rem 1.5rem;
-            overflow-x: auto;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid var(--border);
-        }
+  .action-item {
+    background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(232,220,200,0.2));
+    padding: 1rem; border-radius: 14px; margin-bottom: 0.8rem;
+    border-left: 4px solid var(--champagne); display: flex;
+    justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .action-item.priority-high { border-left-color: var(--danger); }
+  .action-item.priority-medium { border-left-color: var(--warning); }
+  .action-item.priority-low { border-left-color: var(--success); }
+  body.dark .action-item { background: linear-gradient(135deg, rgba(50,45,35,0.4), rgba(30,27,20,0.3)); }
 
-        body.light .nav-tabs {
-            background: rgba(0,0,0,0.05);
-        }
+  .lang-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+  .lang-option {
+    padding: 0.5rem 0.9rem;
+    background: linear-gradient(180deg, var(--pearl), var(--warm-sand));
+    border: 1px solid var(--border); border-radius: 14px;
+    cursor: pointer; font-weight: 500; font-size: 0.8rem; transition: all 0.15s;
+    box-shadow: 0 2px 0 0 var(--champagne-deep);
+  }
+  body.dark .lang-option { background: linear-gradient(180deg, #2C261C, #1A1812); box-shadow: 0 2px 0 0 #5A4A2A; }
+  .lang-option:hover, .lang-option.active {
+    background: linear-gradient(180deg, var(--champagne), var(--champagne-deep));
+    color: #fff; transform: translateY(-1px);
+  }
 
-        .nav-tab {
-            padding: 0.6rem 1.2rem;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            color: var(--text);
-            cursor: pointer;
-            white-space: nowrap;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+  input[type="range"] { -webkit-appearance: none; background: linear-gradient(90deg, var(--champagne), var(--champagne-deep)); height: 6px; border-radius: 3px; box-shadow: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--pearl); border: 1px solid var(--champagne-deep); cursor: pointer; }
+  input[type="color"] { width: 60px; height: 40px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; padding: 2px; }
 
-        .nav-tab:hover, .nav-tab.active {
-            background: var(--accent);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
-        }
+  .recording-indicator {
+    display: inline-block; width: 12px; height: 12px;
+    background: radial-gradient(circle, var(--danger), #8B4E3E);
+    border-radius: 50%; animation: blink 1s infinite; margin-right: 0.6rem;
+    box-shadow: 0 0 12px var(--danger);
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
-            flex: 1;
-            padding: 2rem 1.5rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,24,18,0.75); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: linear-gradient(180deg, var(--pearl), var(--warm-sand));
+    border: 1px solid var(--border); border-radius: 24px;
+    padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  }
+  body.dark .modal { background: linear-gradient(180deg, #2C261C, #1A1812); }
 
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s;
-        }
+  .persistent-footer {
+    background: linear-gradient(180deg, rgba(251,247,240,0.85), rgba(232,220,200,0.95));
+    backdrop-filter: blur(20px); border-top: 1px solid var(--border);
+    padding: 1rem 2rem; text-align: center; font-size: 0.85rem; color: var(--text-muted);
+    z-index: 50; position: relative;
+  }
+  body.dark .persistent-footer { background: linear-gradient(180deg, rgba(26,24,18,0.85), rgba(20,18,12,0.95)); }
+  .persistent-footer strong { color: var(--champagne-deep); font-weight: 700; }
+  body.dark .persistent-footer strong { color: var(--champagne); }
 
-        .tab-content.active {
-            display: block;
-        }
+  .color-input-group { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+  .color-input-group input[type="text"] { flex: 1; font-family: 'JetBrains Mono', monospace; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  .folder-content-section h3 { font-family: 'Cormorant Garamond', serif; color: var(--champagne-deep); margin: 1rem 0 0.5rem; }
+  body.dark .folder-content-section h3 { color: var(--champagne); }
 
-        .card {
-            background: var(--card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
+  .deco-coffee { position: fixed; left: 4%; bottom: 8%; width: 90px; height: 100px; pointer-events: none; z-index: 1; opacity: 0.85; }
+  .deco-coffee::before { content: ""; position: absolute; left: 0; top: 8px; width: 70px; height: 70px; border-radius: 0 0 18px 18px; background: linear-gradient(180deg, #E8E8EC, #B0B5BC 50%, #8A8E96); box-shadow: inset 0 -5px 8px rgba(0,0,0,0.3), 0 8px 16px rgba(0,0,0,0.2); }
+  .deco-coffee::after { content: ""; position: absolute; left: 70px; top: 22px; width: 22px; height: 36px; border-radius: 12px; border: 4px solid #B0B5BC; border-left: none; }
+  .deco-pencil { position: fixed; right: 5%; bottom: 6%; width: 200px; height: 14px; pointer-events: none; z-index: 1; opacity: 0.85; transform: rotate(-15deg); }
+  .deco-pencil::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 14px; border-radius: 3px; background: linear-gradient(180deg, #E8C484, var(--amber-gold) 50%, #B08A3A); box-shadow: 0 4px 8px rgba(0,0,0,0.25); }
+  .deco-pencil::after { content: ""; position: absolute; right: 0; top: -2px; width: 0; height: 0; border-left: 16px solid var(--deep-cocoa); border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
 
-        .card h2 {
-            margin-bottom: 1.5rem;
-            color: var(--accent);
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-        }
+  /* Hamburger Menu */
+  .hamburger-btn {
+    display: none; width: 42px; height: 42px; border-radius: 12px;
+    border: 1px solid var(--border); background: rgba(255,255,255,0.4);
+    cursor: pointer; font-size: 1.4rem; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(184,148,90,0.15); transition: all 0.2s; z-index: 200;
+  }
+  body.dark .hamburger-btn { background: rgba(40,35,25,0.6); }
+  .hamburger-btn:hover { transform: translateY(-1px); }
+  .mobile-nav-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(26,24,18,0.7);
+    backdrop-filter: blur(8px); z-index: 150;
+  }
+  .mobile-nav-overlay.active { display: block; }
+  .mobile-nav-panel {
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
+    background: linear-gradient(180deg, var(--pearl), var(--warm-sand));
+    border-right: 1px solid var(--border); z-index: 160;
+    padding: 1.5rem 1rem; overflow-y: auto;
+    transition: left 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+  }
+  body.dark .mobile-nav-panel { background: linear-gradient(180deg, #2C261C, #1A1812); }
+  .mobile-nav-panel.active { left: 0; }
+  .mobile-nav-panel .nav-tab {
+    width: 100%; margin-bottom: 0.5rem; justify-content: flex-start;
+  }
+  .mobile-nav-close {
+    width: 100%; padding: 0.6rem; border: none; border-radius: 12px;
+    background: var(--danger); color: #fff; font-weight: 700; cursor: pointer;
+    margin-bottom: 1rem; font-size: 0.9rem;
+  }
 
-        /* ===== BUTTONS ===== */
-        .btn {
-            padding: 0.7rem 1.4rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            margin: 0.3rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-        }
+  @media (max-width: 768px) {
+    .persistent-header, .nav-tabs { padding: 0.8rem 1rem; }
+    .header-title { font-size: 1.1rem; }
+    .timer-display { font-size: 2.5rem; padding: 0.8rem 1rem; }
+    .pearl-panel { padding: 1.5rem 1rem 2rem; border-radius: 20px; }
+    .deco-coffee, .deco-pencil { display: none; }
+    .main-content { padding: 1rem 0.8rem 3rem; }
+    .folder-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .nav-tabs { display: none !important; }
+    .hamburger-btn { display: flex; }
+    .header-subtitle { display: none; }
+    .lang-selector { display: none; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 769px) {
+    .hamburger-btn { display: none; }
+    .mobile-nav-overlay, .mobile-nav-panel { display: none !important; }
+  }
 
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
-        .btn-success { background: linear-gradient(135deg, var(--success), #059669); color: white; }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #dc2626); color: white; }
-        .btn-warning { background: linear-gradient(135deg, var(--warning), #d97706); color: white; }
-        .btn-accent { background: linear-gradient(135deg, var(--accent), #059669); color: white; }
-
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .btn:active { transform: translateY(0); }
-
-        /* ===== FORMS ===== */
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent); }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: rgba(0,0,0,0.2);
-            color: var(--text);
-            font-size: 1rem;
-            font-family: inherit;
-        }
-
-        body.light input, body.light textarea, body.light select {
-            background: white;
-        }
-
-        textarea { min-height: 120px; resize: vertical; }
-
-        /* ===== FOLDER LIBRARY ===== */
-        .folder-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .folder-card {
-            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(123, 104, 238, 0.2));
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-            padding: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .folder-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
-        }
-
-        .folder-card.active {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
-        }
-
-        .folder-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .folder-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
-        .folder-count { font-size: 0.85rem; color: var(--text-muted); }
-
-        .folder-actions {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            display: flex;
-            gap: 0.3rem;
-        }
-
-        .folder-btn {
-            width: 28px;
-            height: 28px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.2);
-            color: var(--text);
-            transition: all 0.2s;
-        }
-
-        .folder-btn:hover { background: var(--accent); color: white; }
-        .folder-btn.delete:hover { background: var(--danger); }
-
-        /* ===== STATS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 1.2rem;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-        }
-
-        .stat-value { font-size: 2rem; font-weight: 800; }
-        .stat-label { font-size: 0.85rem; opacity: 0.9; }
-
-        /* ===== TIMER ===== */
-        .timer-display {
-            font-size: 3.5rem;
-            font-weight: 800;
-            text-align: center;
-            margin: 1.5rem 0;
-            font-family: 'Courier New', monospace;
-            color: var(--accent);
-            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-        }
-
-        /* ===== TRANSCRIPT ===== */
-        .transcript-area {
-            background: rgba(0,0,0,0.3);
-            padding: 1.2rem;
-            border-radius: 12px;
-            min-height: 150px;
-            max-height: 400px;
-            overflow-y: auto;
-            line-height: 1.7;
-            border: 1px solid var(--border);
-        }
-
-        body.light .transcript-area {
-            background: rgba(0,0,0,0.05);
-        }
-
-        /* ===== ACTION ITEMS ===== */
-        .action-item {
-            background: var(--card);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 0.8rem;
-            border-left: 4px solid var(--primary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .action-item.priority-high { border-left-color: var(--danger); }
-        .action-item.priority-medium { border-left-color: var(--warning); }
-        .action-item.priority-low { border-left-color: var(--success); }
-
-        /* ===== COLOR PICKER ===== */
-        .color-input-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .color-input-group input[type="color"] {
-            width: 60px;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .color-input-group input[type="text"] {
-            flex: 1;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal-overlay.active { display: flex; }
-
-        .modal {
-            background: var(--bg);
-            border: 2px solid var(--accent);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        /* ===== PERSISTENT FOOTER ===== */
-        .persistent-footer {
-            position: sticky;
-            bottom: 0;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border-top: 2px solid var(--accent);
-            padding: 0.8rem 1.5rem;
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            z-index: 1000;
-        }
-
-        body.light .persistent-footer {
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-        }
-
-        .persistent-footer strong {
-            color: var(--accent);
-        }
-
-        /* ===== LANG SELECTOR BUTTONS ===== */
-        .lang-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .lang-option {
-            padding: 0.5rem 1rem;
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .lang-option:hover, .lang-option.active {
-            border-color: var(--accent);
-            background: rgba(16, 185, 129, 0.2);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .header-title { font-size: 1rem; }
-            .timer-display { font-size: 2.5rem; }
-            .folder-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .nav-tab { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-    </style>
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(184,148,90,0.1); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--champagne), var(--champagne-deep)); border-radius: 5px; }
+  .hidden { display: none !important; }
+</style>
 </head>
 <body>
 
-    <!-- ===== PERSISTENT HEADER ===== -->
-    <header class="persistent-header">
-        <div class="header-brand">
-            <div class="scanner-logo">📡</div>
-            <div class="header-title">Ersenbox - Meeting Notes 26</div>
-        </div>
-        <div class="header-right">
-            <div class="lang-selector">
-                <button class="lang-btn active" data-lang="TR" onclick="setAppLang('TR')">🇹🇷 TR</button>
-                <button class="lang-btn" data-lang="DE" onclick="setAppLang('DE')">🇩🇪 DE</button>
-                <button class="lang-btn" data-lang="EN" onclick="setAppLang('EN')">🇬🇧 EN</button>
-                <button class="lang-btn" data-lang="FR" onclick="setAppLang('FR')">🇫🇷 FR</button>
-            </div>
-        </div>
-    </header>
+<div class="marble-horizon"></div>
+<div class="deco-coffee"></div>
+<div class="deco-pencil"></div>
 
-    <!-- ===== NAV TABS ===== -->
-    <nav class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('folders')">📁 <span data-i18n="folders">Klasörler</span></button>
-        <button class="nav-tab" onclick="switchTab('recorder')">🎤 <span data-i18n="recorder">Ses Kaydedici</span></button>
-        <button class="nav-tab" onclick="switchTab('stt')">📝 <span data-i18n="stt">Konuşmadan Metne</span></button>
-        <button class="nav-tab" onclick="switchTab('tts')">🔊 <span data-i18n="tts">Metinden Ses</span></button>
-        <button class="nav-tab" onclick="switchTab('ambient')"> <span data-i18n="ambient">Ortam Sesleri</span></button>
-        <button class="nav-tab" onclick="switchTab('translator')">🌍 <span data-i18n="translator">Çevirmen</span></button>
-        <button class="nav-tab" onclick="switchTab('summary')">🤖 <span data-i18n="summary">AI Özet</span></button>
-        <button class="nav-tab" onclick="switchTab('actions')">✅ <span data-i18n="actions">Aksiyonlar</span></button>
-        <button class="nav-tab" onclick="switchTab('panel')">📊 <span data-i18n="panel">Panel</span></button>
-        <button class="nav-tab" onclick="switchTab('settings')">⚙️ <span data-i18n="settings">Ayarlar</span></button>
-    </nav>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content">
-
-        <!-- FOLDERS TAB -->
-        <div id="folders" class="tab-content active">
-            <div class="card">
-                <h2>📁 <span data-i18n="folderLibrary">Klasör Kütüphanesi</span></h2>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="folderDesc">
-                    Tüm kayıtlarınız, transkriptleriniz, çevirileriniz ve özetleriniz otomatik olarak seçili klasöre kaydedilir.
-                </p>
-                <button class="btn btn-accent" onclick="showNewFolderModal()">➕ <span data-i18n="newFolder">Yeni Klasör</span></button>
-                <div class="folder-grid" id="folderGrid"></div>
-            </div>
-
-            <div class="card">
-                <h2>📂 <span data-i18n="currentFolder">Seçili Klasör İçeriği</span>: <span id="currentFolderName" style="color: var(--accent);">Genel</span></h2>
-                <div id="folderContent">
-                    <p style="color: var(--text-muted);" data-i18n="noContent">Bu klasörde henüz içerik yok.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- RECORDER TAB -->
-        <div id="recorder" class="tab-content">
-            <div class="card">
-                <h2>🎤 <span data-i18n="recorder">Ses Kaydedici</span></h2>
-                <div class="form-group">
-                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
-                    <select id="recorderFolder"></select>
-                </div>
-                <div class="timer-display" id="timer">00:00:00</div>
-                <div style="text-align: center;">
-                    <button class="btn btn-primary" id="startRecordBtn" onclick="startRecording()"> <span data-i18n="startRecord">Kayda Başla</span></button>
-                    <button class="btn btn-danger hidden" id="stopRecordBtn" onclick="stopRecording()">⏹️ <span data-i18n="stop">Durdur</span></button>
-                </div>
-                <div id="recordingsList" style="margin-top: 2rem;"></div>
-            </div>
-        </div>
-
-        <!-- STT TAB -->
-        <div id="stt" class="tab-content">
-            <div class="card">
-                <h2>📝 <span data-i18n="stt">Konuşmadan Metne</span></h2>
-                <div class="form-group">
-                    <label data-i18n="language">Konuşma Dili:</label>
-                    <div class="lang-buttons" id="sttLangs">
-                        <div class="lang-option active" data-lang="tr-TR">🇹🇷 Türkçe</div>
-                        <div class="lang-option" data-lang="ar-SA">🇸 Arapça</div>
-                        <div class="lang-option" data-lang="de-DE">🇩🇪 Almanca</div>
-                        <div class="lang-option" data-lang="en-US">🇺🇸 İngilizce</div>
-                        <div class="lang-option" data-lang="fr-FR">🇫 Fransızca</div>
-                        <div class="lang-option" data-lang="es-ES">🇪🇸 İspanyolca</div>
-                        <div class="lang-option" data-lang="it-IT">🇮🇹 İtalyanca</div>
-                        <div class="lang-option" data-lang="ru-RU">🇺 Rusça</div>
-                        <div class="lang-option" data-lang="zh-CN">🇨🇳 Çince</div>
-                        <div class="lang-option" data-lang="ja-JP">🇯🇵 Japonca</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
-                    <select id="sttFolder"></select>
-                </div>
-                <div style="text-align: center; margin: 1rem 0;">
-                    <button class="btn btn-primary" id="startSTTBtn" onclick="startSTT()">🎤 <span data-i18n="startListen">Dinlemeye Başla</span></button>
-                    <button class="btn btn-danger hidden" id="stopSTTBtn" onclick="stopSTT()">⏹️ <span data-i18n="stop">Durdur</span></button>
-                    <button class="btn btn-warning" onclick="clearTranscript()">🗑️ <span data-i18n="clear">Temizle</span></button>
-                </div>
-                <div class="transcript-area" id="transcript" data-i18n-placeholder="transcriptPlaceholder">Transkript burada görünecek...</div>
-            </div>
-        </div>
-
-        <!-- TTS TAB -->
-        <div id="tts" class="tab-content">
-            <div class="card">
-                <h2>🔊 <span data-i18n="tts">Metinden Ses</span></h2>
-                <div class="form-group">
-                    <label>📿 Arapça Metin (Salavat-ı Şerife)</label>
-                    <textarea id="salavatText" readonly>اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ</textarea>
-                    <button class="btn btn-primary" onclick="readSalavat()">🔊 Arapça Oku</button>
-                    <button class="btn btn-success" onclick="readSalavatTranslation()">🌍 Türkçe Çeviri</button>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="text">Metin:</label>
-                    <textarea id="ttsText" placeholder="Metin girin..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="language">Dil:</label>
-                    <select id="ttsLang">
-                        <option value="tr-TR">🇷 Türkçe</option>
-                        <option value="ar-SA">🇸🇦 Arapça</option>
-                        <option value="de-DE">🇩🇪 Almanca</option>
-                        <option value="en-US">🇺🇸 İngilizce</option>
-                        <option value="fr-FR">🇫🇷 Fransızca</option>
-                        <option value="es-ES">🇪 İspanyolca</option>
-                    </select>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div class="form-group">
-                        <label data-i18n="rate">Hız:</label>
-                        <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1">
-                        <span id="rateValue">1.0</span>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="pitch">Ton:</label>
-                        <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1">
-                        <span id="pitchValue">1.0</span>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="volume">Ses Seviyesi:</label>
-                        <input type="range" id="speechVolume" min="0" max="1" step="0.1" value="1">
-                        <span id="volumeValue">1.0</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="effect">Ses Efekti:</label>
-                    <select id="voiceEffect">
-                        <option value="normal">Normal</option>
-                        <option value="echo">Yankı</option>
-                        <option value="robot">Robot</option>
-                        <option value="deep">Derin</option>
-                        <option value="thin">İnce</option>
-                    </select>
-                </div>
-                <button class="btn btn-accent" onclick="speakText()">🔊 <span data-i18n="speak">Seslendir</span></button>
-                <button class="btn btn-danger" onclick="stopSpeaking()">⏹️ <span data-i18n="stop">Durdur</span></button>
-            </div>
-        </div>
-
-        <!-- AMBIENT TAB -->
-        <div id="ambient" class="tab-content">
-            <div class="card">
-                <h2>🎵 <span data-i18n="ambient">Ortam Sesleri</span></h2>
-                <div class="lang-buttons">
-                    <button class="btn btn-primary" onclick="playAmbient('rain')">🌧️ Yağmur</button>
-                    <button class="btn btn-primary" onclick="playAmbient('storm')">️ Fırtına</button>
-                    <button class="btn btn-primary" onclick="playAmbient('city')">🏙️ Şehir</button>
-                    <button class="btn btn-primary" onclick="playAmbient('sea')">🌊 Deniz</button>
-                    <button class="btn btn-primary" onclick="playAmbient('fire')">🔥 Ateş</button>
-                    <button class="btn btn-primary" onclick="playAmbient('birds')"> Kuşlar</button>
-                    <button class="btn btn-primary" onclick="playAmbient('forest')">🌲 Orman</button>
-                    <button class="btn btn-danger" onclick="stopAllAmbient()">⏹️ <span data-i18n="stopAll">Tümünü Durdur</span></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TRANSLATOR TAB -->
-        <div id="translator" class="tab-content">
-            <div class="card">
-                <h2>🌍 <span data-i18n="translator">Çevirmen</span> (100+ Dil)</h2>
-                <div class="form-group">
-                    <label data-i18n="sourceLang">Kaynak Dil:</label>
-                    <select id="sourceLang">
-                        <option value="Auto">🔍 Otomatik</option>
-                        <option value="tr">🇷 Türkçe</option>
-                        <option value="ar">🇸🇦 Arapça</option>
-                        <option value="de">🇩🇪 Almanca</option>
-                        <option value="en">🇺 İngilizce</option>
-                        <option value="fr">🇫🇷 Fransızca</option>
-                        <option value="es">🇪🇸 İspanyolca</option>
-                        <option value="it">🇹 İtalyanca</option>
-                        <option value="ru">🇷 Rusça</option>
-                        <option value="zh">🇨🇳 Çince</option>
-                        <option value="ja">🇯🇵 Japonca</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="text">Metin:</label>
-                    <textarea id="translateText" placeholder="Çevrilecek metin..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="targetLang">Hedef Dil:</label>
-                    <select id="targetLang">
-                        <option value="en">🇺 İngilizce</option>
-                        <option value="tr">🇹🇷 Türkçe</option>
-                        <option value="ar">🇦 Arapça</option>
-                        <option value="de">🇩 Almanca</option>
-                        <option value="fr">🇫🇷 Fransızca</option>
-                        <option value="es">🇸 İspanyolca</option>
-                        <option value="it">🇮 İtalyanca</option>
-                        <option value="ru">🇷🇺 Rusça</option>
-                        <option value="zh">🇨🇳 Çince</option>
-                        <option value="ja">🇯 Japonca</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
-                    <select id="translatorFolder"></select>
-                </div>
-                <button class="btn btn-accent" onclick="translateText()">🔄 <span data-i18n="translate">Çevir</span></button>
-                <button class="btn btn-warning" onclick="swapLangs()">⇄ <span data-i18n="swap">Değiştir</span></button>
-                <div class="transcript-area" id="translationResult" style="margin-top: 1rem;" data-i18n-placeholder="translationPlaceholder">Çeviri burada görünecek...</div>
-            </div>
-        </div>
-
-        <!-- SUMMARY TAB -->
-        <div id="summary" class="tab-content">
-            <div class="card">
-                <h2>🤖 <span data-i18n="summary">AI Özet</span></h2>
-                <div class="form-group">
-                    <label data-i18n="meetingText">Toplantı Metni:</label>
-                    <textarea id="meetingText" placeholder="Metni yapıştırın..." style="min-height: 200px;"></textarea>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="length">Uzunluk:</label>
-                    <div class="lang-buttons">
-                        <div class="lang-option active" onclick="setSummaryLen('short', this)">Kısa (3)</div>
-                        <div class="lang-option" onclick="setSummaryLen('medium', this)">Orta (5)</div>
-                        <div class="lang-option" onclick="setSummaryLen('detailed', this)">Detaylı (10)</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="focus">Odak:</label>
-                    <select id="summaryFocus">
-                        <option value="general">Genel</option>
-                        <option value="decisions">Kararlar</option>
-                        <option value="problems">Sorunlar</option>
-                        <option value="ideas">Fikirler</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
-                    <select id="summaryFolder"></select>
-                </div>
-                <button class="btn btn-accent" onclick="generateSummary()">✨ <span data-i18n="generate">Oluştur</span></button>
-                <div class="transcript-area" id="keywords" style="margin-top: 1rem; min-height: 80px;" data-i18n-placeholder="keywordsPlaceholder">Anahtar kelimeler...</div>
-                <div class="transcript-area" id="summaryResult" style="margin-top: 1rem; min-height: 150px;" data-i18n-placeholder="summaryPlaceholder">Özet...</div>
-            </div>
-        </div>
-
-        <!-- ACTIONS TAB -->
-        <div id="actions" class="tab-content">
-            <div class="card">
-                <h2>✅ <span data-i18n="actions">Aksiyon Noktaları</span></h2>
-                <div class="form-group">
-                    <label data-i18n="meetingText">Toplantı Metni:</label>
-                    <textarea id="actionText" placeholder="Metni yapıştırın..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
-                    <select id="actionsFolder"></select>
-                </div>
-                <button class="btn btn-accent" onclick="extractActions()">🎯 <span data-i18n="extract">Çıkar</span></button>
-                <button class="btn btn-primary" onclick="showActionModal()">➕ <span data-i18n="manualAdd">Manuel Ekle</span></button>
-                <div id="actionsList" style="margin-top: 1.5rem;"></div>
-            </div>
-        </div>
-
-        <!-- PANEL TAB -->
-        <div id="panel" class="tab-content">
-            <div class="card">
-                <h2> <span data-i18n="panel">Kontrol Paneli</span></h2>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-value" id="statFolders">0</div><div class="stat-label" data-i18n="folders">Klasör</div></div>
-                    <div class="stat-card"><div class="stat-value" id="statRecordings">0</div><div class="stat-label" data-i18n="recordings">Kayıt</div></div>
-                    <div class="stat-card"><div class="stat-value" id="statTranscripts">0</div><div class="stat-label" data-i18n="transcripts">Transkript</div></div>
-                    <div class="stat-card"><div class="stat-value" id="statTranslations">0</div><div class="stat-label" data-i18n="translations">Çeviri</div></div>
-                    <div class="stat-card"><div class="stat-value" id="statActions">0</div><div class="stat-label" data-i18n="actions">Aksiyon</div></div>
-                </div>
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <button class="btn btn-success" onclick="exportAll()">📥 JSON İndir</button>
-                    <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">📤 JSON Yükle</button>
-                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-                    <button class="btn btn-danger" onclick="clearAll()">🗑️ Temizle</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SETTINGS TAB -->
-        <div id="settings" class="tab-content">
-            <div class="card">
-                <h2>⚙️ <span data-i18n="settings">Ayarlar</span></h2>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                    <!-- Theme -->
-                    <div class="form-group">
-                        <label data-i18n="theme">Tema:</label>
-                        <div class="lang-buttons">
-                            <div class="lang-option active" onclick="setTheme('dark', this)">🌙 Karanlık</div>
-                            <div class="lang-option" onclick="setTheme('light', this)">☀️ Aydınlık</div>
-                        </div>
-                    </div>
-
-                    <!-- Color Palette -->
-                    <div class="form-group">
-                        <label data-i18n="colorPalette">Renk Paleti:</label>
-                        <div class="lang-buttons">
-                            <div class="lang-option active" onclick="setColorScheme('blue', this)">💙 Mavi</div>
-                            <div class="lang-option" onclick="setColorScheme('navy', this)"> Lacivert</div>
-                            <div class="lang-option" onclick="setColorScheme('gray', this)">🩶 Gri</div>
-                            <div class="lang-option" onclick="setColorScheme('green', this)">💚 Yeşil</div>
-                            <div class="lang-option" onclick="setColorScheme('purple', this)">💜 Mor</div>
-                        </div>
-                    </div>
-
-                    <!-- Custom Hex Colors -->
-                    <div class="form-group">
-                        <label data-i18n="customColors">Özel Hex Renkler:</label>
-                        <div class="color-input-group">
-                            <input type="color" id="customPrimary" value="#4a90e2" onchange="applyCustomColor('primary', this.value)">
-                            <input type="text" id="customPrimaryHex" value="#4a90e2" placeholder="#4a90e2" onchange="applyCustomColor('primary', this.value)">
-                        </div>
-                        <div class="color-input-group">
-                            <input type="color" id="customAccent" value="#10b981" onchange="applyCustomColor('accent', this.value)">
-                            <input type="text" id="customAccentHex" value="#10b981" placeholder="#10b981" onchange="applyCustomColor('accent', this.value)">
-                        </div>
-                        <div class="color-input-group">
-                            <input type="color" id="customSecondary" value="#7b68ee" onchange="applyCustomColor('secondary', this.value)">
-                            <input type="text" id="customSecondaryHex" value="#7b68ee" placeholder="#7b68ee" onchange="applyCustomColor('secondary', this.value)">
-                        </div>
-                        <button class="btn btn-warning" onclick="resetColors()" style="margin-top: 0.5rem;">🔄 Varsayılana Dön</button>
-                    </div>
-
-                    <!-- Default Lang -->
-                    <div class="form-group">
-                        <label data-i18n="defaultLang">Varsayılan Dil:</label>
-                        <select id="defaultLang" onchange="saveSettings()">
-                            <option value="tr-TR">🇹🇷 Türkçe</option>
-                            <option value="de-DE">🇪 Almanca</option>
-                            <option value="en-US">🇺🇸 İngilizce</option>
-                            <option value="fr-FR">🇫🇷 Fransızca</option>
-                        </select>
-                    </div>
-
-                    <!-- Auto Save -->
-                    <div class="form-group">
-                        <label data-i18n="autoSave">Otomatik Kaydet:</label>
-                        <div class="lang-buttons">
-                            <div class="lang-option active" onclick="setAutoSave(true, this)">Açık</div>
-                            <div class="lang-option" onclick="setAutoSave(false, this)">Kapalı</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin-top: 2rem;">
-                    <button class="btn btn-success" onclick="saveSettings()">💾 <span data-i18n="save">Kaydet</span></button>
-                    <button class="btn btn-primary" onclick="exportSettings()"> JSON İndir</button>
-                    <button class="btn btn-warning" onclick="document.getElementById('importSettings').click()">📤 JSON Yükle</button>
-                    <input type="file" id="importSettings" accept=".json" style="display:none" onchange="importSettings(event)">
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- ===== PERSISTENT FOOTER ===== -->
-    <footer class="persistent-footer">
-        © 2026 <strong>ErsenBox</strong> — Ersen Bakıcı | <span data-i18n="footerTag">Güvenli, reklamsız ve pedagojik</span> 💛
-    </footer>
-
-    <!-- ===== MODALS ===== -->
-    <div class="modal-overlay" id="folderModal">
-        <div class="modal">
-            <h3 id="folderModalTitle">📁 Yeni Klasör</h3>
-            <div class="form-group">
-                <label data-i18n="folderName">Klasör Adı:</label>
-                <input type="text" id="folderNameInput" placeholder="Örn: Kuşlar, Dağlar...">
-            </div>
-            <div class="form-group">
-                <label data-i18n="folderIcon">Klasör İkonu:</label>
-                <div class="lang-buttons">
-                    <div class="lang-option" onclick="selectFolderIcon('📁', this)">📁</div>
-                    <div class="lang-option" onclick="selectFolderIcon('🐦', this)">🐦</div>
-                    <div class="lang-option" onclick="selectFolderIcon('⛰️', this)">⛰️</div>
-                    <div class="lang-option" onclick="selectFolderIcon('', this)">🌊</div>
-                    <div class="lang-option" onclick="selectFolderIcon('🌲', this)">🌲</div>
-                    <div class="lang-option" onclick="selectFolderIcon('🏙️', this)">🏙️</div>
-                    <div class="lang-option" onclick="selectFolderIcon('', this)">🎵</div>
-                    <div class="lang-option" onclick="selectFolderIcon('📚', this)"></div>
-                    <div class="lang-option" onclick="selectFolderIcon('💼', this)">💼</div>
-                    <div class="lang-option" onclick="selectFolderIcon('🎨', this)">🎨</div>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 1rem;">
-                <button class="btn btn-success" onclick="saveFolder()">💾 <span data-i18n="save">Kaydet</span></button>
-                <button class="btn btn-danger" onclick="closeModal('folderModal')"> İptal</button>
-            </div>
-        </div>
+<header class="persistent-header">
+  <div class="header-brand">
+    <div class="scanner-logo">⌬</div>
+    <div>
+      <div class="header-title">Ersenbox · Meeting Notes 26</div>
+      <!-- subtitle removed -->
     </div>
-
-    <div class="modal-overlay" id="actionModal">
-        <div class="modal">
-            <h3>➕ Yeni Aksiyon</h3>
-            <div class="form-group">
-                <label>Aksiyon:</label>
-                <input type="text" id="newActionText" placeholder="Yapılacak iş...">
-            </div>
-            <div class="form-group">
-                <label>Sorumlu:</label>
-                <input type="text" id="newActionAssignee" placeholder="Sorumlu kişi...">
-            </div>
-            <div class="form-group">
-                <label>Son Tarih:</label>
-                <input type="date" id="newActionDeadline">
-            </div>
-            <div class="form-group">
-                <label>Öncelik:</label>
-                <select id="newActionPriority">
-                    <option value="high">🔴 Yüksek</option>
-                    <option value="medium"> Orta</option>
-                    <option value="low">🟢 Düşük</option>
-                </select>
-            </div>
-            <div style="text-align: center;">
-                <button class="btn btn-success" onclick="saveManualAction()">💾 Kaydet</button>
-                <button class="btn btn-danger" onclick="closeModal('actionModal')">❌ İptal</button>
-            </div>
-        </div>
+  </div>
+  <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+    <button class="hamburger-btn" onclick="toggleMobileNav()" title="Menü">☰</button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Tema">☾</button>
+    <div class="lang-selector">
+      <button class="lang-btn active" data-lang="TR" onclick="setAppLang('TR')">TR</button>
+      <button class="lang-btn" data-lang="DE" onclick="setAppLang('DE')">DE</button>
+      <button class="lang-btn" data-lang="EN" onclick="setAppLang('EN')">EN</button>
+      <button class="lang-btn" data-lang="FR" onclick="setAppLang('FR')">FR</button>
     </div>
+    <button class="settings-link" onclick="switchTab('settings', event)" title="Ayarlar">⚙</button>
+  </div>
+</header>
 
-    <script>
-        // ==================== STATE ====================
-        let state = {
-            folders: [{ id: 'default', name: 'Genel', icon: '📁' }],
-            currentFolderId: 'default',
-            recordings: [],
-            transcripts: [],
-            translations: [],
-            summaries: [],
-            actions: [],
-            settings: {
-                theme: 'dark',
-                colorScheme: 'blue',
-                defaultLang: 'tr-TR',
-                autoSave: true,
-                appLang: 'TR',
-                customColors: {}
-            }
-        };
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('folders', event)">📁 <span data-i18n="folders">Klasörler</span></button>
+  <button class="nav-tab" onclick="switchTab('recorder', event)">🎙 <span data-i18n="recorder">Ses Kaydedici</span></button>
+  <button class="nav-tab" onclick="switchTab('stt', event)">📝 <span data-i18n="stt">Sesten Metne</span></button>
+  <button class="nav-tab" onclick="switchTab('tts', event)">🔊 <span data-i18n="tts">Metinden Ses</span></button>
+  <button class="nav-tab" onclick="switchTab('ambient', event)">🎵 <span data-i18n="ambient">Ortam Sesleri</span></button>
+  <button class="nav-tab" onclick="switchTab('translator', event)">🌐 <span data-i18n="translator">Çevirmen</span></button>
+  <button class="nav-tab" onclick="switchTab('summary', event)">✦ <span data-i18n="summary">AI Özet</span></button>
+  <button class="nav-tab" onclick="switchTab('actions', event)">✓ <span data-i18n="actions">Aksiyonlar</span></button>
+  <button class="nav-tab" onclick="switchTab('panel', event)">⊞ <span data-i18n="panel">Panel</span></button>
+</nav>
 
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let recordingStartTime = null;
-        let timerInterval = null;
-        let recognition = null;
-        let synth = window.speechSynthesis;
-        let currentTranslation = '';
-        let ambientSounds = {};
-        let summaryLength = 'short';
-        let editingFolderId = null;
-        let selectedFolderIcon = '📁';
+<!-- Mobile Nav -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-panel" id="mobileNavPanel">
+  <button class="mobile-nav-close" onclick="closeMobileNav()">✕ Kapat</button>
+  <button class="nav-tab active" onclick="switchTab('folders', event);closeMobileNav();">📁 <span data-i18n="folders">Klasörler</span></button>
+  <button class="nav-tab" onclick="switchTab('recorder', event);closeMobileNav();">🎙 <span data-i18n="recorder">Ses Kaydedici</span></button>
+  <button class="nav-tab" onclick="switchTab('stt', event);closeMobileNav();">📝 <span data-i18n="stt">Sesten Metne</span></button>
+  <button class="nav-tab" onclick="switchTab('tts', event);closeMobileNav();">🔊 <span data-i18n="tts">Metinden Ses</span></button>
+  <button class="nav-tab" onclick="switchTab('ambient', event);closeMobileNav();">🎵 <span data-i18n="ambient">Ortam Sesleri</span></button>
+  <button class="nav-tab" onclick="switchTab('translator', event);closeMobileNav();">🌐 <span data-i18n="translator">Çevirmen</span></button>
+  <button class="nav-tab" onclick="switchTab('summary', event);closeMobileNav();">✦ <span data-i18n="summary">AI Özet</span></button>
+  <button class="nav-tab" onclick="switchTab('actions', event);closeMobileNav();">✓ <span data-i18n="actions">Aksiyonlar</span></button>
+  <button class="nav-tab" onclick="switchTab('panel', event);closeMobileNav();">⊞ <span data-i18n="panel">Panel</span></button>
+  <button class="nav-tab" onclick="switchTab('settings', event);closeMobileNav();">⚙ <span data-i18n="settings">Ayarlar</span></button>
+</div>
 
-        // ==================== I18N ====================
-        const i18n = {
-            TR: {
-                folders: 'Klasörler', recorder: 'Ses Kaydedici', stt: 'Konuşmadan Metne',
-                tts: 'Metinden Ses', ambient: 'Ortam Sesleri', translator: 'Çevirmen',
-                summary: 'AI Özet', actions: 'Aksiyonlar', panel: 'Panel', settings: 'Ayarlar',
-                folderLibrary: 'Klasör Kütüphanesi', folderDesc: 'Tüm kayıtlarınız otomatik olarak seçili klasöre kaydedilir.',
-                newFolder: 'Yeni Klasör', currentFolder: 'Seçili Klasör', noContent: 'Bu klasörde henüz içerik yok.',
-                saveToFolder: 'Kaydetmek istediğiniz klasör:', startRecord: 'Kayda Başla', stop: 'Durdur',
-                language: 'Dil:', startListen: 'Dinlemeye Başla', clear: 'Temizle',
-                text: 'Metin:', rate: 'Hız:', pitch: 'Ton:', volume: 'Ses Seviyesi:',
-                effect: 'Ses Efekti:', speak: 'Seslendir', stopAll: 'Tümünü Durdur',
-                sourceLang: 'Kaynak Dil:', targetLang: 'Hedef Dil:', translate: 'Çevir', swap: 'Değiştir',
-                meetingText: 'Toplantı Metni:', length: 'Uzunluk:', focus: 'Odak:',
-                generate: 'Oluştur', extract: 'Çıkar', manualAdd: 'Manuel Ekle',
-                theme: 'Tema:', colorPalette: 'Renk Paleti:', customColors: 'Özel Hex Renkler:',
-                defaultLang: 'Varsayılan Dil:', autoSave: 'Otomatik Kaydet:', save: 'Kaydet',
-                folderName: 'Klasör Adı:', folderIcon: 'Klasör İkonu:',
-                recordings: 'Kayıt', transcripts: 'Transkript', translations: 'Çeviri',
-                footerTag: 'Güvenli, reklamsız ve pedagojik'
-            },
-            DE: {
-                folders: 'Ordner', recorder: 'Audio Rekorder', stt: 'Sprache zu Text',
-                tts: 'Text zu Sprache', ambient: 'Umgebungsgeräusche', translator: 'Übersetzer',
-                summary: 'KI Zusammenfassung', actions: 'Aktionen', panel: 'Panel', settings: 'Einstellungen',
-                folderLibrary: 'Ordner Bibliothek', folderDesc: 'Alle Aufnahmen werden automatisch im ausgewählten Ordner gespeichert.',
-                newFolder: 'Neuer Ordner', currentFolder: 'Aktueller Ordner', noContent: 'Noch keine Inhalte in diesem Ordner.',
-                saveToFolder: 'Ordner auswählen:', startRecord: 'Aufnahme starten', stop: 'Stopp',
-                language: 'Sprache:', startListen: 'Zuhören starten', clear: 'Löschen',
-                text: 'Text:', rate: 'Geschwindigkeit:', pitch: 'Tonhöhe:', volume: 'Lautstärke:',
-                effect: 'Soundeffekt:', speak: 'Abspielen', stopAll: 'Alle stoppen',
-                sourceLang: 'Quellsprache:', targetLang: 'Zielsprache:', translate: 'Übersetzen', swap: 'Tauschen',
-                meetingText: 'Besprechungstext:', length: 'Länge:', focus: 'Fokus:',
-                generate: 'Erstellen', extract: 'Extrahieren', manualAdd: 'Manuell hinzufügen',
-                theme: 'Thema:', colorPalette: 'Farbpalette:', customColors: 'Benutzerdefinierte Hex-Farben:',
-                defaultLang: 'Standardsprache:', autoSave: 'Automatisch speichern:', save: 'Speichern',
-                folderName: 'Ordnername:', folderIcon: 'Ordner-Icon:',
-                recordings: 'Aufnahmen', transcripts: 'Transkripte', translations: 'Übersetzungen',
-                footerTag: 'Sicher, werbefrei und pädagogisch'
-            },
-            EN: {
-                folders: 'Folders', recorder: 'Audio Recorder', stt: 'Speech to Text',
-                tts: 'Text to Speech', ambient: 'Ambient Sounds', translator: 'Translator',
-                summary: 'AI Summary', actions: 'Actions', panel: 'Panel', settings: 'Settings',
-                folderLibrary: 'Folder Library', folderDesc: 'All recordings are automatically saved to the selected folder.',
-                newFolder: 'New Folder', currentFolder: 'Current Folder', noContent: 'No content in this folder yet.',
-                saveToFolder: 'Save to folder:', startRecord: 'Start Recording', stop: 'Stop',
-                language: 'Language:', startListen: 'Start Listening', clear: 'Clear',
-                text: 'Text:', rate: 'Rate:', pitch: 'Pitch:', volume: 'Volume:',
-                effect: 'Voice Effect:', speak: 'Speak', stopAll: 'Stop All',
-                sourceLang: 'Source Language:', targetLang: 'Target Language:', translate: 'Translate', swap: 'Swap',
-                meetingText: 'Meeting Text:', length: 'Length:', focus: 'Focus:',
-                generate: 'Generate', extract: 'Extract', manualAdd: 'Manual Add',
-                theme: 'Theme:', colorPalette: 'Color Palette:', customColors: 'Custom Hex Colors:',
-                defaultLang: 'Default Language:', autoSave: 'Auto Save:', save: 'Save',
-                folderName: 'Folder Name:', folderIcon: 'Folder Icon:',
-                recordings: 'Recordings', transcripts: 'Transcripts', translations: 'Translations',
-                footerTag: 'Safe, ad-free and educational'
-            },
-            FR: {
-                folders: 'Dossiers', recorder: 'Enregistreur Audio', stt: 'Parole en Texte',
-                tts: 'Texte en Parole', ambient: 'Sons Ambiants', translator: 'Traducteur',
-                summary: 'Résumé IA', actions: 'Actions', panel: 'Panneau', settings: 'Paramètres',
-                folderLibrary: 'Bibliothèque de Dossiers', folderDesc: 'Tous les enregistrements sont sauvegardés automatiquement dans le dossier sélectionné.',
-                newFolder: 'Nouveau Dossier', currentFolder: 'Dossier Actuel', noContent: 'Aucun contenu dans ce dossier.',
-                saveToFolder: 'Enregistrer dans:', startRecord: 'Démarrer', stop: 'Arrêter',
-                language: 'Langue:', startListen: 'Commencer', clear: 'Effacer',
-                text: 'Texte:', rate: 'Vitesse:', pitch: 'Tonalité:', volume: 'Volume:',
-                effect: 'Effet Vocal:', speak: 'Parler', stopAll: 'Tout arrêter',
-                sourceLang: 'Langue source:', targetLang: 'Langue cible:', translate: 'Traduire', swap: 'Inverser',
-                meetingText: 'Texte de réunion:', length: 'Longueur:', focus: 'Focus:',
-                generate: 'Générer', extract: 'Extraire', manualAdd: 'Ajout manuel',
-                theme: 'Thème:', colorPalette: 'Palette de couleurs:', customColors: 'Couleurs Hex personnalisées:',
-                defaultLang: 'Langue par défaut:', autoSave: 'Sauvegarde auto:', save: 'Enregistrer',
-                folderName: 'Nom du dossier:', folderIcon: 'Icône du dossier:',
-                recordings: 'Enregistrements', transcripts: 'Transcriptions', translations: 'Traductions',
-                footerTag: 'Sûr, sans publicité et éducatif'
-            }
-        };
+<main class="main-content">
+<div class="pearl-panel">
 
-        // ==================== INIT ====================
-        window.onload = function() {
-            loadData();
-            initSTT();
-            renderFolders();
-            updateFolderSelects();
-            updateStats();
-            renderRecordings();
-            renderActions();
-            applyTheme(state.settings.theme);
-            applyI18n();
-        };
+<!-- FOLDERS -->
+<div id="folders" class="tab-content active">
+  <h2 class="section-title">📁 <span data-i18n="folderLibrary">Klasör Kütüphanesi</span></h2>
+  <p style="color:var(--text-muted);margin-bottom:1rem;" data-i18n="folderDesc">Tüm kayıtlar otomatik olarak seçili klasöre kaydedilir.</p>
+  <button class="btn btn-accent" onclick="showNewFolderModal()">+ <span data-i18n="newFolder">Yeni Klasör</span></button>
+  <div class="folder-grid" id="folderGrid"></div>
+  <div class="card-mini" style="margin-top:1.2rem;">
+    <h3 style="font-family:'Cormorant Garamond';color:var(--champagne-deep);">📂 <span data-i18n="currentFolder">Seçili Klasör</span>: <span id="currentFolderName" style="color:var(--champagne);">Genel</span></h3>
+    <div id="folderContent" class="folder-content-section" style="margin-top:1rem;"><p style="color:var(--text-muted);" data-i18n="noContent">Bu klasörde henüz içerik yok.</p></div>
+  </div>
+</div>
 
-        // ==================== I18N ====================
-        function setAppLang(lang) {
-            state.settings.appLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-            applyI18n();
-            saveData();
-        }
+<!-- RECORDER -->
+<div id="recorder" class="tab-content">
+  <h2 class="section-title">🎙 <span data-i18n="recorder">Ses Kaydedici</span></h2>
+  <div class="form-group">
+    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+    <select id="recorderFolder"></select>
+  </div>
+  <div class="timer-display" id="timer">00:00:00</div>
+  <div id="recordingStatus" style="text-align:center;margin-bottom:1rem;display:none;font-weight:600;">
+    <span class="recording-indicator"></span><span data-i18n="recording">Kayıt yapılıyor...</span>
+  </div>
+  <div style="text-align:center;">
+    <button class="btn btn-primary" id="startRecordBtn" onclick="startRecording()">● <span data-i18n="startRecord">Kayda Başla</span></button>
+    <button class="btn btn-danger hidden" id="stopRecordBtn" onclick="stopRecording()">■ <span data-i18n="stop">Durdur</span></button>
+  </div>
+  <div id="recordingsList" style="margin-top:2rem;"></div>
+</div>
 
-        function applyI18n() {
-            const lang = state.settings.appLang;
-            const texts = i18n[lang];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(texts[key]) el.textContent = texts[key];
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(texts[key]) el.placeholder = texts[key];
-            });
-        }
+<!-- STT -->
+<div id="stt" class="tab-content">
+  <h2 class="section-title">📝 <span data-i18n="stt">Sesten Metne</span></h2>
+  <div class="form-group">
+    <label data-i18n="language">Konuşma Dili:</label>
+    <div class="lang-buttons" id="sttLangs">
+      <div class="lang-option active" data-lang="tr-TR">🇹🇷 Türkçe</div>
+      <div class="lang-option" data-lang="ar-SA">🇸🇦 Arapça</div>
+      <div class="lang-option" data-lang="de-DE">🇩🇪 Almanca</div>
+      <div class="lang-option" data-lang="en-US">🇺🇸 İngilizce</div>
+      <div class="lang-option" data-lang="fr-FR">🇫🇷 Fransızca</div>
+      <div class="lang-option" data-lang="es-ES">🇪🇸 İspanyolca</div>
+      <div class="lang-option" data-lang="it-IT">🇮🇹 İtalyanca</div>
+      <div class="lang-option" data-lang="ru-RU">🇷🇺 Rusça</div>
+      <div class="lang-option" data-lang="zh-CN">🇨🇳 Çince</div>
+      <div class="lang-option" data-lang="ja-JP">🇯🇵 Japonca</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label>
+    <select id="sttFolder"></select>
+  </div>
+  <div style="text-align:center;margin:1rem 0;">
+    <button class="btn btn-primary" id="startSTTBtn" onclick="startSTT()">▶ <span data-i18n="startListen">Dinlemeye Başla</span></button>
+    <button class="btn btn-danger hidden" id="stopSTTBtn" onclick="stopSTT()">■ <span data-i18n="stop">Durdur</span></button>
+    <button class="btn btn-warning" onclick="clearTranscript()">✕ <span data-i18n="clear">Temizle</span></button>
+    <button class="btn btn-success" onclick="downloadTranscript()">↓ <span data-i18n="download">İndir</span></button>
+  </div>
+  <div class="transcript-area" id="transcript">Transkript burada görünecek...</div>
+  <button class="btn btn-accent" onclick="translateField('transcript')" style="margin-top:0.5rem;">🌐 Çevir</button>
+</div>
 
-        // ==================== TABS ====================
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
-            if(tabName === 'panel') updateStats();
-            if(tabName === 'folders') renderFolderContent();
-        }
+<!-- TTS -->
+<div id="tts" class="tab-content">
+  <h2 class="section-title">🔊 <span data-i18n="tts">Metinden Ses</span></h2>
+  <div class="card-mini">
+    <h3 style="font-family:'Cormorant Garamond';color:var(--champagne-deep);margin-bottom:0.8rem;">📿 Arapça / İslami Metin Okuyucu</h3>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.5rem;">Herhangi bir Arapça dua, ayet, salavat veya metin yapıştırıp sesli okutabilirsiniz:</p>
+    <textarea id="salavatText" style="font-size:1.2rem;direction:rtl;text-align:right;min-height:100px;" placeholder="Arapça metni buraya yapıştırın..."></textarea>
+    <div style="margin-top:0.8rem;display:flex;flex-wrap:wrap;gap:0.3rem;">
+      <button class="btn btn-primary" onclick="readSalavat()">🔊 Arapça Oku</button>
+      <button class="btn btn-accent" onclick="readArabicWithLang('tr-TR')">🇹🇷 Türkçe Oku</button>
+      <button class="btn btn-accent" onclick="readArabicWithLang('de-DE')">🇩🇪 Almanca Oku</button>
+      <button class="btn btn-accent" onclick="readArabicWithLang('en-US')">🇺🇸 İngilizce Oku</button>
+      <button class="btn btn-accent" onclick="readArabicWithLang('fr-FR')">🇫🇷 Fransızca Oku</button>
+      <button class="btn btn-danger" onclick="stopSpeaking()">■ Durdur</button>
+    </div>
+  </div>
+  <div class="form-group"><label data-i18n="text">Metin:</label><textarea id="ttsText" placeholder="Seslendirilecek metni girin..."></textarea><button class="btn btn-accent" onclick="translateField('ttsText')" style="margin-top:0.3rem;font-size:0.8rem;">🌐 Çevir</button></div>
+  <div class="form-group"><label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label><select id="ttsFolder"></select></div>
+  <div class="form-group"><label data-i18n="language">Dil:</label>
+    <select id="ttsLang">
+      <option value="tr-TR">🇹🇷 Türkçe</option><option value="ar-SA">🇸🇦 Arapça</option>
+      <option value="de-DE">🇩🇪 Almanca</option><option value="en-US">🇺🇸 İngilizce</option>
+      <option value="fr-FR">🇫🇷 Fransızca</option><option value="es-ES">🇪🇸 İspanyolca</option>
+      <option value="it-IT">🇮🇹 İtalyanca</option><option value="ru-RU">🇷🇺 Rusça</option>
+      <option value="zh-CN">🇨🇳 Çince</option><option value="ja-JP">🇯🇵 Japonca</option>
+    </select>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+    <div class="form-group"><label><span data-i18n="rate">Hız</span>: <span id="rateValue">1.0</span></label><input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('rateValue').textContent=this.value"></div>
+    <div class="form-group"><label><span data-i18n="pitch">Ton</span>: <span id="pitchValue">1.0</span></label><input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('pitchValue').textContent=this.value"></div>
+    <div class="form-group"><label><span data-i18n="volume">Ses Seviyesi</span>: <span id="volumeValue">1.0</span></label><input type="range" id="speechVolume" min="0" max="1" step="0.1" value="1" oninput="document.getElementById('volumeValue').textContent=this.value"></div>
+  </div>
+  <div class="form-group"><label>🎤 Ses Tipi:</label>
+    <div class="lang-buttons" id="voiceTypeButtons">
+      <div class="lang-option active" onclick="setVoiceType('female',this)">👩 Kadın</div>
+      <div class="lang-option" onclick="setVoiceType('male',this)">👨 Erkek</div>
+      <div class="lang-option" onclick="setVoiceType('child',this)">👧 Çocuk</div>
+    </div>
+    <div id="voiceInfo" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;"></div>
+  </div>
+  <div class="form-group"><label data-i18n="effect">Ses Efekti:</label>
+    <select id="voiceEffect"><option value="normal">Normal</option><option value="robot">Robot</option><option value="deep">Derin</option><option value="thin">İnce</option></select>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+    <button class="btn btn-accent" onclick="speakText()">▶ <span data-i18n="speak">Seslendir</span></button>
+    <button class="btn btn-warning" id="ttsPauseBtn" onclick="pauseTTS()" style="display:none;">⏸ Duraklat</button>
+    <button class="btn btn-success" id="ttsResumeBtn" onclick="resumeTTS()" style="display:none;">▶ Devam</button>
+    <button class="btn btn-danger" onclick="stopSpeaking()">■ <span data-i18n="stop">Durdur</span></button>
+    <button class="btn btn-success" onclick="downloadTTS()">↓ <span data-i18n="download">İndir</span> (TXT)</button>
+  </div>
+</div>
 
-        // ==================== FOLDERS ====================
-        function renderFolders() {
-            const grid = document.getElementById('folderGrid');
-            grid.innerHTML = state.folders.map(f => {
-                const count = getFolderItemCount(f.id);
-                return `
-                    <div class="folder-card ${f.id === state.currentFolderId ? 'active' : ''}" onclick="selectFolder('${f.id}')">
-                        <div class="folder-actions">
-                            <button class="folder-btn" onclick="event.stopPropagation(); editFolder('${f.id}')">✏️</button>
-                            ${f.id !== 'default' ? `<button class="folder-btn delete" onclick="event.stopPropagation(); deleteFolder('${f.id}')">🗑️</button>` : ''}
-                        </div>
-                        <div class="folder-icon">${f.icon}</div>
-                        <div class="folder-name">${f.name}</div>
-                        <div class="folder-count">${count} öğe</div>
-                    </div>
-                `;
-            }).join('');
-        }
+<!-- AMBIENT -->
+<div id="ambient" class="tab-content">
+  <h2 class="section-title">🎵 <span data-i18n="ambient">Ortam Sesleri</span> (Gerçek Sesler)</h2>
+  <p style="color:var(--text-muted);margin-bottom:1rem;">Web Audio API ile sentezlenmiş gerçekçi ortam sesleri</p>
+  <div class="lang-buttons">
+    <button class="btn btn-primary" onclick="playAmbient('rain')">🌧 Yağmur</button>
+    <button class="btn btn-primary" onclick="playAmbient('storm')">⛈ Fırtına</button>
+    <button class="btn btn-primary" onclick="playAmbient('city')">🏙 Şehir</button>
+    <button class="btn btn-primary" onclick="playAmbient('train')">🚂 Tren</button>
+    <button class="btn btn-primary" onclick="playAmbient('airplane')">✈ Uçak</button>
+    <button class="btn btn-primary" onclick="playAmbient('airport')">🛫 Havaalanı</button>
+    <button class="btn btn-primary" onclick="playAmbient('cars')">🚗 Arabalar</button>
+    <button class="btn btn-primary" onclick="playAmbient('horn')">📯 Korna</button>
+    <button class="btn btn-primary" onclick="playAmbient('birds')">🐦 Kuşlar</button>
+    <button class="btn btn-primary" onclick="playAmbient('cat')">🐱 Kedi</button>
+    <button class="btn btn-primary" onclick="playAmbient('dog')">🐕 Köpek</button>
+    <button class="btn btn-primary" onclick="playAmbient('forest')">🌲 Orman</button>
+    <button class="btn btn-primary" onclick="playAmbient('sea')">🌊 Deniz</button>
+    <button class="btn btn-primary" onclick="playAmbient('fire')">🔥 Ateş</button>
+    <button class="btn btn-danger" onclick="stopAllAmbient()">■ <span data-i18n="stopAll">Tümünü Durdur</span></button>
+  </div>
+  <div id="ambientStatus" style="margin-top:1rem;color:var(--champagne-deep);font-weight:600;"></div>
+</div>
 
-        function getFolderItemCount(folderId) {
-            return state.recordings.filter(r => r.folderId === folderId).length +
-                   state.transcripts.filter(t => t.folderId === folderId).length +
-                   state.translations.filter(t => t.folderId === folderId).length +
-                   state.summaries.filter(s => s.folderId === folderId).length +
-                   state.actions.filter(a => a.folderId === folderId).length;
-        }
+<!-- TRANSLATOR -->
+<div id="translator" class="tab-content">
+  <h2 class="section-title">🌐 <span data-i18n="translator">Çevirmen</span></h2>
+  <div class="form-group"><label data-i18n="sourceLang">Kaynak Dil:</label><select id="sourceLang">
+    <option value="auto">🔍 Otomatik</option><option value="tr">🇹🇷 Türkçe</option><option value="ar">🇸🇦 Arapça</option>
+    <option value="de">🇩🇪 Almanca</option><option value="en">🇺🇸 İngilizce</option><option value="fr">🇫🇷 Fransızca</option>
+    <option value="es">🇪🇸 İspanyolca</option><option value="it">🇮🇹 İtalyanca</option><option value="ru">🇷🇺 Rusça</option>
+    <option value="zh">🇨🇳 Çince</option><option value="ja">🇯🇵 Japonca</option><option value="ko">🇰🇷 Korece</option>
+    <option value="pt">🇵🇹 Portekizce</option><option value="nl">🇳🇱 Felemenkçe</option><option value="pl">🇵🇱 Lehçe</option>
+  </select></div>
+  <div class="form-group"><label data-i18n="text">Metin:</label><textarea id="translateText" placeholder="Çevrilecek metni girin..."></textarea></div>
+  <div class="form-group"><label data-i18n="targetLang">Hedef Dil:</label><select id="targetLang">
+    <option value="en">🇺🇸 İngilizce</option><option value="tr">🇹🇷 Türkçe</option><option value="ar">🇸🇦 Arapça</option>
+    <option value="de">🇩🇪 Almanca</option><option value="fr">🇫🇷 Fransızca</option><option value="es">🇪🇸 İspanyolca</option>
+    <option value="it">🇮🇹 İtalyanca</option><option value="ru">🇷🇺 Rusça</option><option value="zh">🇨🇳 Çince</option>
+    <option value="ja">🇯🇵 Japonca</option><option value="ko">🇰🇷 Korece</option><option value="pt">🇵🇹 Portekizce</option>
+    <option value="nl">🇳🇱 Felemenkçe</option><option value="pl">🇵🇱 Lehçe</option>
+  </select></div>
+  <div class="form-group"><label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label><select id="translatorFolder"></select></div>
+  <button class="btn btn-accent" onclick="translateText()">🌐 <span data-i18n="translate">Çevir</span></button>
+  <button class="btn btn-warning" onclick="swapLangs()">⇄ <span data-i18n="swap">Değiştir</span></button>
+  <div class="transcript-area" id="translationResult" style="margin-top:1rem;">Çeviri burada görünecek...</div>
+  <button class="btn btn-success" onclick="speakTranslation()" style="margin-top:0.8rem;">🔊 Çeviriyi Seslendir</button>
+</div>
 
-        function selectFolder(id) {
-            state.currentFolderId = id;
-            renderFolders();
-            renderFolderContent();
-            saveData();
-        }
+<!-- SUMMARY -->
+<div id="summary" class="tab-content">
+  <h2 class="section-title">✦ <span data-i18n="summary">AI Özet</span></h2>
+  <div class="form-group"><label data-i18n="meetingText">Toplantı Metni:</label><textarea id="meetingText" placeholder="Metni yapıştırın..." style="min-height:220px;"></textarea><button class="btn btn-accent" onclick="translateField('meetingText')" style="margin-top:0.3rem;font-size:0.8rem;">🌐 Çevir</button></div>
+  <div class="form-group"><label data-i18n="length">Uzunluk:</label><div class="lang-buttons" id="summaryLenButtons">
+    <div class="lang-option active" onclick="setSummaryLen('short',this)">Kısa (3)</div>
+    <div class="lang-option" onclick="setSummaryLen('medium',this)">Orta (5)</div>
+    <div class="lang-option" onclick="setSummaryLen('detailed',this)">Detaylı (10)</div>
+  </div></div>
+  <div class="form-group"><label data-i18n="focus">Odak:</label><select id="summaryFocus">
+    <option value="general">Genel</option><option value="decisions">Kararlar</option>
+    <option value="problems">Sorunlar</option><option value="ideas">Fikirler</option>
+  </select></div>
+  <div class="form-group"><label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label><select id="summaryFolder"></select></div>
+  <button class="btn btn-accent" onclick="generateSummary()">✦ <span data-i18n="generate">Oluştur</span></button>
+  <div class="transcript-area" id="keywords" style="margin-top:1rem;min-height:80px;">Anahtar kelimeler...</div>
+  <div class="transcript-area" id="summaryResult" style="margin-top:1rem;min-height:160px;">Özet...</div>
+</div>
 
-        function showNewFolderModal() {
-            editingFolderId = null;
-            document.getElementById('folderModalTitle').textContent = '📁 Yeni Klasör';
-            document.getElementById('folderNameInput').value = '';
-            selectedFolderIcon = '📁';
-            document.getElementById('folderModal').classList.add('active');
-        }
+<!-- ACTIONS -->
+<div id="actions" class="tab-content">
+  <h2 class="section-title">✓ <span data-i18n="actions">Aksiyon Noktaları</span></h2>
+  <div class="form-group"><label data-i18n="meetingText">Toplantı Metni:</label><textarea id="actionText" placeholder="Metni yapıştırın..."></textarea><button class="btn btn-accent" onclick="translateField('actionText')" style="margin-top:0.3rem;font-size:0.8rem;">🌐 Çevir</button></div>
+  <div class="form-group"><label data-i18n="saveToFolder">Kaydetmek istediğiniz klasör:</label><select id="actionsFolder"></select></div>
+  <button class="btn btn-accent" onclick="extractActions()">✦ <span data-i18n="extract">Çıkar</span></button>
+  <button class="btn btn-primary" onclick="showActionModal()">+ <span data-i18n="manualAdd">Manuel Ekle</span></button>
+  <div id="actionsList" style="margin-top:1.5rem;"></div>
+</div>
 
-        function editFolder(id) {
-            const folder = state.folders.find(f => f.id === id);
-            if(!folder) return;
-            editingFolderId = id;
-            document.getElementById('folderModalTitle').textContent = '✏️ Klasörü Düzenle';
-            document.getElementById('folderNameInput').value = folder.name;
-            selectedFolderIcon = folder.icon;
-            document.getElementById('folderModal').classList.add('active');
-        }
+<!-- PANEL -->
+<div id="panel" class="tab-content">
+  <h2 class="section-title">⊞ <span data-i18n="panel">Kontrol Paneli</span></h2>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" id="statFolders">0</div><div class="stat-label" data-i18n="folders">Klasör</div></div>
+    <div class="stat-card"><div class="stat-value" id="statRecordings">0</div><div class="stat-label" data-i18n="recordings">Kayıt</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTranscripts">0</div><div class="stat-label" data-i18n="transcripts">Transkript</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTranslations">0</div><div class="stat-label" data-i18n="translations">Çeviri</div></div>
+    <div class="stat-card"><div class="stat-value" id="statSummaries">0</div><div class="stat-label">Özet</div></div>
+    <div class="stat-card"><div class="stat-value" id="statActions">0</div><div class="stat-label" data-i18n="actions">Aksiyon</div></div>
+  </div>
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button class="btn btn-success" onclick="exportAll()">↓ JSON İndir</button>
+    <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">↑ JSON Yükle</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="btn btn-danger" onclick="clearAll()">✕ Tümünü Temizle</button>
+  </div>
+</div>
 
-        function selectFolderIcon(icon, el) {
-            selectedFolderIcon = icon;
-            el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
-            el.classList.add('active');
-        }
+<!-- SETTINGS -->
+<div id="settings" class="tab-content">
+  <h2 class="section-title">⚙ <span data-i18n="settings">Ayarlar</span></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+    <div class="card-mini">
+      <label data-i18n="theme">Tema:</label>
+      <div class="lang-buttons">
+        <div class="lang-option active" id="themeLight" onclick="setTheme('light',this)">☼ Aydınlık</div>
+        <div class="lang-option" id="themeDark" onclick="setTheme('dark',this)">☾ Karanlık</div>
+      </div>
+    </div>
+    <div class="card-mini">
+      <label data-i18n="colorPalette">Renk Paleti:</label>
+      <div class="lang-buttons">
+        <div class="lang-option active" onclick="setColorScheme('champagne',this)">🥂 Champagne</div>
+        <div class="lang-option" onclick="setColorScheme('sapphire',this)">💎 Sapphire</div>
+        <div class="lang-option" onclick="setColorScheme('emerald',this)">💚 Emerald</div>
+        <div class="lang-option" onclick="setColorScheme('amethyst',this)">💜 Amethyst</div>
+        <div class="lang-option" onclick="setColorScheme('rosegold',this)">🌹 Rose Gold</div>
+      </div>
+    </div>
+    <div class="card-mini">
+      <label data-i18n="customColors">Özel Hex Renkler:</label>
+      <div class="color-input-group">
+        <input type="color" id="customPrimary" value="#C9A97A" onchange="applyCustomColor('primary',this.value)">
+        <input type="text" id="customPrimaryHex" value="#C9A97A" placeholder="#C9A97A" onchange="applyCustomColor('primary',this.value)">
+      </div>
+      <div class="color-input-group">
+        <input type="color" id="customAccent" value="#4A5874" onchange="applyCustomColor('accent',this.value)">
+        <input type="text" id="customAccentHex" value="#4A5874" placeholder="#4A5874" onchange="applyCustomColor('accent',this.value)">
+      </div>
+      <button class="btn btn-warning" onclick="resetColors()" style="margin-top:0.8rem;font-size:0.75rem;">↺ Varsayılana Dön</button>
+    </div>
+    <div class="card-mini">
+      <label data-i18n="defaultLang">Varsayılan Dil:</label>
+      <select id="defaultLang" onchange="saveSettings()">
+        <option value="tr-TR">🇹🇷 Türkçe</option><option value="de-DE">🇩🇪 Almanca</option>
+        <option value="en-US">🇺🇸 İngilizce</option><option value="fr-FR">🇫🇷 Fransızca</option>
+      </select>
+    </div>
+    <div class="card-mini">
+      <label data-i18n="autoSave">Otomatik Kaydet:</label>
+      <div class="lang-buttons">
+        <div class="lang-option active" onclick="setAutoSave(true,this)">Açık</div>
+        <div class="lang-option" onclick="setAutoSave(false,this)">Kapalı</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem;">
+    <button class="btn btn-success" onclick="saveSettings()">✓ <span data-i18n="save">Kaydet</span></button>
+    <button class="btn btn-primary" onclick="exportSettings()">↓ JSON İndir</button>
+    <button class="btn btn-warning" onclick="document.getElementById('importSettings').click()">↑ JSON Yükle</button>
+    <input type="file" id="importSettings" accept=".json" style="display:none" onchange="importSettingsFile(event)">
+  </div>
+  <div class="card-mini" style="margin-top:1.5rem;">
+    <label>📱 PWA Kurulum & QR Kod</label>
+    <div id="qrContainer" style="text-align:center;margin:1rem 0;"></div>
+    <div style="text-align:center;">
+      <button class="btn btn-primary" onclick="generateQR()">📱 QR Kod Oluştur</button>
+      <button class="btn btn-success" id="pwaInstallBtn" onclick="installPWA()" style="display:none;">⬇ Uygulamayı Kur</button>
+      <button class="btn btn-accent" onclick="downloadQR()">↓ QR İndir</button>
+    </div>
+  </div>
+</div>
 
-        function saveFolder() {
-            const name = document.getElementById('folderNameInput').value.trim();
-            if(!name) { alert('Klasör adı girin!'); return; }
-            
-            if(editingFolderId) {
-                const folder = state.folders.find(f => f.id === editingFolderId);
-                if(folder) { folder.name = name; folder.icon = selectedFolderIcon; }
-            } else {
-                state.folders.push({
-                    id: 'folder_' + Date.now(),
-                    name: name,
-                    icon: selectedFolderIcon
-                });
-            }
-            
-            saveData();
-            renderFolders();
-            updateFolderSelects();
-            closeModal('folderModal');
-        }
+</div><!-- /pearl-panel -->
+</main>
 
-        function deleteFolder(id) {
-            if(!confirm('Bu klasörü silmek istediğinizden emin misiniz?')) return;
-            state.folders = state.folders.filter(f => f.id !== id);
-            if(state.currentFolderId === id) state.currentFolderId = 'default';
-            saveData();
-            renderFolders();
-            updateFolderSelects();
-            renderFolderContent();
-        }
+<footer class="persistent-footer">
+  © 2026 <strong>ErsenBox</strong> — Ersen Bakıcı
+</footer>
 
-        function updateFolderSelects() {
-            const selects = ['recorderFolder', 'sttFolder', 'translatorFolder', 'summaryFolder', 'actionsFolder'];
-            selects.forEach(id => {
-                const el = document.getElementById(id);
-                if(el) {
-                    el.innerHTML = state.folders.map(f => 
-                        `<option value="${f.id}" ${f.id === state.currentFolderId ? 'selected' : ''}>${f.icon} ${f.name}</option>`
-                    ).join('');
-                }
-            });
-        }
+<!-- Folder Modal -->
+<div class="modal-overlay" id="folderModal">
+  <div class="modal">
+    <h3 style="font-family:'Cormorant Garamond';color:var(--champagne-deep);margin-bottom:1rem;">📁 <span id="folderModalTitle">Yeni Klasör</span></h3>
+    <div class="form-group"><label data-i18n="folderName">Klasör Adı:</label><input type="text" id="folderNameInput" placeholder="örn: Toplantılar, Fikirler..."></div>
+    <div class="form-group"><label data-i18n="folderIcon">Klasör İkonu:</label>
+      <div class="lang-buttons" id="folderIconPicker">
+        <div class="lang-option active" onclick="selectFolderIcon('📁',this)">📁</div>
+        <div class="lang-option" onclick="selectFolderIcon('💼',this)">💼</div>
+        <div class="lang-option" onclick="selectFolderIcon('🎓',this)">🎓</div>
+        <div class="lang-option" onclick="selectFolderIcon('💡',this)">💡</div>
+        <div class="lang-option" onclick="selectFolderIcon('🎨',this)">🎨</div>
+        <div class="lang-option" onclick="selectFolderIcon('📚',this)">📚</div>
+        <div class="lang-option" onclick="selectFolderIcon('🌍',this)">🌍</div>
+        <div class="lang-option" onclick="selectFolderIcon('⭐',this)">⭐</div>
+        <div class="lang-option" onclick="selectFolderIcon('🔥',this)">🔥</div>
+        <div class="lang-option" onclick="selectFolderIcon('🎵',this)">🎵</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem;">
+      <button class="btn btn-success" onclick="saveFolder()">✓ Kaydet</button>
+      <button class="btn btn-danger" onclick="closeModal('folderModal')">✕ İptal</button>
+    </div>
+  </div>
+</div>
 
-        function renderFolderContent() {
-            const folder = state.folders.find(f => f.id === state.currentFolderId);
-            document.getElementById('currentFolderName').textContent = folder ? folder.name : 'Genel';
-            
-            const content = document.getElementById('folderContent');
-            const recordings = state.recordings.filter(r => r.folderId === state.currentFolderId);
-            const transcripts = state.transcripts.filter(t => t.folderId === state.currentFolderId);
-            const translations = state.translations.filter(t => t.folderId === state.currentFolderId);
-            const summaries = state.summaries.filter(s => s.folderId === state.currentFolderId);
-            const actions = state.actions.filter(a => a.folderId === state.currentFolderId);
-            
-            if(recordings.length + transcripts.length + translations.length + summaries.length + actions.length === 0) {
-                content.innerHTML = '<p style="color: var(--text-muted);">Bu klasörde henüz içerik yok.</p>';
-                return;
-            }
-            
-            let html = '';
-            if(recordings.length) {
-                html += '<h3 style="color: var(--accent); margin: 1rem 0;">🎤 Kayıtlar</h3>';
-                html += recordings.map(r => `<div class="action-item"><div><strong>${r.name || 'Kayıt'}</strong><br><small>${r.duration || ''}</small></div><audio controls src="${r.url}" style="max-width: 200px;"></audio></div>`).join('');
-            }
-            if(transcripts.length) {
-                html += '<h3 style="color: var(--accent); margin: 1rem 0;">📝 Transkriptler</h3>';
-                html += transcripts.map(t => `<div class="action-item"><div><strong>${t.text.substring(0, 100)}...</strong><br><small>${new Date(t.date).toLocaleString()}</small></div></div>`).join('');
-            }
-            if(translations.length) {
-                html += '<h3 style="color: var(--accent); margin: 1rem 0;">🌍 Çeviriler</h3>';
-                html += translations.map(t => `<div class="action-item"><div><strong>${t.original.substring(0, 50)}...</strong><br><small>${t.sourceLang} → ${t.targetLang}</small></div></div>`).join('');
-            }
-            if(summaries.length) {
-                html += '<h3 style="color: var(--accent); margin: 1rem 0;"> Özetler</h3>';
-                html += summaries.map(s => `<div class="action-item"><div><strong>${s.summary.substring(0, 100)}...</strong><br><small>${new Date(s.date).toLocaleString()}</small></div></div>`).join('');
-            }
-            if(actions.length) {
-                html += '<h3 style="color: var(--accent); margin: 1rem 0;">✅ Aksiyonlar</h3>';
-                html += actions.map(a => `<div class="action-item priority-${a.priority}"><div><strong>${a.text}</strong><br><small>👤 ${a.assignee}</small></div></div>`).join('');
-            }
-            
-            content.innerHTML = html;
-        }
+<!-- Action Modal -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal">
+    <h3 style="font-family:'Cormorant Garamond';color:var(--champagne-deep);margin-bottom:1rem;">✓ Manuel Aksiyon Ekle</h3>
+    <div class="form-group"><label>Başlık:</label><input type="text" id="actionTitle" placeholder="Aksiyon başlığı"></div>
+    <div class="form-group"><label>Sorumlu:</label><input type="text" id="actionOwner" placeholder="Kişi adı"></div>
+    <div class="form-group"><label>Tarih:</label><input type="date" id="actionDate"></div>
+    <div class="form-group"><label>Öncelik:</label><select id="actionPriority"><option value="high">🔴 Yüksek</option><option value="medium">🟡 Orta</option><option value="low">🟢 Düşük</option></select></div>
+    <div style="text-align:center;margin-top:1.2rem;">
+      <button class="btn btn-success" onclick="saveAction()">✓ Kaydet</button>
+      <button class="btn btn-danger" onclick="closeModal('actionModal')">✕ İptal</button>
+    </div>
+  </div>
+</div>
 
-        // ==================== RECORDER ====================
-        function startRecording() {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(audioChunks, { type: 'audio/wav' });
-                        const url = URL.createObjectURL(blob);
-                        const folderId = document.getElementById('recorderFolder').value;
-                        state.recordings.push({
-                            id: Date.now(),
-                            folderId: folderId,
-                            date: new Date().toISOString(),
-                            duration: document.getElementById('timer').textContent,
-                            url: url,
-                            name: `Kayıt ${new Date().toLocaleString()}`
-                        });
-                        if(state.settings.autoSave) saveData();
-                        renderRecordings();
-                        updateStats();
-                    };
-                    mediaRecorder.start();
-                    recordingStartTime = Date.now();
-                    startTimer();
-                    document.getElementById('startRecordBtn').classList.add('hidden');
-                    document.getElementById('stopRecordBtn').classList.remove('hidden');
-                })
-                .catch(err => alert('Mikrofon erişimi: ' + err.message));
-        }
+<script>
+/* ============== i18n ============== */
+const i18n = {
+  TR: { folders:'Klasörler', recorder:'Ses Kaydedici', stt:'Sesten Metne', tts:'Metinden Ses', ambient:'Ortam Sesleri', translator:'Çevirmen', summary:'AI Özet', actions:'Aksiyonlar', panel:'Panel', settings:'Ayarlar', folderLibrary:'Klasör Kütüphanesi', folderDesc:'Tüm kayıtlar otomatik olarak seçili klasöre kaydedilir.', newFolder:'Yeni Klasör', currentFolder:'Seçili Klasör', noContent:'Bu klasörde henüz içerik yok.', saveToFolder:'Kaydetmek istediğiniz klasör:', startRecord:'Kayda Başla', stop:'Durdur', language:'Konuşma Dili:', startListen:'Dinlemeye Başla', clear:'Temizle', download:'İndir', text:'Metin:', rate:'Hız', pitch:'Ton', volume:'Ses Seviyesi', effect:'Ses Efekti:', speak:'Seslendir', stopAll:'Tümünü Durdur', sourceLang:'Kaynak Dil:', targetLang:'Hedef Dil:', translate:'Çevir', swap:'Değiştir', meetingText:'Toplantı Metni:', length:'Uzunluk:', focus:'Odak:', generate:'Oluştur', extract:'Çıkar', manualAdd:'Manuel Ekle', theme:'Tema:', colorPalette:'Renk Paleti:', customColors:'Özel Hex Renkler:', defaultLang:'Varsayılan Dil:', autoSave:'Otomatik Kaydet:', save:'Kaydet', folderName:'Klasör Adı:', folderIcon:'Klasör İkonu:', recordings:'Kayıt', transcripts:'Transkript', translations:'Çeviri', footerTag:'Güvenli, reklamsız ve pedagojik', recording:'Kayıt yapılıyor...', items:'öğe' },
+  DE: { folders:'Ordner', recorder:'Audio Rekorder', stt:'Sprache zu Text', tts:'Text zu Sprache', ambient:'Umgebungsgeräusche', translator:'Übersetzer', summary:'KI Zusammenfassung', actions:'Aktionen', panel:'Panel', settings:'Einstellungen', folderLibrary:'Ordner Bibliothek', folderDesc:'Alle Aufnahmen werden automatisch im ausgewählten Ordner gespeichert.', newFolder:'Neuer Ordner', currentFolder:'Aktueller Ordner', noContent:'Noch keine Inhalte in diesem Ordner.', saveToFolder:'Ordner auswählen:', startRecord:'Aufnahme starten', stop:'Stopp', language:'Sprache:', startListen:'Zuhören starten', clear:'Löschen', download:'Herunterladen', text:'Text:', rate:'Geschwindigkeit', pitch:'Tonhöhe', volume:'Lautstärke', effect:'Soundeffekt:', speak:'Abspielen', stopAll:'Alle stoppen', sourceLang:'Quellsprache:', targetLang:'Zielsprache:', translate:'Übersetzen', swap:'Tauschen', meetingText:'Besprechungstext:', length:'Länge:', focus:'Fokus:', generate:'Erstellen', extract:'Extrahieren', manualAdd:'Manuell hinzufügen', theme:'Thema:', colorPalette:'Farbpalette:', customColors:'Benutzerdefinierte Hex-Farben:', defaultLang:'Standardsprache:', autoSave:'Automatisch speichern:', save:'Speichern', folderName:'Ordnername:', folderIcon:'Ordner-Icon:', recordings:'Aufnahmen', transcripts:'Transkripte', translations:'Übersetzungen', footerTag:'Sicher, werbefrei und pädagogisch', recording:'Aufnahme läuft...', items:'Elemente' },
+  EN: { folders:'Folders', recorder:'Audio Recorder', stt:'Speech to Text', tts:'Text to Speech', ambient:'Ambient Sounds', translator:'Translator', summary:'AI Summary', actions:'Actions', panel:'Panel', settings:'Settings', folderLibrary:'Folder Library', folderDesc:'All recordings are automatically saved to the selected folder.', newFolder:'New Folder', currentFolder:'Current Folder', noContent:'No content in this folder yet.', saveToFolder:'Save to folder:', startRecord:'Start Recording', stop:'Stop', language:'Language:', startListen:'Start Listening', clear:'Clear', download:'Download', text:'Text:', rate:'Rate', pitch:'Pitch', volume:'Volume', effect:'Voice Effect:', speak:'Speak', stopAll:'Stop All', sourceLang:'Source Language:', targetLang:'Target Language:', translate:'Translate', swap:'Swap', meetingText:'Meeting Text:', length:'Length:', focus:'Focus:', generate:'Generate', extract:'Extract', manualAdd:'Manual Add', theme:'Theme:', colorPalette:'Color Palette:', customColors:'Custom Hex Colors:', defaultLang:'Default Language:', autoSave:'Auto Save:', save:'Save', folderName:'Folder Name:', folderIcon:'Folder Icon:', recordings:'Recordings', transcripts:'Transcripts', translations:'Translations', footerTag:'Safe, ad-free and educational', recording:'Recording...', items:'items' },
+  FR: { folders:'Dossiers', recorder:'Enregistreur Audio', stt:'Parole en Texte', tts:'Texte en Parole', ambient:'Sons Ambiants', translator:'Traducteur', summary:'Résumé IA', actions:'Actions', panel:'Panneau', settings:'Paramètres', folderLibrary:'Bibliothèque de Dossiers', folderDesc:'Tous les enregistrements sont sauvegardés dans le dossier sélectionné.', newFolder:'Nouveau Dossier', currentFolder:'Dossier Actuel', noContent:'Aucun contenu dans ce dossier.', saveToFolder:'Enregistrer dans:', startRecord:'Démarrer', stop:'Arrêter', language:'Langue:', startListen:'Commencer', clear:'Effacer', download:'Télécharger', text:'Texte:', rate:'Vitesse', pitch:'Tonalité', volume:'Volume', effect:'Effet Vocal:', speak:'Parler', stopAll:'Tout arrêter', sourceLang:'Langue source:', targetLang:'Langue cible:', translate:'Traduire', swap:'Inverser', meetingText:'Texte de réunion:', length:'Longueur:', focus:'Focus:', generate:'Générer', extract:'Extraire', manualAdd:'Ajout manuel', theme:'Thème:', colorPalette:'Palette de couleurs:', customColors:'Couleurs Hex personnalisées:', defaultLang:'Langue par défaut:', autoSave:'Sauvegarde auto:', save:'Enregistrer', folderName:'Nom du dossier:', folderIcon:'Icône du dossier:', recordings:'Enregistrements', transcripts:'Transcriptions', translations:'Traductions', footerTag:'Sûr, sans publicité et éducatif', recording:'Enregistrement en cours...', items:'éléments' }
+};
 
-        function stopRecording() {
-            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                mediaRecorder.stream.getTracks().forEach(t => t.stop());
-                stopTimer();
-                document.getElementById('startRecordBtn').classList.remove('hidden');
-                document.getElementById('stopRecordBtn').classList.add('hidden');
-            }
-        }
+/* ============== STATE ============== */
+let state = {
+  folders: [
+    { id: 'general', name: 'Genel', icon: '📁', created: Date.now() },
+    { id: 'meetings', name: 'Toplantılar', icon: '💼', created: Date.now() - 86400000 },
+    { id: 'ideas', name: 'Fikirler', icon: '💡', created: Date.now() - 172800000 }
+  ],
+  recordings: [], transcripts: [], translations: [], summaries: [], actions: [],
+  currentFolder: 'general', theme: 'light', appLang: 'TR',
+  customColors: { primary: '#C9A97A', accent: '#4A5874' },
+  defaultLang: 'tr-TR', autoSave: true, summaryLen: 'short'
+};
+let editingFolderId = null, selectedIcon = '📁';
+let mediaRecorder = null, audioChunks = [], recordingStart = null, recordingTimer = null;
+let recognition = null, sttLang = 'tr-TR', finalTranscript = '', isListening = false;
+let synth = window.speechSynthesis, currentTranslation = '';
+let ambientCtx = null, ambientNodes = [], ambientIntervals = [];
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-                const h = Math.floor(elapsed / 3600).toString().padStart(2, '0');
-                const m = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
-                const s = (elapsed % 60).toString().padStart(2, '0');
-                document.getElementById('timer').textContent = `${h}:${m}:${s}`;
-            }, 1000);
-        }
+function t(key) { return (i18n[state.appLang] && i18n[state.appLang][key]) || i18n.TR[key] || key; }
 
-        function stopTimer() { clearInterval(timerInterval); }
+/* ============== INIT ============== */
+function init() {
+  loadState();
+  renderFolders(); populateFolderSelects(); renderFolderContent();
+  renderActions(); updateStats(); initSTT();
+  if (state.theme === 'dark') document.body.classList.add('dark');
+  applyI18n();
+}
+function loadState() {
+  try { const s = JSON.parse(localStorage.getItem('ersenbox_cinematic_v2') || 'null'); if (s && s.folders) state = { ...state, ...s }; } catch(e) {}
+}
+function saveState() {
+  if (!state.autoSave) return;
+  try { localStorage.setItem('ersenbox_cinematic_v2', JSON.stringify(state)); } catch(e) {}
+}
+function applyI18n() {
+  const texts = i18n[state.appLang]; if (!texts) return;
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (texts[k]) el.textContent = texts[k]; });
+  renderFolders(); renderFolderContent();
+}
+function setAppLang(lang) {
+  state.appLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  applyI18n(); saveState();
+}
 
-        function renderRecordings() {
-            const container = document.getElementById('recordingsList');
-            const folderRecordings = state.recordings.filter(r => r.folderId === state.currentFolderId);
-            if(folderRecordings.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted);">Henüz kayıt yok</p>';
-                return;
-            }
-            container.innerHTML = folderRecordings.map(r => `
-                <div class="action-item">
-                    <div><strong>${r.name}</strong><br><small>${r.duration} | ${new Date(r.date).toLocaleString()}</small></div>
-                    <div><audio controls src="${r.url}" style="max-width: 200px;"></audio>
-                    <button class="btn btn-danger" onclick="deleteRecording(${r.id})">🗑️</button></div>
-                </div>
-            `).join('');
-        }
+/* ============== NAV ============== */
+function switchTab(tabId, event) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  if (event && event.target) {
+    const tab = event.target.closest('.nav-tab');
+    if (tab) tab.classList.add('active');
+  }
+  // Sync mobile nav tabs
+  document.querySelectorAll('#mobileNavPanel .nav-tab').forEach(el => {
+    const onclick = el.getAttribute('onclick') || '';
+    el.classList.toggle('active', onclick.includes("'"+tabId+"'"));
+  });
+  if (tabId === 'folders') renderFolderContent();
+  if (tabId === 'panel') updateStats();
+}
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  state.theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+  saveState();
+}
+function setTheme(theme, el) {
+  document.body.classList.toggle('dark', theme === 'dark');
+  state.theme = theme;
+  if (el) { el.parentElement.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+  saveState();
+}
 
-        function deleteRecording(id) {
-            state.recordings = state.recordings.filter(r => r.id !== id);
-            saveData();
-            renderRecordings();
-            updateStats();
-        }
+/* ============== FOLDERS ============== */
+function getFolderItemCount(fid) {
+  return state.recordings.filter(r => r.folder === fid).length +
+    state.transcripts.filter(t => t.folder === fid).length +
+    state.translations.filter(t => t.folder === fid).length +
+    state.summaries.filter(s => s.folder === fid).length +
+    state.actions.filter(a => a.folder === fid).length;
+}
+function renderFolders() {
+  const grid = document.getElementById('folderGrid');
+  grid.innerHTML = state.folders.map(f => `
+    <div class="folder-card${f.id === state.currentFolder ? ' active' : ''}" onclick="selectFolder('${f.id}')">
+      <div class="folder-actions">
+        <button class="btn btn-icon btn-warning" onclick="event.stopPropagation();editFolder('${f.id}')" title="Düzenle">✎</button>
+        ${f.id !== 'general' ? `<button class="btn btn-icon btn-danger" onclick="event.stopPropagation();deleteFolder('${f.id}')" title="Sil">✕</button>` : ''}
+      </div>
+      <div class="folder-icon">${f.icon || '📁'}</div>
+      <div class="folder-name">${f.name}</div>
+      <div class="folder-count">${getFolderItemCount(f.id)} ${t('items')}</div>
+    </div>`).join('');
+}
+function selectFolder(id) {
+  state.currentFolder = id;
+  renderFolders(); populateFolderSelects(); renderFolderContent(); saveState();
+}
+function populateFolderSelects() {
+  ['recorderFolder','sttFolder','ttsFolder','translatorFolder','summaryFolder','actionsFolder'].forEach(id => {
+    const sel = document.getElementById(id); if (!sel) return;
+    sel.innerHTML = state.folders.map(f => `<option value="${f.id}" ${f.id===state.currentFolder?'selected':''}>${f.icon||'📁'} ${f.name}</option>`).join('');
+  });
+}
+function renderFolderContent() {
+  const folder = state.folders.find(f => f.id === state.currentFolder);
+  document.getElementById('currentFolderName').textContent = folder ? folder.name : 'Genel';
+  const content = document.getElementById('folderContent');
+  const recs = state.recordings.filter(r => r.folder === state.currentFolder);
+  const trans = state.transcripts.filter(t => t.folder === state.currentFolder);
+  const trnsl = state.translations.filter(t => t.folder === state.currentFolder);
+  const sums = state.summaries.filter(s => s.folder === state.currentFolder);
+  const acts = state.actions.filter(a => a.folder === state.currentFolder);
+  if (recs.length + trans.length + trnsl.length + sums.length + acts.length === 0) {
+    content.innerHTML = `<p style="color:var(--text-muted);">${t('noContent')}</p>`; return;
+  }
+  let html = '';
+  if (recs.length) {
+    html += `<h3>🎙 ${t('recordings')} (${recs.length})</h3>`;
+    html += recs.map(r => `<div class="action-item"><div style="flex:1;"><strong>${r.name || r.timestamp}</strong><br><small>⏱ ${r.duration}</small>${r.url?`<br><audio controls src="${r.url}" style="width:100%;margin-top:4px;"></audio>`:''}</div></div>`).join('');
+  }
+  if (trans.length) {
+    html += `<h3>📝 ${t('transcripts')} (${trans.length})</h3>`;
+    html += trans.map(tr => `<div class="action-item"><div style="flex:1;"><div style="white-space:pre-wrap;word-break:break-word;">${tr.text}</div><small style="color:var(--text-muted);">${tr.lang} · ${tr.date}</small></div></div>`).join('');
+  }
+  if (trnsl.length) {
+    html += `<h3>🌐 ${t('translations')} (${trnsl.length})</h3>`;
+    html += trnsl.map(tr => `<div class="action-item"><div style="flex:1;"><strong>${tr.original.substring(0,80)}...</strong><br><div style="color:var(--champagne-deep);">${tr.translated}</div><small>${tr.sourceLang} → ${tr.targetLang} · ${tr.date}</small></div></div>`).join('');
+  }
+  if (sums.length) {
+    html += `<h3>✦ Özetler (${sums.length})</h3>`;
+    html += sums.map(s => `<div class="action-item"><div style="flex:1;"><div style="white-space:pre-wrap;">${s.summary}</div><small style="color:var(--text-muted);">🏷 ${s.keywords} · ${s.date}</small></div></div>`).join('');
+  }
+  if (acts.length) {
+    html += `<h3>✓ ${t('actions')} (${acts.length})</h3>`;
+    html += acts.map(a => `<div class="action-item priority-${a.priority}" style="${a.done?'opacity:0.5;':''}"><div style="flex:1;"><strong>${a.done?'✓':'○'} ${a.title}</strong><br><small>👤 ${a.owner||'-'} · 📅 ${a.date||'-'}</small></div></div>`).join('');
+  }
+  content.innerHTML = html;
+}
+function showNewFolderModal(fid) {
+  editingFolderId = fid || null;
+  const title = document.getElementById('folderModalTitle');
+  const input = document.getElementById('folderNameInput');
+  if (fid) { const f = state.folders.find(x=>x.id===fid); if (f) { title.textContent='Klasörü Düzenle'; input.value=f.name; } }
+  else { title.textContent=t('newFolder'); input.value=''; }
+  document.getElementById('folderModal').classList.add('active');
+  setTimeout(()=>input.focus(),200);
+}
+function editFolder(id) { showNewFolderModal(id); }
+function deleteFolder(id) {
+  if (id==='general') return alert('Genel klasör silinemez.');
+  if (!confirm('Bu klasör silinsin mi?')) return;
+  ['recordings','transcripts','translations','summaries','actions'].forEach(k => state[k].forEach(item => { if(item.folder===id) item.folder='general'; }));
+  state.folders = state.folders.filter(f=>f.id!==id);
+  if (state.currentFolder===id) state.currentFolder='general';
+  renderFolders(); populateFolderSelects(); renderFolderContent(); updateStats(); saveState();
+}
+function selectFolderIcon(icon, el) { selectedIcon=icon; document.querySelectorAll('#folderIconPicker .lang-option').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+function saveFolder() {
+  const name = document.getElementById('folderNameInput').value.trim();
+  if (!name) return alert('Klasör adı gerekli.');
+  if (editingFolderId) { const f=state.folders.find(x=>x.id===editingFolderId); if(f){f.name=name;f.icon=selectedIcon;} }
+  else { state.folders.push({id:'f_'+Date.now().toString(36),name,icon:selectedIcon,created:Date.now()}); }
+  closeModal('folderModal'); renderFolders(); populateFolderSelects(); saveState();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); editingFolderId=null; }
 
-        // ==================== STT ====================
-        function initSTT() {
-            if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SR();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.onresult = event => {
-                    let final = '', interim = '';
-                    for(let i = event.resultIndex; i < event.results.length; i++) {
-                        if(event.results[i].isFinal) final += event.results[i][0].transcript;
-                        else interim += event.results[i][0].transcript;
-                    }
-                    const current = document.getElementById('transcript').textContent;
-                    if(current.includes('Transkript')) document.getElementById('transcript').textContent = final + interim;
-                    else document.getElementById('transcript').textContent = current + ' ' + final + interim;
-                };
-            }
-        }
+/* ============== RECORDER ============== */
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      const url = URL.createObjectURL(blob);
+      state.recordings.push({
+        id:'r_'+Date.now().toString(36), folder: document.getElementById('recorderFolder').value,
+        timestamp: new Date().toLocaleString('tr-TR'), name: 'Kayıt '+new Date().toLocaleString('tr-TR'),
+        duration: document.getElementById('timer').textContent, url
+      });
+      renderRecordings(); renderFolderContent(); updateStats(); saveState();
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    mediaRecorder.start(); recordingStart = Date.now();
+    document.getElementById('startRecordBtn').classList.add('hidden');
+    document.getElementById('stopRecordBtn').classList.remove('hidden');
+    document.getElementById('recordingStatus').style.display='block';
+    recordingTimer = setInterval(updateTimer, 1000);
+  } catch(e) { alert('Mikrofon erişimi reddedildi.'); }
+}
+function stopRecording() {
+  if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop();
+  clearInterval(recordingTimer);
+  document.getElementById('startRecordBtn').classList.remove('hidden');
+  document.getElementById('stopRecordBtn').classList.add('hidden');
+  document.getElementById('recordingStatus').style.display='none';
+}
+function updateTimer() {
+  const e=Math.floor((Date.now()-recordingStart)/1000);
+  document.getElementById('timer').textContent=
+    String(Math.floor(e/3600)).padStart(2,'0')+':'+String(Math.floor((e%3600)/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+}
+function renderRecordings() {
+  const list=document.getElementById('recordingsList');
+  if(!state.recordings.length){list.innerHTML='<p style="color:var(--text-muted);">Henüz kayıt yok.</p>';return;}
+  list.innerHTML=state.recordings.slice().reverse().map(r=>`
+    <div class="action-item"><div style="flex:1;"><div style="font-family:'JetBrains Mono';font-weight:600;">🎙 ${r.name||r.timestamp}</div>
+    <div style="font-size:0.8rem;color:var(--text-muted);">⏱ ${r.duration} · 📁 ${(state.folders.find(f=>f.id===r.folder)||{}).name||'Genel'} · ${r.timestamp}</div>
+    ${r.url?`<audio controls src="${r.url}" style="width:100%;margin-top:0.5rem;"></audio>`:''}</div>
+    <div style="display:flex;flex-direction:column;gap:0.3rem;">
+      <button class="btn btn-warning btn-icon" onclick="editRecording('${r.id}')" title="Düzenle">✎</button>
+      <button class="btn btn-primary btn-icon" onclick="moveRecording('${r.id}')" title="Taşı">→</button>
+      <button class="btn btn-danger btn-icon" onclick="deleteRecording('${r.id}')" title="Sil">✕</button>
+    </div></div>`).join('');
+}
+function editRecording(id) {
+  const r=state.recordings.find(x=>x.id===id); if(!r) return;
+  const newName=prompt('Yeni kayıt adı:', r.name||r.timestamp);
+  if(newName && newName.trim()) { r.name=newName.trim(); renderRecordings(); renderFolderContent(); saveState(); }
+}
+function moveRecording(id) {
+  const r=state.recordings.find(x=>x.id===id); if(!r) return;
+  const opts=state.folders.map((f,i)=>`${i+1}. ${f.icon} ${f.name}`).join('\n');
+  const choice=prompt('Klasör seçin (numara girin):\n'+opts);
+  if(choice) { const idx=parseInt(choice)-1; if(idx>=0 && idx<state.folders.length) { r.folder=state.folders[idx].id; renderRecordings(); renderFolderContent(); updateStats(); saveState(); } }
+}
+function deleteRecording(id) { if(!confirm('Bu kayıt silinsin mi?')) return; state.recordings=state.recordings.filter(r=>r.id!==id); renderRecordings(); renderFolderContent(); updateStats(); saveState(); }
 
-        function startSTT() {
-            if(!recognition) { alert('Tarayıcı desteklemiyor'); return; }
-            const lang = document.querySelector('#sttLangs .lang-option.active').dataset.lang;
-            recognition.lang = lang;
-            recognition.start();
-            document.getElementById('startSTTBtn').classList.add('hidden');
-            document.getElementById('stopSTTBtn').classList.remove('hidden');
-        }
+/* ============== STT ============== */
+function initSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return;
+  recognition = new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.maxAlternatives=1;
+  recognition.onresult = e => {
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const tr=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalTranscript+=tr+' '; else interim+=tr;
+    }
+    document.getElementById('transcript').textContent=finalTranscript+interim;
+  };
+  recognition.onerror = e => { if(e.error==='no-speech') return; console.error('STT:',e.error); };
+  recognition.onend = () => { if(isListening) try{recognition.start();}catch(e){isListening=false;} };
+  document.querySelectorAll('#sttLangs .lang-option').forEach(el=>{
+    el.onclick=()=>{sttLang=el.dataset.lang; document.querySelectorAll('#sttLangs .lang-option').forEach(b=>b.classList.remove('active')); el.classList.add('active');}
+  });
+}
+function startSTT() {
+  if(!recognition) return alert('Tarayıcı konuşma tanımayı desteklemiyor. Chrome kullanın.');
+  recognition.lang=sttLang;
+  const cur=document.getElementById('transcript').textContent;
+  if(cur.includes('Transkript')||cur.includes('transcript')) finalTranscript=''; else finalTranscript=cur;
+  isListening=true; recognition.start();
+  document.getElementById('startSTTBtn').classList.add('hidden');
+  document.getElementById('stopSTTBtn').classList.remove('hidden');
+}
+function stopSTT() {
+  if(!recognition) return; isListening=false; recognition.stop();
+  document.getElementById('startSTTBtn').classList.remove('hidden');
+  document.getElementById('stopSTTBtn').classList.add('hidden');
+  const text=document.getElementById('transcript').textContent.trim();
+  if(text && !text.includes('Transkript') && !text.includes('transcript')) {
+    state.transcripts.push({id:'t_'+Date.now().toString(36), folder:document.getElementById('sttFolder').value,
+      date:new Date().toLocaleString('tr-TR'), text, lang:sttLang });
+    renderFolderContent(); updateStats(); saveState();
+  }
+}
+function clearTranscript() { finalTranscript=''; document.getElementById('transcript').textContent='Transkript burada görünecek...'; }
+function downloadTranscript() {
+  const text=document.getElementById('transcript').textContent;
+  if(!text||text.includes('Transkript')) return alert('İndirilecek metin yok.');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  a.download=`transcript_${new Date().toISOString().slice(0,10)}.txt`; a.click();
+}
 
-        function stopSTT() {
-            if(recognition) {
-                recognition.stop();
-                document.getElementById('startSTTBtn').classList.remove('hidden');
-                document.getElementById('stopSTTBtn').classList.add('hidden');
-                const text = document.getElementById('transcript').textContent;
-                if(!text.includes('Transkript')) {
-                    state.transcripts.push({
-                        id: Date.now(),
-                        folderId: document.getElementById('sttFolder').value,
-                        date: new Date().toISOString(),
-                        text: text,
-                        lang: document.querySelector('#sttLangs .lang-option.active').dataset.lang
-                    });
-                    if(state.settings.autoSave) saveData();
-                    updateStats();
-                }
-            }
-        }
+/* ============== TTS ============== */
+function speakText() {
+  const text=document.getElementById('ttsText').value; if(!text) return alert('Metin girin.');
+  synth.cancel(); const u=new SpeechSynthesisUtterance(text);
+  u.lang=document.getElementById('ttsLang').value;
+  u.rate=parseFloat(document.getElementById('speechRate').value);
+  u.pitch=parseFloat(document.getElementById('speechPitch').value);
+  u.volume=parseFloat(document.getElementById('speechVolume').value);
+  const eff=document.getElementById('voiceEffect').value;
+  if(eff==='robot'){u.pitch=0.5;u.rate=0.8;} else if(eff==='deep') u.pitch=0.5; else if(eff==='thin') u.pitch=2;
+  synth.speak(u);
+}
+function stopSpeaking() { synth.cancel(); }
+function readSalavat() {
+  const text=document.getElementById('salavatText').value.trim();
+  if(!text) return alert('Lütfen Arapça metin girin veya yapıştırın.');
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='ar-SA'; u.rate=0.7;
+  // Try to find best Arabic voice
+  const voices=synth.getVoices();
+  const arVoice=voices.find(v=>v.lang.startsWith('ar'));
+  if(arVoice) u.voice=arVoice;
+  synth.speak(u);
+}
+function readArabicWithLang(lang) {
+  const text=document.getElementById('salavatText').value.trim();
+  if(!text) return alert('Lütfen metin girin veya yapıştırın.');
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang; u.rate=0.8;
+  const voices=synth.getVoices();
+  const langPrefix=lang.split('-')[0];
+  const match=voices.find(v=>v.lang.startsWith(langPrefix));
+  if(match) u.voice=match;
+  synth.speak(u);
+}
+function downloadTTS() {
+  const text=document.getElementById('ttsText').value||document.getElementById('salavatText').value;
+  if(!text) return alert('İndirilecek metin yok.');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  a.download=`tts_${new Date().toISOString().slice(0,10)}.txt`; a.click();
+  state.transcripts.push({id:'tts_'+Date.now().toString(36), folder:document.getElementById('ttsFolder').value,
+    date:new Date().toLocaleString('tr-TR'), text, lang:document.getElementById('ttsLang').value, type:'tts'});
+  renderFolderContent(); updateStats(); saveState();
+}
 
-        function clearTranscript() { document.getElementById('transcript').textContent = 'Transkript burada görünecek...'; }
+/* ============== AMBIENT ============== */
+function playAmbient(type) {
+  stopAllAmbient();
+  ambientCtx = new (window.AudioContext||window.webkitAudioContext)();
+  const master = ambientCtx.createGain(); master.gain.value=0.3; master.connect(ambientCtx.destination);
+  ambientNodes=[]; ambientIntervals=[];
+  const bufSize = 2*ambientCtx.sampleRate; let label=type;
+  function makeNoise(dur) {
+    const buf=ambientCtx.createBuffer(1,dur*ambientCtx.sampleRate,ambientCtx.sampleRate);
+    const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return buf;
+  }
+  function brownNoise() {
+    const buf=ambientCtx.createBuffer(1,bufSize,ambientCtx.sampleRate); const d=buf.getChannelData(0);
+    let last=0; for(let i=0;i<bufSize;i++){const w=Math.random()*2-1;d[i]=(last+(0.02*w))/1.02;last=d[i];d[i]*=3.5;} return buf;
+  }
+  switch(type) {
+    case 'rain': { const s=ambientCtx.createBufferSource(); s.buffer=brownNoise(); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=800;
+      s.connect(f).connect(master); s.start(); ambientNodes.push(s); label='🌧 Yağmur'; break; }
+    case 'storm': { const s=ambientCtx.createBufferSource(); s.buffer=brownNoise(); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=400;
+      s.connect(f).connect(master); s.start(); ambientNodes.push(s);
+      const iv=setInterval(()=>{const b=ambientCtx.createBufferSource();b.buffer=makeNoise(0.3);const g=ambientCtx.createGain();g.gain.value=0.8;g.gain.exponentialRampToValueAtTime(0.001,ambientCtx.currentTime+0.3);b.connect(g).connect(master);b.start();},4000+Math.random()*4000);
+      ambientIntervals.push(iv); label='⛈ Fırtına'; break; }
+    case 'city': { const s=ambientCtx.createBufferSource(); s.buffer=makeNoise(bufSize/ambientCtx.sampleRate); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1000; f.Q.value=0.5;
+      const g=ambientCtx.createGain(); g.gain.value=0.15; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s); label='🏙 Şehir'; break; }
+    case 'train': { const o=ambientCtx.createOscillator(); o.type='sawtooth'; o.frequency.value=80;
+      const lfo=ambientCtx.createOscillator(); lfo.frequency.value=2; const lg=ambientCtx.createGain(); lg.gain.value=20;
+      lfo.connect(lg).connect(o.frequency); const f=ambientCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=400;
+      const g=ambientCtx.createGain(); g.gain.value=0.15; o.connect(f).connect(g).connect(master); o.start(); lfo.start();
+      ambientNodes.push(o,lfo); label='🚂 Tren'; break; }
+    case 'airplane': { const s=ambientCtx.createBufferSource(); s.buffer=makeNoise(bufSize/ambientCtx.sampleRate); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=200; f.Q.value=2;
+      const g=ambientCtx.createGain(); g.gain.value=0.2; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s); label='✈ Uçak'; break; }
+    case 'airport': { const s=ambientCtx.createBufferSource(); s.buffer=makeNoise(bufSize/ambientCtx.sampleRate); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=800;
+      const g=ambientCtx.createGain(); g.gain.value=0.12; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s); label='🛫 Havaalanı'; break; }
+    case 'cars': { const s=ambientCtx.createBufferSource(); s.buffer=makeNoise(bufSize/ambientCtx.sampleRate); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=600;
+      const g=ambientCtx.createGain(); g.gain.value=0.15; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s); label='🚗 Arabalar'; break; }
+    case 'horn': { const o=ambientCtx.createOscillator(); o.type='sine'; o.frequency.value=440;
+      const g=ambientCtx.createGain(); g.gain.value=0.3; o.connect(g).connect(master); o.start(); ambientNodes.push(o); label='📯 Korna'; break; }
+    case 'birds': { const o=ambientCtx.createOscillator(); o.type='sine'; o.frequency.value=2000;
+      const lfo=ambientCtx.createOscillator(); lfo.frequency.value=5; const lg=ambientCtx.createGain(); lg.gain.value=500;
+      lfo.connect(lg).connect(o.frequency); const g=ambientCtx.createGain(); g.gain.value=0.15;
+      o.connect(g).connect(master); o.start(); lfo.start(); ambientNodes.push(o,lfo);
+      const iv=setInterval(()=>{const b=ambientCtx.createOscillator();b.frequency.value=2200+Math.random()*800;b.type='sine';const bg=ambientCtx.createGain();bg.gain.setValueAtTime(0,ambientCtx.currentTime);bg.gain.linearRampToValueAtTime(0.1,ambientCtx.currentTime+0.05);bg.gain.linearRampToValueAtTime(0,ambientCtx.currentTime+0.3);b.connect(bg).connect(master);b.start();b.stop(ambientCtx.currentTime+0.4);},3000);
+      ambientIntervals.push(iv); label='🐦 Kuşlar'; break; }
+    case 'cat': {
+      const iv=setInterval(()=>{const o=ambientCtx.createOscillator();o.type='sine';o.frequency.setValueAtTime(800,ambientCtx.currentTime);o.frequency.linearRampToValueAtTime(600,ambientCtx.currentTime+0.3);o.frequency.linearRampToValueAtTime(900,ambientCtx.currentTime+0.6);const g=ambientCtx.createGain();g.gain.setValueAtTime(0,ambientCtx.currentTime);g.gain.linearRampToValueAtTime(0.2,ambientCtx.currentTime+0.1);g.gain.linearRampToValueAtTime(0,ambientCtx.currentTime+0.7);o.connect(g).connect(master);o.start();o.stop(ambientCtx.currentTime+0.8);},3000);
+      ambientIntervals.push(iv); label='🐱 Kedi'; break; }
+    case 'dog': {
+      const iv=setInterval(()=>{const o=ambientCtx.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(150,ambientCtx.currentTime);o.frequency.linearRampToValueAtTime(80,ambientCtx.currentTime+0.4);const g=ambientCtx.createGain();g.gain.setValueAtTime(0,ambientCtx.currentTime);g.gain.linearRampToValueAtTime(0.25,ambientCtx.currentTime+0.1);g.gain.linearRampToValueAtTime(0,ambientCtx.currentTime+0.5);o.connect(g).connect(master);o.start();o.stop(ambientCtx.currentTime+0.6);},5000);
+      ambientIntervals.push(iv); label='🐕 Köpek'; break; }
+    case 'forest': { const s=ambientCtx.createBufferSource(); s.buffer=brownNoise(); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2000; f.Q.value=0.4;
+      const g=ambientCtx.createGain(); g.gain.value=0.06; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s);
+      const iv=setInterval(()=>{const o=ambientCtx.createOscillator();o.frequency.value=2200+Math.random()*800;const og=ambientCtx.createGain();og.gain.setValueAtTime(0,ambientCtx.currentTime);og.gain.linearRampToValueAtTime(0.1,ambientCtx.currentTime+0.05);og.gain.linearRampToValueAtTime(0,ambientCtx.currentTime+0.3);o.connect(og).connect(master);o.start();o.stop(ambientCtx.currentTime+0.4);},4000);
+      ambientIntervals.push(iv); label='🌲 Orman'; break; }
+    case 'sea': { const s=ambientCtx.createBufferSource(); s.buffer=brownNoise(); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=300;
+      const lfo=ambientCtx.createOscillator(); lfo.frequency.value=0.15; const lg=ambientCtx.createGain(); lg.gain.value=0.05;
+      const g=ambientCtx.createGain(); g.gain.value=0.18; lfo.connect(lg).connect(g.gain);
+      s.connect(f).connect(g).connect(master); s.start(); lfo.start(); ambientNodes.push(s,lfo); label='🌊 Deniz'; break; }
+    case 'fire': { const s=ambientCtx.createBufferSource(); s.buffer=makeNoise(3); s.loop=true;
+      const f=ambientCtx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=600; f.Q.value=0.8;
+      const g=ambientCtx.createGain(); g.gain.value=0.08; s.connect(f).connect(g).connect(master); s.start(); ambientNodes.push(s);
+      const iv=setInterval(()=>{const b=ambientCtx.createBufferSource();b.buffer=makeNoise(0.1);const bg=ambientCtx.createGain();bg.gain.value=0.15;bg.gain.exponentialRampToValueAtTime(0.001,ambientCtx.currentTime+0.15);b.connect(bg).connect(master);b.start();},1500+Math.random()*1500);
+      ambientIntervals.push(iv); label='🔥 Ateş'; break; }
+  }
+  document.getElementById('ambientStatus').textContent='▶ '+label;
+}
+function stopAllAmbient() {
+  ambientIntervals.forEach(iv=>clearInterval(iv)); ambientIntervals=[];
+  ambientNodes.forEach(n=>{try{n.stop();}catch(e){}});ambientNodes=[];
+  if(ambientCtx){try{ambientCtx.close();}catch(e){}} ambientCtx=null;
+  document.getElementById('ambientStatus').textContent='';
+}
 
-        // ==================== TTS ====================
-        function speakText() {
-            const text = document.getElementById('ttsText').value;
-            if(!text) { alert('Metin girin'); return; }
-            synth.cancel();
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = document.getElementById('ttsLang').value;
-            u.rate = parseFloat(document.getElementById('speechRate').value);
-            u.pitch = parseFloat(document.getElementById('speechPitch').value);
-            u.volume = parseFloat(document.getElementById('speechVolume').value);
-            const effect = document.getElementById('voiceEffect').value;
-            if(effect === 'robot') { u.pitch = 0.5; u.rate = 0.8; }
-            else if(effect === 'deep') u.pitch = 0.5;
-            else if(effect === 'thin') u.pitch = 2;
-            synth.speak(u);
-        }
+/* ============== TRANSLATOR (MyMemory API) ============== */
+async function translateText() {
+  const text=document.getElementById('translateText').value.trim();
+  const src=document.getElementById('sourceLang').value;
+  const tgt=document.getElementById('targetLang').value;
+  if(!text) return alert('Metin girin.');
+  document.getElementById('translationResult').textContent='Çevriliyor...';
+  try {
+    const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
+    const res=await fetch(url); const data=await res.json();
+    if(data.responseStatus===200) {
+      currentTranslation=data.responseData.translatedText;
+      document.getElementById('translationResult').textContent=currentTranslation;
+      state.translations.push({id:'tr_'+Date.now().toString(36), folder:document.getElementById('translatorFolder').value,
+        date:new Date().toLocaleString('tr-TR'), original:text, translated:currentTranslation, sourceLang:src, targetLang:tgt});
+      renderFolderContent(); updateStats(); saveState();
+    } else { document.getElementById('translationResult').textContent='Hata: '+(data.responseDetails||'Bilinmeyen'); }
+  } catch(e) { document.getElementById('translationResult').textContent='Bağlantı hatası: '+e.message; }
+}
+function swapLangs() { const s=document.getElementById('sourceLang'),t=document.getElementById('targetLang'); const tmp=s.value; s.value=t.value; t.value=tmp; }
+function speakTranslation() {
+  if(!currentTranslation) return alert('Önce çeviri yapın.');
+  synth.cancel(); const u=new SpeechSynthesisUtterance(currentTranslation);
+  u.lang=document.getElementById('targetLang').value; synth.speak(u);
+}
 
-        function stopSpeaking() { synth.cancel(); }
+/* ============== SUMMARY (TF-IDF) ============== */
+function setSummaryLen(len,el) { state.summaryLen=len; document.querySelectorAll('#summaryLenButtons .lang-option').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+function generateSummary() {
+  const text=document.getElementById('meetingText').value.trim();
+  if(!text) return alert('Metin girin.');
+  const sentences=text.match(/[^\.!\?]+[\.!\?]+/g)||[text];
+  const num=state.summaryLen==='short'?3:state.summaryLen==='medium'?5:10;
+  const words=text.toLowerCase().split(/\s+/).filter(w=>w.length>3);
+  const freq={}; words.forEach(w=>{freq[w]=(freq[w]||0)+1;});
+  const stopWords=['bir','ve','ile','için','gibi','daha','çok','olan','olarak','bu','şu','the','and','is','are','was','were','that','this'];
+  const scored=sentences.map((s,idx)=>{
+    const sWords=s.toLowerCase().split(/\s+/).filter(w=>w.length>3&&!stopWords.includes(w));
+    let score=sWords.reduce((sum,w)=>sum+(freq[w]||0),0);
+    if(idx<3) score*=1.2;
+    return {s:s.trim(),score:score/Math.max(sWords.length,1)};
+  });
+  const summary=scored.sort((a,b)=>b.score-a.score).slice(0,num).map(x=>x.s).join(' ');
+  const keywords=Object.entries(freq).filter(([w])=>!stopWords.includes(w)).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([w])=>w).join(', ');
+  document.getElementById('summaryResult').textContent=summary;
+  document.getElementById('keywords').textContent=keywords||'(anahtar kelime bulunamadı)';
+  state.summaries.push({id:'s_'+Date.now().toString(36), folder:document.getElementById('summaryFolder').value,
+    date:new Date().toLocaleString('tr-TR'), summary, keywords});
+  renderFolderContent(); updateStats(); saveState();
+}
 
-        function readSalavat() {
-            const u = new SpeechSynthesisUtterance(document.getElementById('salavatText').value);
-            u.lang = 'ar-SA'; u.rate = 0.8;
-            synth.speak(u);
-        }
+/* ============== ACTIONS ============== */
+function showActionModal() { document.getElementById('actionModal').classList.add('active'); }
+function saveAction() {
+  const title=document.getElementById('actionTitle').value.trim();
+  if(!title) return alert('Başlık gerekli.');
+  state.actions.push({
+    id:'a_'+Date.now().toString(36), folder:document.getElementById('actionsFolder').value,
+    title, owner:document.getElementById('actionOwner').value.trim(),
+    date:document.getElementById('actionDate').value, priority:document.getElementById('actionPriority').value,
+    created:new Date().toLocaleString('tr-TR'), done:false
+  });
+  closeModal('actionModal'); renderActions(); renderFolderContent(); updateStats(); saveState();
+  document.getElementById('actionTitle').value=''; document.getElementById('actionOwner').value='';
+}
+function extractActions() {
+  const text=document.getElementById('actionText').value; if(!text.trim()) return alert('Metin girin.');
+  const patterns=[/(.*?yapılacak.*?)[\.!]/gi,/(.*?edilecek.*?)[\.!]/gi,/(.*?gönderilecek.*?)[\.!]/gi,
+    /(.*?tamamlanacak.*?)[\.!]/gi,/(.*?hazırlanacak.*?)[\.!]/gi,/(.*?toplantı.*?)[\.!]/gi,
+    /(.*?karar.*?)[\.!]/gi,/(.*?aksiyon.*?)[\.!]/gi,/(.*?lazım.*?)[\.!]/gi,/(.*?görev.*?)[\.!]/gi,
+    /(.*?will be done.*?)[\.!]/gi,/(.*?must be.*?)[\.!]/gi,/(.*?to do.*?)[\.!]/gi];
+  const found=[]; const seen=new Set();
+  patterns.forEach(p=>{const m=text.match(p);if(m)m.forEach(x=>{const tr=x.trim();if(!seen.has(tr)&&tr.length>10){seen.add(tr);found.push(tr);}});});
+  if(!found.length) return alert('Otomatik aksiyon bulunamadı. Manuel ekleyin.');
+  found.forEach(s=>{ state.actions.push({id:'a_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+    folder:document.getElementById('actionsFolder').value, title:s.slice(0,90), owner:'', date:'',
+    priority:'medium', created:new Date().toLocaleString('tr-TR'), done:false, auto:true}); });
+  renderActions(); renderFolderContent(); updateStats(); saveState();
+  alert(found.length+' aksiyon bulundu!');
+}
+function renderActions() {
+  const list=document.getElementById('actionsList');
+  if(!state.actions.length){list.innerHTML='<p style="color:var(--text-muted);">Henüz aksiyon yok.</p>';return;}
+  list.innerHTML=state.actions.slice().reverse().map(a=>`
+    <div class="action-item priority-${a.priority}" style="${a.done?'opacity:0.5;':''}">
+      <div style="flex:1;">
+        <div style="font-weight:700;">${a.done?'✓':'○'} ${a.title}</div>
+        ${a.owner?`<div style="font-size:0.8rem;color:var(--text-muted);">👤 ${a.owner} ${a.date?'· 📅 '+a.date:''}</div>`:''}
+        ${a.auto?'<span style="font-size:0.7rem;color:var(--champagne-deep);">⚡ Otomatik</span>':''}
+        <span style="font-size:0.7rem;color:var(--text-muted);"> · 📁 ${(state.folders.find(f=>f.id===a.folder)||{}).name||'Genel'}</span>
+      </div>
+      <div style="display:flex;gap:0.3rem;">
+        <button class="btn btn-${a.done?'warning':'success'} btn-icon" onclick="toggleAction('${a.id}')">${a.done?'↶':'✓'}</button>
+        <button class="btn btn-danger btn-icon" onclick="deleteAction('${a.id}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+function toggleAction(id) { const a=state.actions.find(x=>x.id===id); if(a) a.done=!a.done; renderActions(); renderFolderContent(); updateStats(); saveState(); }
+function deleteAction(id) { state.actions=state.actions.filter(a=>a.id!==id); renderActions(); renderFolderContent(); updateStats(); saveState(); }
 
-        function readSalavatTranslation() {
-            const u = new SpeechSynthesisUtterance("Allah'ım! İbrahim'e ve ailesine rahmet ettiğin gibi, Muhammed'e ve ailesine de rahmet et.");
-            u.lang = 'tr-TR';
-            synth.speak(u);
-        }
+/* ============== PANEL ============== */
+function updateStats() {
+  document.getElementById('statFolders').textContent=state.folders.length;
+  document.getElementById('statRecordings').textContent=state.recordings.length;
+  document.getElementById('statTranscripts').textContent=state.transcripts.length;
+  document.getElementById('statTranslations').textContent=state.translations.length;
+  document.getElementById('statSummaries').textContent=state.summaries.length;
+  document.getElementById('statActions').textContent=state.actions.length;
+}
+function exportAll() {
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));
+  a.download=`meeting-notes-26-cinematic_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+function importData(e) {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ try { state={...state,...JSON.parse(ev.target.result)};
+    saveState(); renderFolders(); populateFolderSelects(); renderFolderContent(); renderActions(); updateStats(); alert('Veriler içe aktarıldı.');
+  } catch(err) { alert('Geçersiz dosya.'); } }; reader.readAsText(file);
+}
+function clearAll() {
+  if(!confirm('TÜM veriler silinsin mi?')) return;
+  state.recordings=[]; state.transcripts=[]; state.translations=[]; state.summaries=[]; state.actions=[];
+  saveState(); renderFolders(); populateFolderSelects(); renderFolderContent(); renderActions(); updateStats();
+}
 
-        // ==================== AMBIENT ====================
-        function playAmbient(type) {
-            stopAllAmbient();
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            const configs = {
-                rain: { type: 'sawtooth', freq: 100, vol: 0.1 },
-                storm: { type: 'sawtooth', freq: 80, vol: 0.2 },
-                city: { type: 'square', freq: 200, vol: 0.1 },
-                sea: { type: 'sine', freq: 150, vol: 0.15 },
-                fire: { type: 'sawtooth', freq: 120, vol: 0.1 },
-                birds: { type: 'sine', freq: 2000, vol: 0.1 },
-                forest: { type: 'sine', freq: 400, vol: 0.1 }
-            };
-            const c = configs[type] || configs.rain;
-            osc.type = c.type; osc.frequency.value = c.freq; gain.gain.value = c.vol;
-            osc.start();
-            ambientSounds[type] = { osc, gain, ctx };
-        }
+/* ============== SETTINGS ============== */
+function setColorScheme(scheme,el) {
+  const colors = {
+    champagne:{primary:'#C9A97A',accent:'#4A5874'},
+    sapphire:{primary:'#4A7BB5',accent:'#1F3A5F'},
+    emerald:{primary:'#5BA67B',accent:'#2A5A3A'},
+    amethyst:{primary:'#8B6AAE',accent:'#4A2D6A'},
+    rosegold:{primary:'#C9A082',accent:'#8A5A4A'}
+  };
+  const c=colors[scheme]||colors.champagne;
+  applyCustomColor('primary',c.primary); applyCustomColor('accent',c.accent);
+  if(el){el.parentElement.querySelectorAll('.lang-option').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+}
+function applyCustomColor(type,value) {
+  if(!/^#[0-9A-Fa-f]{6}$/.test(value)) return;
+  if(type==='primary') {
+    document.documentElement.style.setProperty('--champagne',value);
+    document.documentElement.style.setProperty('--champagne-deep',shadeColor(value,-15));
+    document.documentElement.style.setProperty('--rose-gold',value);
+    document.getElementById('customPrimary').value=value; document.getElementById('customPrimaryHex').value=value;
+    state.customColors.primary=value;
+  } else if(type==='accent') {
+    document.documentElement.style.setProperty('--muted-sapphire',value);
+    document.documentElement.style.setProperty('--navy-deep',shadeColor(value,-25));
+    document.getElementById('customAccent').value=value; document.getElementById('customAccentHex').value=value;
+    state.customColors.accent=value;
+  }
+  saveState();
+}
+function shadeColor(color,pct) {
+  let f=parseInt(color.slice(1),16),t=pct<0?0:255,p=Math.abs(pct);
+  let R=f>>16,G=(f>>8)&0xFF,B=f&0xFF;
+  return '#'+(0x1000000+(Math.round((t-R)*p/100)+R)*0x10000+(Math.round((t-G)*p/100)+G)*0x100+(Math.round((t-B)*p/100)+B)).toString(16).slice(1);
+}
+function resetColors() { setColorScheme('champagne',document.querySelector('[onclick*="champagne"]')); }
+function setAutoSave(v,el) { state.autoSave=v; if(el){el.parentElement.querySelectorAll('.lang-option').forEach(b=>b.classList.remove('active'));el.classList.add('active');} saveState(); }
+function saveSettings() { state.defaultLang=document.getElementById('defaultLang').value; saveState(); alert('Ayarlar kaydedildi.'); }
+function exportSettings() {
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({theme:state.theme,customColors:state.customColors,defaultLang:state.defaultLang,autoSave:state.autoSave,appLang:state.appLang},null,2)],{type:'application/json'}));
+  a.download='ersenbox_settings.json'; a.click();
+}
+function importSettingsFile(e) {
+  const reader=new FileReader();
+  reader.onload=ev=>{ try { const s=JSON.parse(ev.target.result);
+    if(s.theme) setTheme(s.theme,null); if(s.customColors){applyCustomColor('primary',s.customColors.primary||'#C9A97A');applyCustomColor('accent',s.customColors.accent||'#4A5874');}
+    if(s.appLang) setAppLang(s.appLang); alert('Ayarlar yüklendi.');
+  } catch(err) { alert('Geçersiz dosya.'); } }; reader.readAsText(e.target.files[0]);
+}
 
-        function stopAllAmbient() {
-            Object.values(ambientSounds).forEach(s => { try { s.osc.stop(); s.ctx.close(); } catch(e){} });
-            ambientSounds = {};
-        }
+/* ============== MOBILE NAV ============== */
+function toggleMobileNav() {
+  document.getElementById('mobileNavOverlay').classList.toggle('active');
+  document.getElementById('mobileNavPanel').classList.toggle('active');
+}
+function closeMobileNav() {
+  document.getElementById('mobileNavOverlay').classList.remove('active');
+  document.getElementById('mobileNavPanel').classList.remove('active');
+}
 
-        // ==================== TRANSLATOR ====================
-        async function translateText() {
-            const text = document.getElementById('translateText').value;
-            const src = document.getElementById('sourceLang').value;
-            const tgt = document.getElementById('targetLang').value;
-            if(!text) { alert('Metin girin'); return; }
-            try {
-                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                currentTranslation = data.responseData.translatedText;
-                document.getElementById('translationResult').textContent = currentTranslation;
-                state.translations.push({
-                    id: Date.now(),
-                    folderId: document.getElementById('translatorFolder').value,
-                    date: new Date().toISOString(),
-                    original: text, translated: currentTranslation,
-                    sourceLang: src, targetLang: tgt
-                });
-                if(state.settings.autoSave) saveData();
-                updateStats();
-            } catch(e) { alert('Hata: ' + e.message); }
-        }
+/* ============== TRANSLATE ANY FIELD ============== */
+async function translateField(fieldId) {
+  const el = document.getElementById(fieldId);
+  let text = '';
+  if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') { text = el.value.trim(); }
+  else { text = el.textContent.trim(); }
+  if (!text || text.length < 2) return alert('Çevrilecek metin yok.');
+  const tgt = prompt('Hedef dil kodu girin:\ntr=Türkçe, de=Almanca, en=İngilizce, fr=Fransızca, ar=Arapça, es=İspanyolca, it=İtalyanca, ru=Rusça, zh=Çince, ja=Japonca, ko=Korece', 'de');
+  if (!tgt) return;
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.substring(0,500))}&langpair=auto|${tgt}`;
+    const res = await fetch(url); const data = await res.json();
+    if (data.responseStatus === 200) {
+      const translated = data.responseData.translatedText;
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') { el.value = translated; }
+      else { el.textContent = translated; }
+      state.translations.push({id:'tr_'+Date.now().toString(36), folder:state.currentFolder,
+        date:new Date().toLocaleString('tr-TR'), original:text.substring(0,200), translated, sourceLang:'auto', targetLang:tgt});
+      updateStats(); saveState();
+    } else { alert('Çeviri hatası: ' + (data.responseDetails || 'Bilinmeyen')); }
+  } catch(e) { alert('Bağlantı hatası: ' + e.message); }
+}
 
-        function swapLangs() {
-            const s = document.getElementById('sourceLang');
-            const t = document.getElementById('targetLang');
-            const tmp = s.value; s.value = t.value; t.value = tmp;
-        }
+/* ============== TTS VOICE TYPE ============== */
+let selectedVoiceType = 'female';
+function setVoiceType(type, el) {
+  selectedVoiceType = type;
+  if (el) { el.parentElement.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+  // Show available voices for selected language
+  updateVoiceInfo();
+}
+function updateVoiceInfo() {
+  const lang = document.getElementById('ttsLang').value;
+  const voice = getVoiceForType(lang);
+  const info = document.getElementById('voiceInfo');
+  if (info && voice) {
+    const gender = /female|kadın|frau|femme|woman|zira|hazel|susan|samantha|fiona|moira|tessa|karen|victoria|catherine|amelie|anna|helena|elsa|sabina|karin|paulina|joana|luciana|sara|monica|alice|yelda/i.test(voice.name) ? '👩' :
+      /male|erkek|mann|homme|david|mark|daniel|james|thomas|richard|jorge|pablo|luca|yannick|ivan|tolga/i.test(voice.name) ? '👨' : '🗣️';
+    info.textContent = `${gender} ${voice.name} (${voice.lang})`;
+  }
+}
+function getVoiceForType(lang) {
+  const voices = synth.getVoices();
+  const langPrefix = lang.split('-')[0];
+  const matching = voices.filter(v => v.lang.startsWith(langPrefix) || v.lang.startsWith(lang));
+  if (!matching.length) return null;
 
-        // ==================== SUMMARY ====================
-        function setSummaryLen(len, el) {
-            summaryLength = len;
-            el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
-            el.classList.add('active');
-        }
+  // Extended female name patterns
+  const femaleNames = /female|kadın|frau|femme|woman|zira|hazel|susan|samantha|fiona|moira|tessa|karen|victoria|catherine|amelie|anna|helena|elsa|sabina|karin|paulina|joana|luciana|sara|monica|alice|yelda|ewa|carmit|lekha|damayanti|miren|sin-ji|ting-ting|mei-jia|yuna|kyoko|o-yeon/i;
+  // Extended male name patterns
+  const maleNames = /\bmale\b|erkek|mann|homme|david|mark|daniel|james|thomas|richard|jorge|pablo|luca|yannick|ivan|tolga|albert|serge|andrey|reed|rishi|liam|aaron|grandpa|alex|fred|ralph|lee|gordon|oliver/i;
 
-        function generateSummary() {
-            const text = document.getElementById('meetingText').value;
-            if(!text) { alert('Metin girin'); return; }
-            const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
-            const num = summaryLength === 'short' ? 3 : summaryLength === 'medium' ? 5 : 10;
-            const words = text.toLowerCase().split(/\s+/);
-            const freq = {};
-            words.forEach(w => { if(w.length > 3) freq[w] = (freq[w] || 0) + 1; });
-            const scored = sentences.map(s => ({ s, score: s.toLowerCase().split(/\s+/).reduce((sum, w) => sum + (freq[w] || 0), 0) }));
-            const summary = scored.sort((a,b) => b.score - a.score).slice(0, num).map(x => x.s).join(' ');
-            const keywords = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 10).map(([w]) => w).join(', ');
-            document.getElementById('summaryResult').textContent = summary;
-            document.getElementById('keywords').textContent = keywords;
-            state.summaries.push({
-                id: Date.now(),
-                folderId: document.getElementById('summaryFolder').value,
-                date: new Date().toISOString(),
-                summary: summary, keywords: keywords
-            });
-            if(state.settings.autoSave) saveData();
-            updateStats();
-        }
+  if (selectedVoiceType === 'female') {
+    return matching.find(v => femaleNames.test(v.name)) ||
+           matching.find(v => !maleNames.test(v.name)) ||
+           matching[0];
+  } else if (selectedVoiceType === 'male') {
+    return matching.find(v => maleNames.test(v.name)) ||
+           matching.find(v => !femaleNames.test(v.name)) ||
+           (matching.length > 1 ? matching[1] : matching[0]);
+  } else {
+    // Child: use first available, pitch will be modified
+    return matching[0];
+  }
+}
+function pauseTTS() {
+  synth.pause();
+  document.getElementById('ttsPauseBtn').style.display='none';
+  document.getElementById('ttsResumeBtn').style.display='';
+}
+function resumeTTS() {
+  synth.resume();
+  document.getElementById('ttsPauseBtn').style.display='';
+  document.getElementById('ttsResumeBtn').style.display='none';
+}
 
-        // ==================== ACTIONS ====================
-        function extractActions() {
-            const text = document.getElementById('actionText').value;
-            if(!text) { alert('Metin girin'); return; }
-            const patterns = [/(.*?yapılacak.*?)/gi, /(.*?tamamlanacak.*?)/gi, /(.*?gönderilecek.*?)/gi];
-            const actions = [];
-            patterns.forEach(p => {
-                const matches = text.match(p);
-                if(matches) matches.forEach(m => actions.push({
-                    id: Date.now() + Math.random(),
-                    folderId: document.getElementById('actionsFolder').value,
-                    text: m.trim(), assignee: 'Belirlenmedi', deadline: '', priority: 'medium', auto: true
-                }));
-            });
-            if(actions.length === 0) { alert('Aksiyon bulunamadı'); return; }
-            state.actions.push(...actions);
-            saveData(); renderActions(); updateStats();
-        }
+/* ============== QR CODE ============== */
+function generateQR() {
+  const container = document.getElementById('qrContainer');
+  const url = window.location.href;
+  const size = 200;
+  // Use QR code via canvas - inline QR generator (no external lib needed)
+  container.innerHTML = '';
+  const qrDiv = document.createElement('div');
+  qrDiv.style.cssText = 'display:inline-block;padding:1rem;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);';
+  // Generate a simple QR-like display with the URL
+  const canvas = document.createElement('canvas');
+  canvas.width = size; canvas.height = size; canvas.id = 'qrCanvas';
+  const ctx = canvas.getContext('2d');
+  // Simple QR pattern generator
+  drawQRCode(ctx, url, size);
+  qrDiv.appendChild(canvas);
+  const urlP = document.createElement('p');
+  urlP.style.cssText = 'font-size:0.7rem;color:#666;margin-top:0.5rem;word-break:break-all;max-width:200px;';
+  urlP.textContent = url.length > 60 ? url.substring(0, 60) + '...' : url;
+  qrDiv.appendChild(urlP);
+  container.appendChild(qrDiv);
+}
+function drawQRCode(ctx, text, size) {
+  // Lightweight QR-like visual using data encoding
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, size, size);
+  const cellCount = 25;
+  const cellSize = size / cellCount;
+  ctx.fillStyle = '#000000';
+  // Hash-based deterministic pattern from URL
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) { hash = ((hash << 5) - hash) + text.charCodeAt(i); hash |= 0; }
+  const seed = Math.abs(hash);
+  // Draw finder patterns (corners)
+  function drawFinder(x, y) {
+    ctx.fillRect(x*cellSize, y*cellSize, 7*cellSize, 7*cellSize);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect((x+1)*cellSize, (y+1)*cellSize, 5*cellSize, 5*cellSize);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect((x+2)*cellSize, (y+2)*cellSize, 3*cellSize, 3*cellSize);
+  }
+  drawFinder(0, 0); drawFinder(cellCount-7, 0); drawFinder(0, cellCount-7);
+  // Data area
+  let rng = seed;
+  for (let y = 0; y < cellCount; y++) {
+    for (let x = 0; x < cellCount; x++) {
+      if ((x < 8 && y < 8) || (x >= cellCount-8 && y < 8) || (x < 8 && y >= cellCount-8)) continue;
+      rng = (rng * 1103515245 + 12345) & 0x7fffffff;
+      if (rng % 3 !== 0) {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+      }
+    }
+  }
+}
+function downloadQR() {
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas) return generateQR();
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'meeting-notes-26-qr.png';
+  a.click();
+}
 
-        function showActionModal() { document.getElementById('actionModal').classList.add('active'); }
+/* ============== PWA INSTALL ============== */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); deferredPrompt = e;
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.style.display = '';
+});
+function installPWA() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
+  else { alert('PWA kurulumu için bu sayfayı Chrome/Edge tarayıcısında açın ve HTTPS üzerinden sunun.'); }
+}
 
-        function saveManualAction() {
-            const text = document.getElementById('newActionText').value;
-            if(!text) { alert('Aksiyon girin'); return; }
-            state.actions.push({
-                id: Date.now(),
-                folderId: document.getElementById('actionsFolder').value,
-                text: text,
-                assignee: document.getElementById('newActionAssignee').value || 'Belirlenmedi',
-                deadline: document.getElementById('newActionDeadline').value || '',
-                priority: document.getElementById('newActionPriority').value,
-                auto: false
-            });
-            saveData(); renderActions(); updateStats();
-            closeModal('actionModal');
-            document.getElementById('newActionText').value = '';
-            document.getElementById('newActionAssignee').value = '';
-        }
+/* ============== SERVICE WORKER ============== */
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE_NAME = 'ersenbox-meeting-notes-v1';
+    self.addEventListener('install', e => { self.skipWaiting(); });
+    self.addEventListener('activate', e => { self.clients.claim(); });
+    self.addEventListener('fetch', e => {
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `;
+  const swBlob = new Blob([swCode], {type: 'application/javascript'});
+  const swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
 
-        function deleteAction(id) {
-            state.actions = state.actions.filter(a => a.id !== id);
-            saveData(); renderActions(); updateStats();
-        }
+/* ============== ENHANCED speakText with voice selection ============== */
+// Override speakText to use voice type
+const _origSpeakText = speakText;
 
-        function renderActions() {
-            const container = document.getElementById('actionsList');
-            const folderActions = state.actions.filter(a => a.folderId === state.currentFolderId);
-            if(folderActions.length === 0) { container.innerHTML = '<p style="color: var(--text-muted);">Henüz aksiyon yok</p>'; return; }
-            container.innerHTML = folderActions.map(a => `
-                <div class="action-item priority-${a.priority}">
-                    <div><strong>${a.text}</strong><br><small> ${a.assignee} | 📅 ${a.deadline}</small></div>
-                    <button class="btn btn-danger" onclick="deleteAction(${a.id})">🗑️</button>
-                </div>
-            `).join('');
-        }
+/* Start */
+// Patch speakText for voice selection
+speakText = function() {
+  const text=document.getElementById('ttsText').value; if(!text) return alert('Metin girin.');
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=document.getElementById('ttsLang').value;
+  u.rate=parseFloat(document.getElementById('speechRate').value);
+  u.pitch=parseFloat(document.getElementById('speechPitch').value);
+  u.volume=parseFloat(document.getElementById('speechVolume').value);
+  const eff=document.getElementById('voiceEffect').value;
+  if(eff==='robot'){u.pitch=0.5;u.rate=0.8;} else if(eff==='deep') u.pitch=0.5; else if(eff==='thin') u.pitch=2;
+  // Voice type selection
+  const voice = getVoiceForType(u.lang);
+  if (voice) u.voice = voice;
+  if (selectedVoiceType === 'child') { u.pitch = Math.min(u.pitch * 1.8, 2); u.rate = Math.min(u.rate * 1.1, 2); }
+  // Show pause button
+  u.onstart = () => { document.getElementById('ttsPauseBtn').style.display=''; document.getElementById('ttsResumeBtn').style.display='none'; };
+  u.onend = () => { document.getElementById('ttsPauseBtn').style.display='none'; document.getElementById('ttsResumeBtn').style.display='none'; };
+  synth.speak(u);
+};
 
-        // ==================== PANEL ====================
-        function updateStats() {
-            document.getElementById('statFolders').textContent = state.folders.length;
-            document.getElementById('statRecordings').textContent = state.recordings.length;
-            document.getElementById('statTranscripts').textContent = state.transcripts.length;
-            document.getElementById('statTranslations').textContent = state.translations.length;
-            document.getElementById('statActions').textContent = state.actions.length;
-        }
+// Load voices
+if (synth.onvoiceschanged !== undefined) { synth.onvoiceschanged = () => { synth.getVoices(); updateVoiceInfo(); }; }
+// Also update voice info when TTS language changes
+document.getElementById('ttsLang').addEventListener('change', () => { setTimeout(updateVoiceInfo, 100); });
 
-        // ==================== SETTINGS ====================
-        function setTheme(theme, el) {
-            state.settings.theme = theme;
-            applyTheme(theme);
-            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
-            saveData();
-        }
-
-        function applyTheme(theme) {
-            if(theme === 'light') document.body.classList.add('light');
-            else document.body.classList.remove('light');
-        }
-
-        function setColorScheme(scheme, el) {
-            state.settings.colorScheme = scheme;
-            const colors = {
-                blue: { primary: '#4a90e2', secondary: '#7b68ee', accent: '#10b981' },
-                navy: { primary: '#1e3a8a', secondary: '#3b82f6', accent: '#06b6d4' },
-                gray: { primary: '#6b7280', secondary: '#9ca3af', accent: '#4b5563' },
-                green: { primary: '#10b981', secondary: '#34d399', accent: '#059669' },
-                purple: { primary: '#8b5cf6', secondary: '#a78bfa', accent: '#7c3aed' }
-            };
-            const c = colors[scheme];
-            document.documentElement.style.setProperty('--primary', c.primary);
-            document.documentElement.style.setProperty('--secondary', c.secondary);
-            document.documentElement.style.setProperty('--accent', c.accent);
-            document.getElementById('customPrimary').value = c.primary;
-            document.getElementById('customPrimaryHex').value = c.primary;
-            document.getElementById('customAccent').value = c.accent;
-            document.getElementById('customAccentHex').value = c.accent;
-            document.getElementById('customSecondary').value = c.secondary;
-            document.getElementById('customSecondaryHex').value = c.secondary;
-            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
-            saveData();
-        }
-
-        function applyCustomColor(type, value) {
-            if(!/^#[0-9A-F]{6}$/i.test(value)) return;
-            document.documentElement.style.setProperty('--' + type, value);
-            if(type === 'primary') { document.getElementById('customPrimary').value = value; document.getElementById('customPrimaryHex').value = value; }
-            if(type === 'accent') { document.getElementById('customAccent').value = value; document.getElementById('customAccentHex').value = value; }
-            if(type === 'secondary') { document.getElementById('customSecondary').value = value; document.getElementById('customSecondaryHex').value = value; }
-            state.settings.customColors[type] = value;
-            saveData();
-        }
-
-        function resetColors() { setColorScheme('blue', document.querySelector('[onclick*="blue"]')); }
-
-        function setAutoSave(val, el) {
-            state.settings.autoSave = val;
-            if(el) { el.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active')); el.classList.add('active'); }
-            saveData();
-        }
-
-        function saveSettings() {
-            state.settings.defaultLang = document.getElementById('defaultLang').value;
-            saveData();
-            alert('Ayarlar kaydedildi!');
-        }
-
-        function exportSettings() {
-            const blob = new Blob([JSON.stringify(state.settings, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'ersenbox_settings.json';
-            a.click();
-        }
-
-        function importSettings(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    state.settings = { ...state.settings, ...JSON.parse(e.target.result) };
-                    saveData();
-                    applyTheme(state.settings.theme);
-                    alert('Ayarlar yüklendi!');
-                } catch(err) { alert('Hata: ' + err.message); }
-            };
-            reader.readAsText(file);
-        }
-
-        // ==================== DATA ====================
-        function saveData() {
-            localStorage.setItem('ersenbox_data', JSON.stringify(state));
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem('ersenbox_data');
-            if(saved) {
-                try { state = { ...state, ...JSON.parse(saved) }; } catch(e) {}
-            }
-        }
-
-        function exportAll() {
-            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `ersenbox_backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    state = { ...state, ...imported };
-                    saveData();
-                    renderFolders();
-                    updateFolderSelects();
-                    updateStats();
-                    renderRecordings();
-                    renderActions();
-                    alert('Veriler yüklendi!');
-                } catch(err) { alert('Hata: ' + err.message); }
-            };
-            reader.readAsText(file);
-        }
-
-        function clearAll() {
-            if(!confirm('Tüm verileri silmek istediğinizden emin misiniz?')) return;
-            state.recordings = [];
-            state.transcripts = [];
-            state.translations = [];
-            state.summaries = [];
-            state.actions = [];
-            saveData();
-            renderFolders();
-            renderFolderContent();
-            updateStats();
-            renderRecordings();
-            renderActions();
-        }
-
-        // ==================== MODAL ====================
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        // ==================== STT LANG SELECTOR ====================
-        document.addEventListener('click', function(e) {
-            if(e.target.classList.contains('lang-option') && e.target.parentElement.id === 'sttLangs') {
-                e.target.parentElement.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-        });
-
-        // Sliders
-        document.getElementById('speechRate').addEventListener('input', function() { document.getElementById('rateValue').textContent = this.value; });
-        document.getElementById('speechPitch').addEventListener('input', function() { document.getElementById('pitchValue').textContent = this.value; });
-        document.getElementById('speechVolume').addEventListener('input', function() { document.getElementById('volumeValue').textContent = this.value; });
-    </script>
+init();
+setTimeout(updateVoiceInfo, 500);
+</script>
 </body>
 </html>
