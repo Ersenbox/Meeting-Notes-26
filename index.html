@@ -1220,17 +1220,13 @@ async function startRecording() {
     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
     mediaRecorder.onstop = () => {
       const blob = new Blob(audioChunks, {type:'audio/webm'});
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64Audio = reader.result;
-        state.recordings.push({
-          id:'r_'+Date.now().toString(36), folder: document.getElementById('recorderFolder').value,
-          timestamp: new Date().toLocaleString('tr-TR'), name: 'Kayıt '+new Date().toLocaleString('tr-TR'),
-          duration: document.getElementById('timer').textContent, audioData: base64Audio
-        });
-        renderRecordings(); renderFolderContent(); updateStats(); saveState();
-      };
-      reader.readAsDataURL(blob);
+      const url = URL.createObjectURL(blob);
+      state.recordings.push({
+        id:'r_'+Date.now().toString(36), folder: document.getElementById('recorderFolder').value,
+        timestamp: new Date().toLocaleString('tr-TR'), name: 'Kayıt '+new Date().toLocaleString('tr-TR'),
+        duration: document.getElementById('timer').textContent, url
+      });
+      renderRecordings(); renderFolderContent(); updateStats(); saveState();
       stream.getTracks().forEach(t=>t.stop());
     };
     mediaRecorder.start(); recordingStart = Date.now();
@@ -1261,7 +1257,7 @@ function renderRecordings() {
   list.innerHTML=micRecs.slice().reverse().map(r=>`
     <div class="action-item"><div style="flex:1;"><div style="font-family:'JetBrains Mono';font-weight:600;">🎙 ${r.name||r.timestamp}</div>
     <div style="font-size:0.8rem;color:var(--text-muted);">⏱ ${r.duration} · 📁 ${(state.folders.find(f=>f.id===r.folder)||{}).name||'Genel'} · ${r.timestamp}</div>
-    ${r.audioData?`<audio controls src="${r.audioData}" style="width:100%;margin-top:0.5rem;"></audio>`:r.url?`<audio controls src="${r.url}" style="width:100%;margin-top:0.5rem;"></audio>`:''}</div>
+    ${r.url?`<audio controls src="${r.url}" style="width:100%;margin-top:0.5rem;"></audio>`:''}</div>
     <div style="display:flex;flex-direction:column;gap:0.3rem;">
       <button class="btn btn-warning btn-icon" onclick="editRecording('${r.id}')" title="Düzenle">✎</button>
       <button class="btn btn-primary btn-icon" onclick="moveRecording('${r.id}')" title="Taşı">→</button>
@@ -1371,23 +1367,6 @@ async function speakText() {
   const volume=parseFloat(document.getElementById('speechVolume').value);
   const eff=document.getElementById('voiceEffect').value;
 
-  // Voice Loading garantieren
-  await new Promise(resolve => {
-    const voices = synth.getVoices();
-    if (voices.length > 0) {
-      resolve();
-    } else {
-      const handler = () => {
-        if (synth.getVoices().length > 0) {
-          synth.onvoiceschanged = null;
-          resolve();
-        }
-      };
-      synth.onvoiceschanged = handler;
-      setTimeout(resolve, 2000);
-    }
-  });
-
   // Detect source language and translate if needed (like Çevirmen does)
   const detectedLang = detectLanguage(text);
   const targetLangCode = lang.split('-')[0]; // e.g. 'ar' from 'ar-SA'
@@ -1429,7 +1408,6 @@ async function speakText() {
     saveTTSToFolder(textToSpeak, lang, rate, pitch, volume, eff, selectedVoiceType, 'Seslendir');
     renderTTSRecordings();
   };
-  u.onerror = (e) => { console.error('TTS error:', e); };
   synth.speak(u);
 }
 function stopSpeaking() { synth.cancel(); }
@@ -1516,54 +1494,37 @@ async function readArabicWithLang(lang) {
   const text=document.getElementById('salavatText').value.trim();
   if(!text) return alert('Lütfen metin girin veya yapıştırın.');
   synth.cancel();
-  const detectedLang = detectLanguage(text);
-  const langCode = lang.split('-')[0];
+  // First translate the Arabic text to the target language
+  const langCode = lang.split('-')[0]; // e.g. 'tr' from 'tr-TR'
   const langNames = {'tr':'Türkçe','de':'Almanca','en':'İngilizce','fr':'Fransızca'};
-  
-  if (detectedLang === langCode) {
-    const u = new SpeechSynthesisUtterance(text);
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.substring(0,500))}&langpair=ar|${langCode}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    let textToSpeak = text;
+    if (data.responseStatus === 200 && data.responseData.translatedText) {
+      textToSpeak = data.responseData.translatedText;
+    }
+    const u = new SpeechSynthesisUtterance(textToSpeak);
     u.lang = lang; u.rate = 0.8;
     const voices = synth.getVoices();
-    const match = voices.find(v => v.lang.startsWith(langCode));
+    const langPrefix = lang.split('-')[0];
+    const match = voices.find(v => v.lang.startsWith(langPrefix));
     if (match) u.voice = match;
-    u.onstart = () => { startEqualizer(); };
     u.onend = () => {
-      stopEqualizer();
-      saveTTSToFolder(text, lang, 0.8, 1.0, 1.0, 'normal', 'female', (langNames[langCode]||langCode) + ' Oku');
+      // Auto-save translation + reading to folder
+      saveTTSToFolder(textToSpeak, lang, 0.8, 1.0, 1.0, 'normal', 'female', (langNames[langCode]||langCode) + ' Çeviri+Oku');
       renderTTSRecordings();
     };
     synth.speak(u);
-    return;
-  }
-  
-  try {
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.substring(0,500))}&langpair=${detectedLang}|${langCode}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.responseStatus === 200 && data.responseData.translatedText) {
-      const textToSpeak = data.responseData.translatedText;
-      const u = new SpeechSynthesisUtterance(textToSpeak);
-      u.lang = lang; u.rate = 0.8;
-      const voices = synth.getVoices();
-      const match = voices.find(v => v.lang.startsWith(langCode));
-      if (match) u.voice = match;
-      u.onstart = () => { startEqualizer(); };
-      u.onend = () => {
-        stopEqualizer();
-        saveTTSToFolder(textToSpeak, lang, 0.8, 1.0, 1.0, 'normal', 'female', (langNames[langCode]||langCode) + ' Çeviri+Oku');
-        renderTTSRecordings();
-      };
-      synth.speak(u);
-    } else {
-      console.warn('Çeviri hatası:', data.responseDetails || 'Bilinmeyen hata');
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = lang;
-      synth.speak(u);
-    }
   } catch(e) {
-    console.warn('Çeviri API hatası:', e);
+    // If translation fails, still try to speak the original text
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang;
+    u.lang = lang; u.rate = 0.8;
+    const voices = synth.getVoices();
+    const langPrefix = lang.split('-')[0];
+    const match = voices.find(v => v.lang.startsWith(langPrefix));
+    if (match) u.voice = match;
     synth.speak(u);
   }
 }
