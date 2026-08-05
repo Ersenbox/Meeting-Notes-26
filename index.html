@@ -2343,18 +2343,6 @@ function downloadQR() {
   a.click();
 }
 
-/* ============== PWA INSTALL ============== */
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); deferredPrompt = e;
-  const btn = document.getElementById('pwaInstallBtn');
-  if (btn) btn.style.display = '';
-});
-function installPWA() {
-  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
-  else { alert('PWA kurulumu için bu sayfayı Chrome/Edge tarayıcısında açın ve HTTPS üzerinden sunun.'); }
-}
-
 /* ============== SERVICE WORKER ============== */
 if ('serviceWorker' in navigator) {
   const swCode = `
@@ -2469,6 +2457,81 @@ setTimeout(updateHeaderColor, 100);
 document.querySelector('.bg-slider-container').addEventListener('click', function(e) {
   if (!e.target.classList.contains('bg-dot')) nextBg();
 });
+
+/* ========== INSTALLATION SLIDER FUNCTIONS ========== */
+const sliderImages = [
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s1.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s2.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s3.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s4.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s5.png'
+];
+
+let currentSlide = 0;
+
+function initSlider() {
+  const dotsContainer = document.getElementById('slider-dots');
+  sliderImages.forEach((_, idx) => {
+    const dot = document.createElement('div');
+    dot.className = `slider-dot ${idx === 0 ? 'active' : ''}`;
+    dot.onclick = () => goToSlide(idx);
+    dotsContainer.appendChild(dot);
+  });
+  updateSliderImage();
+}
+
+function updateSliderImage() {
+  document.getElementById('slider-img').src = sliderImages[currentSlide];
+  document.querySelectorAll('.slider-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === currentSlide);
+  });
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + sliderImages.length) % sliderImages.length;
+  updateSliderImage();
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % sliderImages.length;
+  updateSliderImage();
+}
+
+function goToSlide(idx) {
+  currentSlide = idx;
+  updateSliderImage();
+}
+
+function closeSliderModal() {
+  document.getElementById('installation-slider-modal').style.display = 'none';
+}
+
+/* ========== MOBILE DRAWER FUNCTIONS ========== */
+function toggleDrawer() {
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  
+  const isOpen = drawer.style.transform === 'translateX(0px)';
+  
+  if (isOpen) {
+    drawer.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
+    menuBtn.classList.remove('active');
+  } else {
+    drawer.style.transform = 'translateX(0)';
+    overlay.style.display = 'block';
+    menuBtn.classList.add('active');
+  }
+}
+
+function scrollToSection(sectionId) {
+  toggleDrawer();
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
 
 </script>
 
@@ -2770,54 +2833,8 @@ function updateSliderImage() {
   });
 }
 
-function prevSlide() {
-  currentSlide = (currentSlide - 1 + sliderImages.length) % sliderImages.length;
-  updateSliderImage();
-}
-
-function nextSlide() {
-  currentSlide = (currentSlide + 1) % sliderImages.length;
-  updateSliderImage();
-}
-
-function goToSlide(idx) {
-  currentSlide = idx;
-  updateSliderImage();
-}
-
-function closeSliderModal() {
-  document.getElementById('installation-slider-modal').style.display = 'none';
-}
-
 // Initialize slider on page load
 window.addEventListener('load', initSlider);
-
-/* ========== MOBILE DRAWER MENU ========== */
-function toggleDrawer() {
-  const drawer = document.getElementById('mobile-drawer');
-  const overlay = document.getElementById('drawer-overlay');
-  const menuBtn = document.getElementById('mobile-menu-btn');
-  
-  const isOpen = drawer.style.transform === 'translateX(0px)';
-  
-  if (isOpen) {
-    drawer.style.transform = 'translateX(-100%)';
-    overlay.style.display = 'none';
-    menuBtn.classList.remove('active');
-  } else {
-    drawer.style.transform = 'translateX(0)';
-    overlay.style.display = 'block';
-    menuBtn.classList.add('active');
-  }
-}
-
-function scrollToSection(sectionId) {
-  toggleDrawer();
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
-  }
-}
 
 // Show mobile menu button on small screens
 function updateMobileMenuButton() {
