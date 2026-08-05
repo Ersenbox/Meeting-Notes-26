@@ -2636,7 +2636,14 @@ if ('serviceWorker' in navigator) {
         });
       });
     })
-    .catch(err => console.error('❌ Service Worker registration failed:', err));
+    .catch(err => {
+      // SW dosyası 404 (test ortamında normal)
+      if (err.message && err.message.includes('404')) {
+        console.log('ℹ️ Service Worker dosyası bulunamadı (test ortamında normal)');
+      } else {
+        console.warn('⚠️ Service Worker registration bilgisi:', err.message);
+      }
+    });
 }
 
 /* ========== PWA INSTALL LOGIC ========== */
@@ -2803,38 +2810,6 @@ function downloadQR() {
   link.click();
   showToast('📥 QR kod indirildi', 'success');
 }
-
-/* ========== INSTALLATION SLIDER ========== */
-const sliderImages = [
-  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s1.png',
-  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s2.png',
-  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s3.png',
-  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s4.png',
-  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s5.png'
-];
-
-let currentSlide = 0;
-
-function initSlider() {
-  const dotsContainer = document.getElementById('slider-dots');
-  sliderImages.forEach((_, idx) => {
-    const dot = document.createElement('div');
-    dot.className = `slider-dot ${idx === 0 ? 'active' : ''}`;
-    dot.onclick = () => goToSlide(idx);
-    dotsContainer.appendChild(dot);
-  });
-  updateSliderImage();
-}
-
-function updateSliderImage() {
-  document.getElementById('slider-img').src = sliderImages[currentSlide];
-  document.querySelectorAll('.slider-dot').forEach((dot, idx) => {
-    dot.classList.toggle('active', idx === currentSlide);
-  });
-}
-
-// Initialize slider on page load
-window.addEventListener('load', initSlider);
 
 // Show mobile menu button on small screens
 function updateMobileMenuButton() {
