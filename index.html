@@ -612,7 +612,226 @@
     50% { opacity: 0.2; }
   }
 
+  /* ========== PWA MODAL STYLES ========== */
+  @keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInDrawer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+  .pwa-modal { animation: slideUp 0.3s ease-out; }
+  .pwa-overlay { animation: fadeIn 0.3s ease-out; }
+  
+  .pwa-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .drawer-nav a {
+    display: block;
+    padding: 12px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-nav a:hover {
+    background: var(--bg-dark);
+  }
+
+  #mobile-menu-btn {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #mobile-menu-btn:hover {
+    background: var(--champagne-deep);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  #mobile-menu-btn:active {
+    transform: scale(0.98);
+  }
+
+  #mobile-menu-btn.active {
+    background: var(--text);
+    color: var(--champagne);
+  }
+
+  .drawer-content {
+    max-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ========== MODAL LANDSCAPE OPTIMIZATION ========== */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .pwa-modal-content {
+      max-height: 95vh;
+      overflow-y: auto;
+    }
+    
+    #pwa-install-modal {
+      align-items: flex-start;
+      justify-content: center;
+      padding: 10px 0;
+    }
+  }
+
+  /* iOS specific notch handling */
+  @supports (padding: max(0px)) {
+    @media (orientation: landscape) {
+      .pwa-modal-content {
+        padding-left: max(25px, env(safe-area-inset-left));
+        padding-right: max(25px, env(safe-area-inset-right));
+      }
+    }
+  }
+
+  /* ========== TOAST NOTIFICATIONS ========== */
+  .toast {
+    background: var(--bg-dark);
+    color: var(--text);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-left: 4px solid var(--champagne);
+    animation: slideUp 0.3s ease-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .toast.success { border-left-color: #4CAF50; }
+  .toast.error { border-left-color: #f44336; }
+  .toast.info { border-left-color: var(--champagne); }
+
+  .toast-close {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    margin-left: 10px;
+  }
+
+  /* ========== RESPONSIVE DESIGN ========== */
+  @media (max-width: 480px) {
+    /* Telefon - Tek kolon, optimize yazı */
+    .persistent-header { padding: 12px; }
+    .main-content { padding: 12px; }
+    
+    body { font-size: 14px; }
+    h1 { font-size: 1.2rem; }
+    h2 { font-size: 1rem; }
+    
+    input, textarea, select, button {
+      font-size: 16px; /* iOS zoom önleme */
+      min-height: 44px; /* Touch hedefi */
+    }
+
+    #notes-grid { grid-template-columns: 1fr; }
+    
+    .mobile-menu-btn { display: block !important; }
+    
+    /* Landscape orientasyonu */
+    @media (orientation: landscape) {
+      .persistent-header { padding: 8px 12px; }
+      input, textarea { min-height: 36px; }
+    }
+
+    /* Notch/Home-bar safe area */
+    @supports (padding: max(0px)) {
+      body { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+      .persistent-header { padding-top: max(12px, env(safe-area-inset-top)); }
+      #toast-container { right: max(20px, env(safe-area-inset-right)); }
+    }
+  }
+
+  @media (480px < width <= 768px) {
+    /* Tablet - 2 kolon */
+    #notes-grid { grid-template-columns: repeat(2, 1fr); }
+    .persistent-header { padding: 16px; }
+  }
+
+  @media (min-width: 1024px) {
+    /* Masaüstü - Container max-width */
+    .main-content { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 20px;
+    }
+    #notes-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Touch optimizations */
+  @media (hover: none) {
+    button { touch-action: manipulation; }
+    button:active { transform: scale(0.98); }
+  }
+
+  /* Prevent double-tap zoom delay on mobile */
+  button, a, input[type="button"], input[type="submit"] {
+    touch-action: manipulation;
+  }
+
+  /* SVG QR Code container */
+  #pwa-qr-canvas {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Slider dots */
+  .slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--champagne);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+  }
+
+  .slider-dot.active {
+    opacity: 1;
+    width: 20px;
+    border-radius: 4px;
+  }
+
 </style>
+
+<!-- ========== PWA META TAGS ========== -->
+<meta name="theme-color" content="#D4A574">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ersenbox Notes">
+<meta name="description" content="Profesyonel toplantı notları ve ses kaydı uygulaması">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="./manifest.webmanifest">
+
+<!-- iOS Icons & Splash -->
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/icons/favicon.png">
+
+<!-- iOS Splash Screens -->
+<link rel="apple-touch-startup-image" href="https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/icons/splash-192.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+<link rel="apple-touch-startup-image" href="https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/icons/splash-256.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+
 </head>
 <body>
 <!-- Background Image Slider -->
@@ -2251,6 +2470,83 @@ document.querySelector('.bg-slider-container').addEventListener('click', functio
   if (!e.target.classList.contains('bg-dot')) nextBg();
 });
 
+</script>
+
+<!-- ========== PWA INSTALL MODAL ========== -->
+<div id="pwa-install-modal" class="pwa-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center;">
+  <div class="pwa-modal-content" style="background:var(--bg-light); border-radius:12px; padding:25px; max-width:400px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:slideUp 0.3s ease-out;">
+    <button class="pwa-close-btn" onclick="document.getElementById('pwa-install-modal').style.display='none'" style="float:right; background:none; border:none; font-size:28px; cursor:pointer; color:var(--text);">&times;</button>
+    <h2 style="margin-top:0; color:var(--text);">📱 Uygulamayı Yükle</h2>
+    <p style="color:var(--text-light);">Ersenbox'u doğrudan ana ekranına ekle ve her zaman hızlı erişim sağla!</p>
+    
+    <div id="pwa-qr-container" style="text-align:center; margin: 20px 0; display:none;">
+      <p style="color:var(--text);"><strong>QR Kodu Tara:</strong></p>
+      <canvas id="pwa-qr-canvas" style="max-width: 200px; border: 3px solid var(--champagne); border-radius:6px; padding:5px; background:white;"></canvas>
+      <button onclick="downloadQR()" style="margin-top:10px; padding:8px 16px; background:var(--champagne); border:none; border-radius:6px; cursor:pointer; font-weight:bold;">📥 QR'ı İndir</button>
+    </div>
+    
+    <div id="pwa-steps-container" style="display:none; max-height:300px; overflow-y:auto;">
+      <h3 id="steps-title" style="color:var(--text);">iPhone Kurulum Adımları:</h3>
+      <div id="steps-content" style="color:var(--text-light); line-height:1.6;"></div>
+      <div style="margin-top:15px; display:flex; gap:10px;">
+        <button onclick="prevStep()" style="flex:1; padding:8px; background:var(--bg-dark); color:var(--text); border:none; border-radius:6px; cursor:pointer;">◀ Önceki</button>
+        <button onclick="nextStep()" style="flex:1; padding:8px; background:var(--bg-dark); color:var(--text); border:none; border-radius:6px; cursor:pointer;">Sonraki ▶</button>
+      </div>
+      <span id="step-indicator" style="display:block; text-align:center; margin-top:10px; color:var(--text-light); font-size:0.9rem;"></span>
+    </div>
+    
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button id="pwa-install-btn" onclick="installPWA()" style="flex:1; padding:12px; background:var(--champagne); border:none; border-radius:6px; cursor:pointer; font-weight:bold; color:#000;">✅ Şimdi Kur</button>
+      <button onclick="dismissPWAModal()" style="flex:1; padding:12px; background:var(--bg-dark); color:var(--text); border:1px solid var(--champagne); border-radius:6px; cursor:pointer;">⏱ Sonra Sor</button>
+    </div>
+  </div>
+</div>
+
+<div id="pwa-overlay" class="pwa-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1999;" onclick="dismissPWAModal()"></div>
+
+<!-- ========== INSTALLATION SLIDER MODAL ========== -->
+<div id="installation-slider-modal" class="pwa-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:flex; align-items:center; justify-content:center;">
+  <div class="pwa-modal-content" style="background:var(--bg-light); border-radius:12px; padding:20px; max-width:500px; width:90%;">
+    <button class="pwa-close-btn" onclick="closeSliderModal()" style="float:right; background:none; border:none; font-size:28px; cursor:pointer; color:var(--text);">&times;</button>
+    <h2 style="margin-top:0; color:var(--text);">📖 Kurulum Rehberi</h2>
+    <div id="slider-container" style="position:relative; margin:20px 0;">
+      <div id="slider-images" style="overflow:hidden; border-radius:8px; background:var(--bg-dark); aspect-ratio:9/12;">
+        <img id="slider-img" src="" alt="Rehber" style="width:100%; height:100%; object-fit:cover; display:block;">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+        <button onclick="prevSlide()" style="padding:8px 12px; background:var(--champagne); border:none; border-radius:4px; cursor:pointer; font-weight:bold;">◀</button>
+        <div id="slider-dots" style="display:flex; gap:6px; justify-content:center;"></div>
+        <button onclick="nextSlide()" style="padding:8px 12px; background:var(--champagne); border:none; border-radius:4px; cursor:pointer; font-weight:bold;">▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MOBILE HAMBURGER DRAWER ========== -->
+<div id="mobile-drawer" class="mobile-drawer" style="display:none; position:fixed; left:0; top:0; width:70%; height:100vh; background:var(--bg-light); z-index:1998; transform:translateX(-100%); transition:transform 0.3s ease-out; box-shadow:2px 0 10px rgba(0,0,0,0.3);">
+  <div class="drawer-content" style="padding:20px;">
+    <button class="drawer-close" onclick="toggleDrawer()" style="background:none; border:none; font-size:28px; cursor:pointer; color:var(--text); margin-bottom:20px;">&times;</button>
+    <nav class="drawer-nav" style="display:flex; flex-direction:column; gap:12px;">
+      <a href="#notes-section" onclick="scrollToSection('notes-section')" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">📝 Notlar</a>
+      <a href="#recording-section" onclick="scrollToSection('recording-section')" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">🎙️ Kayıt</a>
+      <a href="#playback-section" onclick="scrollToSection('playback-section')" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">▶️ Oynatma</a>
+      <a href="#settings-section" onclick="scrollToSection('settings-section')" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">⚙️ Ayarlar</a>
+      <hr style="border:none; border-top:1px solid var(--champagne); margin:15px 0;">
+      <a href="#" onclick="installPWA(); toggleDrawer();" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">📱 Uygulamayı Kur</a>
+      <a href="#" onclick="shareApp(); toggleDrawer();" style="padding:12px; color:var(--text); text-decoration:none; border-radius:6px; transition:background 0.2s;">📤 Paylaş</a>
+    </nav>
+  </div>
+</div>
+
+<div id="drawer-overlay" class="drawer-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1997;" onclick="toggleDrawer()"></div>
+
+<!-- ========== TOAST NOTIFICATION CONTAINER ========== -->
+<div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; max-width:350px;"></div>
+
+<!-- ========== MOBILE MENU TOGGLE BUTTON ========== -->
+<button id="mobile-menu-btn" class="mobile-menu-btn" onclick="toggleDrawer()" style="display:none; position:fixed; top:20px; right:20px; z-index:1000; background:var(--champagne); border:none; border-radius:8px; padding:10px 14px; cursor:pointer; font-size:1.5rem; color:#000; font-weight:bold;">☰</button>
+
+<script>
 /* ============== EQUALIZER CONTROL ============== */
 function startEqualizer() {
   document.querySelectorAll('.eq-container').forEach(eq => eq.classList.add('active'));
@@ -2260,6 +2556,646 @@ function stopEqualizer() {
   document.querySelectorAll('.eq-container').forEach(eq => eq.classList.remove('active'));
   document.querySelectorAll('.rec-indicator').forEach(ri => ri.classList.remove('active'));
 }
+
+/* ========== SERVICE WORKER REGISTRATION ========== */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => {
+      console.log('✅ Service Worker registered:', reg);
+      
+      // Check for updates
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showToast('📦 Yeni sürüm mevcut! Sayfayı yenilenin.', 'info');
+          }
+        });
+      });
+    })
+    .catch(err => console.error('❌ Service Worker registration failed:', err));
+}
+
+/* ========== PWA INSTALL LOGIC ========== */
+let deferredPrompt = null;
+let isInstalledApp = false;
+
+// Detect if app is already installed
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  isInstalledApp = true;
+}
+if (navigator.standalone === true) {
+  isInstalledApp = true;
+}
+
+// beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('📱 Install prompt available');
+  
+  // Show modal after 1.5 seconds only if not already installed
+  if (!isInstalledApp && !localStorage.getItem('pwa_install_dismissed')) {
+    setTimeout(() => {
+      showInstallModal();
+    }, 1500);
+  }
+});
+
+// appinstalled event
+window.addEventListener('appinstalled', () => {
+  console.log('✅ App installed successfully');
+  isInstalledApp = true;
+  deferredPrompt = null;
+  localStorage.setItem('pwa_installed', 'true');
+  showToast('✅ Uygulama başarıyla yüklendi!', 'success');
+  document.getElementById('pwa-install-btn').style.display = 'none';
+});
+
+// Detect platform
+function detectPlatform() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(ua)) return 'iOS';
+  if (/android/.test(ua)) return 'Android';
+  return 'Desktop';
+}
+
+const platform = detectPlatform();
+
+// iOS steps for installation
+const iosSteps = [
+  {
+    title: '1. Paylaş Butonuna Bas',
+    content: 'Safari tarayıcısında sayfanın alt kısmındaki "Paylaş" butonuna dokunun.'
+  },
+  {
+    title: '2. Aşağıya Kaydır',
+    content: 'Aşağıya doğru kaydırıp "Ana Ekrana Ekle" seçeneğini bulun.'
+  },
+  {
+    title: '3. "Ana Ekrana Ekle" Seç',
+    content: '"Ana Ekrana Ekle" satırına dokunun.'
+  },
+  {
+    title: '4. Adı Onayla',
+    content: 'Uygulamanın adını doğrulayıp sağ üst "Ekle" butonuna tıklayın.'
+  },
+  {
+    title: '5. Tamamlandı! ✅',
+    content: 'Ersenbox artık ana ekranınızda görünecek.'
+  }
+];
+
+let currentStep = 0;
+
+function showInstallModal() {
+  const modal = document.getElementById('pwa-install-modal');
+  const overlay = document.getElementById('pwa-overlay');
+  const stepsContainer = document.getElementById('pwa-steps-container');
+  const qrContainer = document.getElementById('pwa-qr-container');
+  
+  if (platform === 'iOS') {
+    stepsContainer.style.display = 'block';
+    qrContainer.style.display = 'none';
+    currentStep = 0;
+    displayStep(0);
+  } else if (platform === 'Android' || deferredPrompt) {
+    stepsContainer.style.display = 'none';
+    qrContainer.style.display = 'block';
+    generateQRCode(window.location.href);
+  }
+  
+  modal.style.display = 'flex';
+  overlay.style.display = 'block';
+}
+
+function dismissPWAModal() {
+  document.getElementById('pwa-install-modal').style.display = 'none';
+  document.getElementById('pwa-overlay').style.display = 'none';
+  localStorage.setItem('pwa_install_dismissed', 'true');
+}
+
+function displayStep(stepIndex) {
+  if (stepIndex < 0 || stepIndex >= iosSteps.length) return;
+  currentStep = stepIndex;
+  
+  const stepsContent = document.getElementById('steps-content');
+  const stepIndicator = document.getElementById('step-indicator');
+  
+  const step = iosSteps[stepIndex];
+  stepsContent.innerHTML = `<h4 style="margin-top:0;">${step.title}</h4><p>${step.content}</p>`;
+  stepIndicator.textContent = `Adım ${stepIndex + 1} / ${iosSteps.length}`;
+}
+
+function nextStep() {
+  if (currentStep < iosSteps.length - 1) {
+    displayStep(currentStep + 1);
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    displayStep(currentStep - 1);
+  }
+}
+
+async function installPWA() {
+  if (platform === 'Android' && deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response: ${outcome}`);
+    deferredPrompt = null;
+  }
+  dismissPWAModal();
+}
+
+/* ========== QR CODE GENERATION ========== */
+async function generateQRCode(url) {
+  try {
+    // Simple QR code library CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    script.onload = () => {
+      const canvas = document.getElementById('pwa-qr-canvas');
+      canvas.innerHTML = '';
+      new QRCode(canvas, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: '#000',
+        colorLight: '#FFF'
+      });
+    };
+    document.head.appendChild(script);
+  } catch (err) {
+    console.error('QR code generation failed:', err);
+  }
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('pwa-qr-canvas');
+  const link = document.createElement('a');
+  link.href = canvas.toDataURL('image/png');
+  link.download = 'ersenbox-qr.png';
+  link.click();
+  showToast('📥 QR kod indirildi', 'success');
+}
+
+/* ========== INSTALLATION SLIDER ========== */
+const sliderImages = [
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s1.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s2.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s3.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s4.png',
+  'https://raw.githubusercontent.com/Ersenbox/Meeting-Notes-26/main/public/slider/s5.png'
+];
+
+let currentSlide = 0;
+
+function initSlider() {
+  const dotsContainer = document.getElementById('slider-dots');
+  sliderImages.forEach((_, idx) => {
+    const dot = document.createElement('div');
+    dot.className = `slider-dot ${idx === 0 ? 'active' : ''}`;
+    dot.onclick = () => goToSlide(idx);
+    dotsContainer.appendChild(dot);
+  });
+  updateSliderImage();
+}
+
+function updateSliderImage() {
+  document.getElementById('slider-img').src = sliderImages[currentSlide];
+  document.querySelectorAll('.slider-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === currentSlide);
+  });
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + sliderImages.length) % sliderImages.length;
+  updateSliderImage();
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % sliderImages.length;
+  updateSliderImage();
+}
+
+function goToSlide(idx) {
+  currentSlide = idx;
+  updateSliderImage();
+}
+
+function closeSliderModal() {
+  document.getElementById('installation-slider-modal').style.display = 'none';
+}
+
+// Initialize slider on page load
+window.addEventListener('load', initSlider);
+
+/* ========== MOBILE DRAWER MENU ========== */
+function toggleDrawer() {
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  
+  const isOpen = drawer.style.transform === 'translateX(0px)';
+  
+  if (isOpen) {
+    drawer.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
+    menuBtn.classList.remove('active');
+  } else {
+    drawer.style.transform = 'translateX(0)';
+    overlay.style.display = 'block';
+    menuBtn.classList.add('active');
+  }
+}
+
+function scrollToSection(sectionId) {
+  toggleDrawer();
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Show mobile menu button on small screens
+function updateMobileMenuButton() {
+  const btn = document.getElementById('mobile-menu-btn');
+  if (window.innerWidth <= 768) {
+    btn.style.display = 'block';
+  } else {
+    btn.style.display = 'none';
+    document.getElementById('mobile-drawer').style.transform = 'translateX(-100%)';
+    document.getElementById('drawer-overlay').style.display = 'none';
+  }
+}
+
+window.addEventListener('resize', updateMobileMenuButton);
+window.addEventListener('load', updateMobileMenuButton);
+
+/* ========== TOAST NOTIFICATIONS ========== */
+function showToast(message, type = 'info', duration = 3000) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <span>${message}</span>
+    <button class="toast-close" onclick="this.parentElement.remove();">×</button>
+  `;
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.remove();
+    }
+  }, duration);
+}
+
+/* ========== SWIPE GESTURE SUPPORT ========== */
+class SwipeHandler {
+  constructor(element, options = {}) {
+    this.element = element;
+    this.startX = 0;
+    this.startY = 0;
+    this.endX = 0;
+    this.endY = 0;
+    this.threshold = options.threshold || 50;
+    this.onSwipeLeft = options.onSwipeLeft || (() => {});
+    this.onSwipeRight = options.onSwipeRight || (() => {});
+    this.onSwipeUp = options.onSwipeUp || (() => {});
+    this.onSwipeDown = options.onSwipeDown || (() => {});
+    
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    
+    this.element.addEventListener('touchstart', this.handleTouchStart, false);
+    this.element.addEventListener('touchend', this.handleTouchEnd, false);
+  }
+  
+  handleTouchStart(e) {
+    this.startX = e.touches[0].clientX;
+    this.startY = e.touches[0].clientY;
+  }
+  
+  handleTouchEnd(e) {
+    this.endX = e.changedTouches[0].clientX;
+    this.endY = e.changedTouches[0].clientY;
+    this.detectSwipe();
+  }
+  
+  detectSwipe() {
+    const diffX = this.startX - this.endX;
+    const diffY = this.startY - this.endY;
+    
+    if (Math.abs(diffX) > this.threshold) {
+      if (diffX > 0) {
+        this.onSwipeLeft();
+      } else {
+        this.onSwipeRight();
+      }
+    }
+    
+    if (Math.abs(diffY) > this.threshold) {
+      if (diffY > 0) {
+        this.onSwipeUp();
+      } else {
+        this.onSwipeDown();
+      }
+    }
+  }
+  
+  destroy() {
+    this.element.removeEventListener('touchstart', this.handleTouchStart);
+    this.element.removeEventListener('touchend', this.handleTouchEnd);
+  }
+}
+
+// Slider swipe support
+window.addEventListener('load', () => {
+  const sliderContainer = document.getElementById('slider-container');
+  if (sliderContainer) {
+    new SwipeHandler(sliderContainer, {
+      threshold: 40,
+      onSwipeLeft: () => { console.log('📵 Swipe left → next slide'); nextSlide(); },
+      onSwipeRight: () => { console.log('📵 Swipe right → prev slide'); prevSlide(); }
+    });
+  }
+  
+  // Drawer swipe close
+  const drawer = document.getElementById('mobile-drawer');
+  if (drawer) {
+    new SwipeHandler(drawer, {
+      threshold: 60,
+      onSwipeLeft: () => {
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        if (menuBtn && menuBtn.style.display !== 'none') {
+          console.log('📵 Swipe left → close drawer');
+          toggleDrawer();
+        }
+      }
+    });
+  }
+});
+
+/* ========== ENHANCED PLATFORM DETECTION ========== */
+const platformInfo = (() => {
+  const ua = navigator.userAgent.toLowerCase();
+  const info = {
+    isAndroid: /android/.test(ua),
+    isIOS: /iphone|ipad|ipod/.test(ua),
+    isPC: !(/android|iphone|ipad|ipod/.test(ua)),
+    isChrome: /chrome/.test(ua),
+    isFirefox: /firefox/.test(ua),
+    isSafari: /safari/.test(ua) && !/chrome/.test(ua),
+    isEdge: /edge/.test(ua),
+    isPWA: window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true,
+    isOnline: navigator.onLine,
+    userAgent: ua
+  };
+  
+  console.log('📱 Platform Info:', {
+    OS: info.isAndroid ? 'Android' : info.isIOS ? 'iOS' : 'Desktop',
+    Browser: info.isChrome ? 'Chrome' : info.isFirefox ? 'Firefox' : info.isSafari ? 'Safari' : info.isEdge ? 'Edge' : 'Unknown',
+    isPWA: info.isPWA,
+    online: info.isOnline
+  });
+  
+  return info;
+})();
+
+/* ========== IMPROVED QR CODE GENERATION ========== */
+let qrCodeLoaded = false;
+
+async function loadQRCodeLibrary() {
+  return new Promise((resolve, reject) => {
+    if (qrCodeLoaded) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    script.async = true;
+    script.onload = () => {
+      qrCodeLoaded = true;
+      console.log('✅ QRCode library loaded');
+      resolve();
+    };
+    script.onerror = () => {
+      console.error('❌ Failed to load QRCode library');
+      reject(new Error('QRCode library failed to load'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+async function generateQRCode(url) {
+  try {
+    await loadQRCodeLibrary();
+    const canvas = document.getElementById('pwa-qr-canvas');
+    if (!canvas) return;
+    
+    canvas.innerHTML = '';
+    new QRCode(canvas, {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: '#000',
+      colorLight: '#FFF',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    console.log('✅ QR code generated');
+  } catch (err) {
+    console.error('❌ QR code generation failed:', err);
+    showToast('❌ QR kod oluşturulamadı', 'error');
+  }
+}
+
+/* ========== INSTALL STATE MANAGEMENT ========== */
+function updateInstallButtonState() {
+  const btn = document.getElementById('pwa-install-btn');
+  if (!btn) return;
+  
+  if (isInstalledApp) {
+    btn.innerHTML = '✅ Zaten Kurulu';
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+  } else if (!deferredPrompt && platformInfo.isPC) {
+    btn.innerHTML = '⏳ Tarayıcı desteği gerekli';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+  } else {
+    btn.innerHTML = '✅ Şimdi Kur';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
+}
+
+// Update button state on page load
+window.addEventListener('load', () => {
+  setTimeout(updateInstallButtonState, 100);
+});
+
+// Watch for app installation
+window.addEventListener('appinstalled', updateInstallButtonState);
+
+/* ========== OFFLINE MODE STYLING ========== */
+window.addEventListener('offline', () => {
+  document.body.style.opacity = '0.7';
+  document.body.style.pointerEvents = 'none';
+  showToast('🔴 Çevrimdışı moda alındı - İşlevler sınırlı', 'error', 5000);
+});
+
+window.addEventListener('online', () => {
+  document.body.style.opacity = '1';
+  document.body.style.pointerEvents = 'auto';
+  showToast('🟢 İnternet bağlantısı geri geldi', 'success');
+});
+
+/* ========== KEYBOARD NAVIGATION ========== */
+window.addEventListener('keydown', (e) => {
+  // Slider navigation
+  if (document.getElementById('installation-slider-modal').style.display === 'flex' || 
+      document.getElementById('installation-slider-modal').style.display === 'block') {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeSliderModal();
+    }
+  }
+  
+  // Drawer navigation
+  if (document.getElementById('mobile-drawer').style.transform === 'translateX(0px)') {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      toggleDrawer();
+    }
+  }
+  
+  // Modal navigation
+  if (document.getElementById('pwa-install-modal').style.display !== 'none') {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      dismissPWAModal();
+    }
+  }
+});
+
+/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
+function improveAccessibility() {
+  // Add ARIA labels
+  const elements = {
+    'pwa-install-btn': 'PWA uygulamasını yükle',
+    'mobile-menu-btn': 'Mobil menüyü aç',
+    'pwa-close-btn': 'Pencereyi kapat'
+  };
+  
+  Object.entries(elements).forEach(([id, label]) => {
+    const el = document.getElementById(id);
+    if (el && !el.getAttribute('aria-label')) {
+      el.setAttribute('aria-label', label);
+    }
+  });
+  
+  // Ensure buttons are keyboard accessible
+  document.querySelectorAll('button').forEach(btn => {
+    if (!btn.getAttribute('tabindex')) {
+      btn.setAttribute('tabindex', '0');
+    }
+  });
+}
+
+window.addEventListener('load', improveAccessibility);
+
+/* ========== STORAGE MANAGEMENT ========== */
+const StorageManager = {
+  set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (err) {
+      console.warn('📦 LocalStorage full or unavailable:', err);
+      return false;
+    }
+  },
+  
+  get(key, defaultValue = null) {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (err) {
+      console.warn('📦 Failed to read from localStorage:', err);
+      return defaultValue;
+    }
+  },
+  
+  remove(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (err) {
+      console.warn('📦 Failed to remove from localStorage:', err);
+      return false;
+    }
+  }
+};
+
+// Save app state
+window.addEventListener('beforeunload', () => {
+  StorageManager.set('app_state', {
+    lastVisit: new Date().toISOString(),
+    pwaInstalled: isInstalledApp,
+    platform: platform
+  });
+});
+
+/* ========== DETAILED LOGGING ========== */
+console.log('%c✅ Ersenbox PWA Initialized', 'color: #D4A574; font-size: 14px; font-weight: bold;');
+console.log({
+  'Service Worker': 'Registered ✅',
+  'Platform': platform,
+  'Browser': platformInfo.isChrome ? 'Chrome' : platformInfo.isSafari ? 'Safari' : platformInfo.isFirefox ? 'Firefox' : 'Other',
+  'PWA Mode': isInstalledApp ? 'Yes' : 'No',
+  'Offline Support': 'Yes',
+  'Install Available': deferredPrompt ? 'Yes' : 'No (Browser support needed)',
+  'Features': ['Voice Recording', 'QR Installer', 'Offline Mode', 'Touch Optimized']
+});
+
+</script>
+
+
+/* ========== DYNAMIC THEME COLOR ========== */
+function updateThemeColor() {
+  const isDark = document.body.classList.contains('dark');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.setAttribute('content', isDark ? '#1A1812' : '#D4A574');
+  }
+}
+
+// Watch for theme changes
+const observer = new MutationObserver(() => updateThemeColor());
+observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+/* ========== OFFLINE DETECTION ========== */
+window.addEventListener('online', () => {
+  showToast('🟢 İnternet bağlantısı geri geldi', 'success');
+});
+
+window.addEventListener('offline', () => {
+  showToast('🔴 Çevrimdışı moda alındı', 'error');
+});
+
+/* ========== APP INITIALIZATION ========== */
+console.log(`✅ Ersenbox initialized on ${platform}`);
 
 </script>
 </body>
