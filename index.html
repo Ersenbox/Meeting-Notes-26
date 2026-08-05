@@ -25,9 +25,10 @@
     --deep-cocoa: #2A241E; --soft-graphite: #5A5247;
     --muted-sapphire: #4A5874; --navy-deep: #1F2538;
     --bg: var(--pearl); --card-bg: rgba(251, 247, 240, 0.72);
-    --text: var(--deep-cocoa); --text-muted: #7A6F5E;
+    --text: var(--deep-cocoa); --text-muted: #7A6F5E; --text-light: #7A6F5E;
     --border: rgba(184, 148, 90, 0.22);
     --success: #7BA67B; --danger: #B86A5E; --warning: var(--amber-gold);
+    --bg-light: #FBF7F0; --bg-dark: #2A241E;
   }
   body.dark {
     --bg: #1A1812; --card-bg: rgba(40, 35, 25, 0.72);
@@ -2536,7 +2537,7 @@ function scrollToSection(sectionId) {
 </script>
 
 <!-- ========== PWA INSTALL MODAL ========== -->
-<div id="pwa-install-modal" class="pwa-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center;">
+<div id="pwa-install-modal" class="pwa-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
   <div class="pwa-modal-content" style="background:var(--bg-light); border-radius:12px; padding:25px; max-width:400px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:slideUp 0.3s ease-out;">
     <button class="pwa-close-btn" onclick="document.getElementById('pwa-install-modal').style.display='none'" style="float:right; background:none; border:none; font-size:28px; cursor:pointer; color:var(--text);">&times;</button>
     <h2 style="margin-top:0; color:var(--text);">📱 Uygulamayı Yükle</h2>
@@ -2565,7 +2566,7 @@ function scrollToSection(sectionId) {
   </div>
 </div>
 
-<div id="pwa-overlay" class="pwa-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1999;" onclick="dismissPWAModal()"></div>
+<div id="pwa-overlay" class="pwa-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1998;" onclick="dismissPWAModal()"></div>
 
 <!-- ========== INSTALLATION SLIDER MODAL ========== -->
 <div id="installation-slider-modal" class="pwa-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:flex; align-items:center; justify-content:center;">
