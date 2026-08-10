@@ -1276,7 +1276,17 @@ function loadState() {
 }
 function saveState() {
   if (!state.autoSave) return;
-  try { localStorage.setItem('ersenbox_cinematic_v2', JSON.stringify(state)); } catch(e) {}
+  try {
+    // DÜZELT2: Sesler IndexedDB'de, localStorage'da sadece metadata
+    const stateToSave = { ...state };
+    stateToSave.recordings = state.recordings.map(r => {
+      const { audioData, ...rest } = r; // audioData'yı hariç tut
+      return rest; // sadece metadata
+    });
+    localStorage.setItem('ersenbox_cinematic_v2', JSON.stringify(stateToSave));
+  } catch(e) {
+    console.warn('localStorage yazma hatası (quota doluysa normal):', e);
+  }
 }
 function applyI18n() {
   const texts = i18n[state.appLang]; if (!texts) return;
@@ -1433,25 +1443,79 @@ function saveFolder() {
 function closeModal(id) { document.getElementById(id).classList.remove('active'); editingFolderId=null; }
 
 /* ============== RECORDER ============== */
+let globalAudioStream = null; // DÜZELT1: Mikrofon stream'ini global tutuyoruz
+let audioIndexedDB = null;
+
+// IndexedDB'yi başlat
+async function initAudioDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('ErsenboxAudio', 1);
+    req.onsuccess = () => { audioIndexedDB = req.result; resolve(); };
+    req.onerror = () => reject('IndexedDB başlatılamadı');
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('recordings')) {
+        db.createObjectStore('recordings', { keyPath: 'id' });
+      }
+    };
+  });
+}
+
+// IndexedDB'ye ses kayıt'ı kaydet
+async function saveAudioToIndexedDB(id, blob) {
+  return new Promise((resolve, reject) => {
+    if (!audioIndexedDB) return reject('DB yüklenemedi');
+    const tx = audioIndexedDB.transaction('recordings', 'readwrite');
+    const store = tx.objectStore('recordings');
+    store.put({ id, blob, timestamp: Date.now() });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject('DB yazma hatası');
+  });
+}
+
+// IndexedDB'den ses yükle
+async function loadAudioFromIndexedDB(id) {
+  return new Promise((resolve, reject) => {
+    if (!audioIndexedDB) return reject('DB yüklenemedi');
+    const tx = audioIndexedDB.transaction('recordings', 'readonly');
+    const store = tx.objectStore('recordings');
+    const req = store.get(id);
+    req.onsuccess = () => resolve(req.result?.blob);
+    req.onerror = () => reject('DB okuma hatası');
+  });
+}
+
 async function startRecording() {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+    // Eğer global stream yoksa bir kez iste (DÜZELT1)
+    if (!globalAudioStream) {
+      globalAudioStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    }
+    
+    mediaRecorder = new MediaRecorder(globalAudioStream); audioChunks = [];
     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = () => {
+    mediaRecorder.onstop = async () => {
       const blob = new Blob(audioChunks, {type:'audio/webm'});
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64Audio = reader.result;
-        state.recordings.push({
-          id:'r_'+Date.now().toString(36), folder: document.getElementById('recorderFolder').value,
-          timestamp: new Date().toLocaleString('tr-TR'), name: 'Kayıt '+new Date().toLocaleString('tr-TR'),
-          duration: document.getElementById('timer').textContent, audioData: base64Audio
-        });
-        renderRecordings(); renderFolderContent(); updateStats(); saveState();
-      };
-      reader.readAsDataURL(blob);
-      stream.getTracks().forEach(t=>t.stop());
+      const recordingId = 'r_'+Date.now().toString(36);
+      
+      // DÜZELT2: Ses blob'ını IndexedDB'ye kaydet, localStorage'a sadece metadata
+      try {
+        await saveAudioToIndexedDB(recordingId, blob);
+      } catch(e) {
+        console.warn('IndexedDB yazma başarısız, blob URL kullanıyoruz:', e);
+      }
+      
+      // Blob URL oluştur (fallback için)
+      const blobUrl = URL.createObjectURL(blob);
+      
+      state.recordings.push({
+        id: recordingId, folder: document.getElementById('recorderFolder').value,
+        timestamp: new Date().toLocaleString('tr-TR'), name: 'Kayıt '+new Date().toLocaleString('tr-TR'),
+        duration: document.getElementById('timer').textContent, 
+        audioUrl: blobUrl, // Blob URL'i kullan
+        useIndexedDB: true // IndexedDB'de mi depolanıyor
+      });
+      renderRecordings(); renderFolderContent(); updateStats(); saveState();
     };
     mediaRecorder.start(); recordingStart = Date.now();
     document.getElementById('startRecordBtn').classList.add('hidden');
@@ -1459,7 +1523,7 @@ async function startRecording() {
     document.getElementById('recordingStatus').style.display='block';
     startEqualizer();
     recordingTimer = setInterval(updateTimer, 1000);
-  } catch(e) { alert('Mikrofon erişimi reddedildi.'); }
+  } catch(e) { alert('Mikrofon erişimi reddedildi: ' + e.message); }
 }
 function stopRecording() {
   if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop();
@@ -1478,15 +1542,21 @@ function renderRecordings() {
   const list=document.getElementById('recordingsList');
   const micRecs = state.recordings.filter(r => !r.type || r.type !== 'tts-audio');
   if(!micRecs.length){list.innerHTML='<p style="color:var(--text-muted);">Henüz kayıt yok.</p>';return;}
-  list.innerHTML=micRecs.slice().reverse().map(r=>`
-    <div class="action-item"><div style="flex:1;"><div style="font-family:'JetBrains Mono';font-weight:600;">🎙 ${r.name||r.timestamp}</div>
-    <div style="font-size:0.8rem;color:var(--text-muted);">⏱ ${r.duration} · 📁 ${(state.folders.find(f=>f.id===r.folder)||{}).name||'Genel'} · ${r.timestamp}</div>
-    ${r.audioData?`<audio controls src="${r.audioData}" style="width:100%;margin-top:0.5rem;"></audio>`:r.url?`<audio controls src="${r.url}" style="width:100%;margin-top:0.5rem;"></audio>`:''}</div>
-    <div style="display:flex;flex-direction:column;gap:0.3rem;">
-      <button class="btn btn-warning btn-icon" onclick="editRecording('${r.id}')" title="Düzenle">✎</button>
-      <button class="btn btn-primary btn-icon" onclick="moveRecording('${r.id}')" title="Taşı">→</button>
-      <button class="btn btn-danger btn-icon" onclick="deleteRecording('${r.id}')" title="Sil">✕</button>
-    </div></div>`).join('');
+  list.innerHTML=micRecs.slice().reverse().map(r=>{
+    // DÜZELT2: Sesler blob URL veya IndexedDB'de tutulu
+    const audioSrc = r.audioUrl || r.audioData || r.url || '';
+    const audioHtml = audioSrc ? `<audio controls src="${audioSrc}" style="width:100%;margin-top:0.5rem;"></audio>` : '';
+    return `
+      <div class="action-item"><div style="flex:1;"><div style="font-family:'JetBrains Mono';font-weight:600;">🎙 ${r.name||r.timestamp}</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);">⏱ ${r.duration} · 📁 ${(state.folders.find(f=>f.id===r.folder)||{}).name||'Genel'} · ${r.timestamp}</div>
+      ${audioHtml}</div>
+      <div style="display:flex;flex-direction:column;gap:0.3rem;">
+        <button class="btn btn-warning btn-icon" onclick="editRecording('${r.id}')" title="Düzenle">✎</button>
+        <button class="btn btn-primary btn-icon" onclick="moveRecording('${r.id}')" title="Taşı">→</button>
+        <button class="btn btn-success btn-icon" onclick="downloadRecording('${r.id}')" title="İndir">⬇</button>
+        <button class="btn btn-danger btn-icon" onclick="deleteRecording('${r.id}')" title="Sil">✕</button>
+      </div></div>`
+  }).join('');
 }
 function editRecording(id) {
   const r=state.recordings.find(x=>x.id===id); if(!r) return;
@@ -1499,7 +1569,59 @@ function moveRecording(id) {
   const choice=prompt('Klasör seçin (numara girin):\n'+opts);
   if(choice) { const idx=parseInt(choice)-1; if(idx>=0 && idx<state.folders.length) { r.folder=state.folders[idx].id; renderRecordings(); renderFolderContent(); updateStats(); saveState(); } }
 }
-function deleteRecording(id) { if(!confirm('Bu kayıt silinsin mi?')) return; state.recordings=state.recordings.filter(r=>r.id!==id); renderRecordings(); renderFolderContent(); updateStats(); saveState(); }
+
+// DÜZELT2: Ses dosyasını indir
+async function downloadRecording(id) {
+  const r = state.recordings.find(x => x.id === id);
+  if (!r) return alert('Kayıt bulunamadı');
+  
+  try {
+    let blob;
+    
+    // IndexedDB'den yüklemeyi dene
+    if (r.useIndexedDB) {
+      const idbBlob = await loadAudioFromIndexedDB(id);
+      if (idbBlob) blob = idbBlob;
+    }
+    
+    // Fallback: blob URL varsa onu kullan
+    if (!blob && r.audioUrl) {
+      const response = await fetch(r.audioUrl);
+      blob = await response.blob();
+    }
+    
+    if (!blob) {
+      return alert('Ses dosyası bulunamadı. Lütfen kaydı silin ve yeniden kayıt alın.');
+    }
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${r.name || 'kayit'}_${r.timestamp.slice(0, 10)}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    console.error('İndirme hatası:', e);
+    alert('Ses indirilemedi: ' + e.message);
+  }
+}
+
+function deleteRecording(id) { 
+  if(!confirm('Bu kayıt silinsin mi?')) return; 
+  const r = state.recordings.find(x => x.id === id);
+  
+  // IndexedDB'den sil
+  if (r && r.useIndexedDB && audioIndexedDB) {
+    const tx = audioIndexedDB.transaction('recordings', 'readwrite');
+    tx.objectStore('recordings').delete(id);
+  }
+  
+  // Blob URL'i temizle
+  if (r && r.audioUrl) URL.revokeObjectURL(r.audioUrl);
+  
+  state.recordings = state.recordings.filter(x => x.id !== id); 
+  renderRecordings(); renderFolderContent(); updateStats(); saveState(); 
+}
 
 /* ============== STT ============== */
 function initSTT() {
@@ -3188,6 +3310,8 @@ window.addEventListener('offline', () => {
 });
 
 /* ========== APP INITIALIZATION ========== */
+// DÜZELT2: IndexedDB'yi başlat
+initAudioDB().catch(e => console.warn('IndexedDB hazırlanması başarısız:', e));
 console.log(`✅ Ersenbox initialized on ${platform}`);
 
 </script>
