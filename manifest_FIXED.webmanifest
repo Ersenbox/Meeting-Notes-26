@@ -1,0 +1,61 @@
+{
+  "name": "Ersenbox · Meeting Notes 26",
+  "short_name": "Ersenbox Notes",
+  "description": "Profesyonel toplantı notları ve ses kaydı uygulaması",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#2C2416",
+  "theme_color": "#D4A574",
+  "icons": [
+    {
+      "src": "/public/icons/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/icons/apple-touch-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/icons/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/public/slider/s1.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/public/slider/s2.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Ses Kaydını Başlat",
+      "short_name": "Kayıt",
+      "description": "Hızlı ses kaydı başlat",
+      "url": "/?action=record",
+      "icons": [
+        {
+          "src": "/public/icons/favicon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}

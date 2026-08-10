@@ -1271,8 +1271,28 @@ function init() {
   if (state.theme === 'dark') document.body.classList.add('dark');
   applyI18n();
 }
-function loadState() {
-  try { const s = JSON.parse(localStorage.getItem('ersenbox_cinematic_v2') || 'null'); if (s && s.folders) state = { ...state, ...s }; } catch(e) {}
+async function loadState() {
+  try { 
+    const s = JSON.parse(localStorage.getItem('ersenbox_cinematic_v2') || 'null'); 
+    if (s && s.folders) state = { ...state, ...s };
+  } catch(e) {}
+  
+  // DÜZELT2: Eski kayıtların Blob URL'lerini IndexedDB'den yeniden oluştur
+  if (state.recordings && audioIndexedDB) {
+    for (const r of state.recordings) {
+      if (r.useIndexedDB && !r.audioUrl) {
+        try {
+          const blob = await loadAudioFromIndexedDB(r.id);
+          if (blob) {
+            r.audioUrl = URL.createObjectURL(blob);
+            console.log('✅ Blob URL yeniden oluşturuldu:', r.id);
+          }
+        } catch(e) {
+          console.warn('Blob URL yeniden oluşturulamadı:', r.id, e);
+        }
+      }
+    }
+  }
 }
 function saveState() {
   if (!state.autoSave) return;
@@ -1576,33 +1596,56 @@ async function downloadRecording(id) {
   if (!r) return alert('Kayıt bulunamadı');
   
   try {
-    let blob;
+    let blob = null;
     
-    // IndexedDB'den yüklemeyi dene
-    if (r.useIndexedDB) {
-      const idbBlob = await loadAudioFromIndexedDB(id);
-      if (idbBlob) blob = idbBlob;
+    // DÜZELT4: IndexedDB'den yüklemeyi dene
+    if (r.useIndexedDB && audioIndexedDB) {
+      try {
+        const idbBlob = await loadAudioFromIndexedDB(id);
+        if (idbBlob) blob = idbBlob;
+      } catch(e) {
+        console.warn('IndexedDB okuma hatası:', e);
+      }
     }
     
-    // Fallback: blob URL varsa onu kullan
+    // Fallback: Blob URL varsa FETCH yapma (blob: protokolü cross-origin hatası verir)
+    // Bunun yerine blob URL'i doğrudan kullan
     if (!blob && r.audioUrl) {
-      const response = await fetch(r.audioUrl);
-      blob = await response.blob();
+      // ❌ YANLIŞ: Blob URL'i fetch'lemeye çalışma
+      // ✅ DOĞRU: Blob URL hala geçerli ise onu kullan
+      console.log('Blob URL kullanılıyor:', r.audioUrl);
+    }
+    
+    if (!blob && r.audioUrl && r.audioUrl.startsWith('blob:')) {
+      // Blob URL çalışmayabilir (sayfa refresh'te silinir)
+      // Yine de dene
+      try {
+        const response = await fetch(r.audioUrl);
+        if (response.ok) blob = await response.blob();
+      } catch(e) {
+        console.warn('Blob URL fetch başarısız (sayfa refresh'te silinir):', e);
+      }
     }
     
     if (!blob) {
-      return alert('Ses dosyası bulunamadı. Lütfen kaydı silin ve yeniden kayıt alın.');
+      return alert('Ses dosyası bulunamadı. Lütfen:\n1. Sayfa refresh'i olmadan hemen indir\n2. VEYA kaydı sil ve yeniden kayıt al');
     }
     
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${r.name || 'kayit'}_${r.timestamp.slice(0, 10)}.webm`;
+    
+    // DÜZELT4: Timestamp slice hatası düzelt
+    // Eski: "10.08.2026 22:50:14".slice(0, 10) = "10.08.202" ❌
+    // Yeni: tarih formatını doğru al
+    const dateStr = r.timestamp.split(' ')[0].replace(/\./g, '-');  // "10-08-2026"
+    a.download = `${r.name || 'kayit'}_${dateStr}.webm`;
     a.click();
-    URL.revokeObjectURL(url);
+    
+    setTimeout(() => URL.revokeObjectURL(url), 100);  // Biraz gecikmeli sil
   } catch(e) {
     console.error('İndirme hatası:', e);
-    alert('Ses indirilemedi: ' + e.message);
+    alert('❌ Ses indirilemedi: ' + (e.message || 'Bilinmeyen hata'));
   }
 }
 
@@ -2788,7 +2831,11 @@ window.addEventListener('beforeinstallprompt', (e) => {
   console.log('📱 Install prompt available');
   
   // Show modal after 1.5 seconds only if not already installed
-  if (!isInstalledApp && !localStorage.getItem('pwa_install_dismissed')) {
+  // DÜZELT1: Kurulum Rehberi modal'ını ilk açılışta otomatik kapatma
+  // Kullanıcı uygulamayı kullanmak istiyor, rehber görmek değil
+  localStorage.setItem('pwa_install_dismissed', 'true');
+  
+  if (false && !isInstalledApp && !localStorage.getItem('pwa_install_dismissed')) {
     setTimeout(() => {
       showInstallModal();
     }, 1500);
@@ -3310,9 +3357,25 @@ window.addEventListener('offline', () => {
 });
 
 /* ========== APP INITIALIZATION ========== */
-// DÜZELT2: IndexedDB'yi başlat
-initAudioDB().catch(e => console.warn('IndexedDB hazırlanması başarısız:', e));
-console.log(`✅ Ersenbox initialized on ${platform}`);
+// DÜZELT2: IndexedDB'yi async/await ile başlat (bitene kadar bekle)
+(async () => {
+  try {
+    await initAudioDB();  // ✅ Bitene kadar bekle
+    console.log('✅ AudioDB initialized successfully');
+  } catch(e) {
+    console.warn('IndexedDB başlatılamadı, Blob URL fallback kullanılacak:', e);
+  }
+  
+  // DÜZELT3: STT'yi de başlat
+  try {
+    initSTT();
+    console.log('✅ STT initialized successfully');
+  } catch(e) {
+    console.warn('STT başlatılamadı:', e);
+  }
+  
+  console.log(`✅ Ersenbox initialized on ${platform}`);
+})();
 
 </script>
 </body>
